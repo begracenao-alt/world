@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>體｜Be Grace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ivory: #f6f1e9;
+    --ivory-deep: #ece3d6;
+    --ink: #3c3833;
+    --ink-soft: #6b645b;
+    --ink-faint: #9a9286;
+    --gold: #b0966a;
+    --line: rgba(60, 56, 51, 0.10);
+    --card: rgba(255, 255, 255, 0.6);
+    --accent: #8fa288;       /* 體 — 整える緑 */
+    --accent-deep: #6f8268;
+    --shadow: 0 18px 50px -28px rgba(70, 60, 45, 0.45);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+    color: var(--ink);
+    background:
+      radial-gradient(120% 80% at 50% -10%, #fbf8f2 0%, rgba(251,248,242,0) 55%),
+      linear-gradient(180deg, var(--ivory) 0%, var(--ivory-deep) 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    line-height: 1.9;
+    letter-spacing: 0.04em;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { width: 100%; max-width: 620px; margin: 0 auto; padding: 0 22px; }
+
+  /* ヘッダー */
+  .top { padding: 26px 0 8px; }
+  .back {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: "Cormorant Garamond", serif; font-style: italic;
+    font-size: 15px; letter-spacing: 0.12em; color: var(--ink-soft);
+    text-decoration: none; transition: color .3s;
+  }
+  .back:hover { color: var(--ink); }
+
+  .head { text-align: center; padding: 26px 0 10px; }
+  .head__name { font-size: clamp(40px, 11vw, 60px); font-weight: 500; letter-spacing: 0.18em; }
+  .head__copy { margin-top: 10px; font-size: 14px; letter-spacing: 0.22em; color: var(--ink-soft); }
+  .head__line { width: 1px; height: 40px; margin: 18px auto 0;
+    background: linear-gradient(180deg, transparent, var(--accent), transparent); opacity: .7; }
+
+  /* カード共通 */
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 6px;
+    box-shadow: var(--shadow); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    padding: clamp(26px, 6vw, 40px) clamp(22px, 5vw, 34px);
+    margin: 28px 0;
+  }
+  .card__label {
+    text-align: center; font-family: "Cormorant Garamond", serif; font-style: italic;
+    font-size: 14px; letter-spacing: 0.28em; color: var(--accent-deep); text-transform: uppercase;
+  }
+  .card__ja { text-align: center; font-size: 13px; letter-spacing: 0.34em; color: var(--ink-faint); margin-top: 6px; margin-bottom: 22px; }
+
+  /* タイマー */
+  .ring-wrap { position: relative; width: 240px; height: 240px; margin: 6px auto 4px; }
+  .ring { transform: rotate(-90deg); }
+  .ring__bg { fill: none; stroke: rgba(60,56,51,0.10); stroke-width: 6; }
+  .ring__bar {
+    fill: none; stroke: var(--accent); stroke-width: 6; stroke-linecap: round;
+    transition: stroke-dashoffset .35s linear;
+  }
+  .time {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+  .time__num { font-family: "Cormorant Garamond", serif; font-weight: 300; font-size: 58px; letter-spacing: 0.04em; color: var(--ink); line-height: 1; }
+  .time__state { margin-top: 8px; font-size: 12px; letter-spacing: 0.3em; color: var(--ink-faint); min-height: 18px; }
+  /* 終了の合図（見てわかる） */
+  .time__state.is-done { font-size: 20px; letter-spacing: 0.16em; color: var(--accent-deep); animation: doneText 1.1s cubic-bezier(.2,.7,.2,1); }
+  @keyframes doneText { from { opacity: 0; transform: scale(.5); } to { opacity: 1; transform: scale(1); } }
+  .time__num.is-done { color: var(--accent-deep); transition: color .6s; }
+  .card.is-done { animation: doneGlow 2.1s ease-in-out 3; }
+  @keyframes doneGlow {
+    0%,100% { box-shadow: var(--shadow); background: var(--card); }
+    40% { box-shadow: 0 0 0 2px rgba(143,162,136,.55), 0 24px 60px -14px rgba(143,162,136,.8); background: rgba(143,162,136,.18); }
+  }
+  .ring__bar.is-done { stroke-width: 8; animation: ringPulse 2.1s ease-in-out 3; }
+  @keyframes ringPulse { 0%,100% { opacity: 1; } 50% { opacity: .4; } }
+
+  /* プリセット */
+  .presets { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin: 22px 0 6px; }
+  .preset {
+    font-family: inherit; font-size: 14px; letter-spacing: 0.08em;
+    color: var(--ink-soft); background: transparent;
+    border: 1px solid var(--line); border-radius: 999px; padding: 8px 18px; cursor: pointer;
+    transition: all .3s;
+  }
+  .preset:hover { border-color: var(--accent); color: var(--ink); }
+  .preset.is-active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* 操作ボタン */
+  .controls { display: flex; justify-content: center; gap: 14px; margin-top: 22px; }
+  .btn {
+    font-family: inherit; font-size: 15px; letter-spacing: 0.18em; cursor: pointer;
+    border-radius: 999px; padding: 13px 30px; transition: all .3s; border: 1px solid var(--accent);
+  }
+  .btn--primary { background: var(--accent); color: #fff; }
+  .btn--primary:hover { background: var(--accent-deep); border-color: var(--accent-deep); }
+  .btn--ghost { background: transparent; color: var(--ink-soft); border-color: var(--line); }
+  .btn--ghost:hover { border-color: var(--accent); color: var(--ink); }
+
+  /* メトロノーム */
+  .metro__dot-row { display: flex; justify-content: center; margin: 4px 0 18px; }
+  .metro__dot {
+    width: 18px; height: 18px; border-radius: 50%;
+    background: rgba(60,56,51,0.14); transition: transform .08s ease, background .08s ease;
+  }
+  .metro__dot.is-beat { background: var(--accent); transform: scale(1.7); }
+  .metro__dot.is-on { background: var(--accent); box-shadow: 0 0 18px var(--accent); animation: breathe 3.6s ease-in-out infinite; }
+  @keyframes breathe { 0%,100% { transform: scale(1); opacity: .85; } 50% { transform: scale(1.35); opacity: 1; } }
+
+  .bpm { text-align: center; }
+  .bpm__num { font-family: "Cormorant Garamond", serif; font-weight: 300; font-size: 56px; line-height: 1; color: var(--ink); }
+  .bpm__unit { font-size: 12px; letter-spacing: 0.3em; color: var(--ink-faint); margin-top: 2px; }
+
+  .bpm__adjust { display: flex; align-items: center; justify-content: center; gap: 18px; margin: 18px 0 6px; }
+  .step {
+    width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--line);
+    background: transparent; color: var(--ink-soft); font-size: 22px; cursor: pointer; transition: all .3s;
+    display: flex; align-items: center; justify-content: center; line-height: 1;
+  }
+  .step:hover { border-color: var(--accent); color: var(--ink); }
+
+  .bpm__presets { display: flex; justify-content: center; gap: 10px; margin: 16px 0 6px; }
+
+  /* 積み上げ記録 */
+  .stats { display: flex; justify-content: center; gap: clamp(20px, 7vw, 40px); margin: 6px 0 2px; }
+  .stat { text-align: center; }
+  .stat__num { font-family: "Cormorant Garamond", serif; font-weight: 300; font-size: clamp(28px, 8vw, 36px); color: var(--ink); line-height: 1; }
+  .stat__label { margin-top: 8px; font-size: 11px; color: var(--ink-soft); letter-spacing: 0.18em; }
+  .rec-msg { text-align: center; margin-top: 18px; font-size: 13px; letter-spacing: 0.16em; color: var(--accent-deep); min-height: 18px; }
+
+  /* 音楽（各自のリンク） */
+  .music-input {
+    width: 100%; font-family: inherit; font-size: 15px; color: var(--ink);
+    background: rgba(255,255,255,0.65); border: 1px solid var(--line); border-radius: 10px;
+    padding: 13px 16px; letter-spacing: 0.03em; text-align: center;
+  }
+  .music-input::placeholder { color: var(--ink-faint); }
+  .music-input:focus { outline: none; border-color: var(--accent); }
+  .embed { position: relative; width: 100%; padding-top: 56.25%; margin-top: 18px; border-radius: 10px; overflow: hidden; box-shadow: var(--shadow); }
+  .embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .music-audio { width: 100%; margin-top: 18px; }
+  .hint { text-align: center; font-size: 12px; color: var(--ink-faint); margin-top: 14px; letter-spacing: 0.06em; line-height: 1.7; }
+
+  /* 音楽の再生中は、メトロノーム/528Hzを「お休み」状態に */
+  .muted-note { display: none; text-align: center; font-size: 12px; letter-spacing: 0.2em; color: var(--ink-faint); margin: -8px 0 16px; }
+  .card.is-muted .muted-note { display: block; }
+  .card.is-muted .metro__dot-row,
+  .card.is-muted .bpm,
+  .card.is-muted .bpm__adjust,
+  .card.is-muted .bpm__presets,
+  .card.is-muted .controls { opacity: 0.35; pointer-events: none; filter: grayscale(0.3); transition: opacity .4s; }
+
+  .foot { text-align: center; padding: 30px 0 56px; }
+  .foot__title { font-family: "Cormorant Garamond", serif; font-weight: 300; font-size: 20px; letter-spacing: 0.3em; color: var(--ink-soft); }
+
+  @media (max-width: 400px) {
+    .ring-wrap { width: 210px; height: 210px; }
+    .time__num { font-size: 50px; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <a class="back" href="../index.html">← Be Grace</a>
+    </div>
+
+    <div class="head">
+      <div class="head__name">體</div>
+      <div class="head__copy">整える、リセット習慣</div>
+      <div class="head__line"></div>
+    </div>
+
+    <!-- ===== タイマー ===== -->
+    <section class="card" id="timerCard">
+      <div class="card__label">Timer</div>
+      <div class="card__ja">今日の運動・30分</div>
+
+      <div class="ring-wrap">
+        <svg class="ring" width="240" height="240" viewBox="0 0 240 240">
+          <circle class="ring__bg"  cx="120" cy="120" r="110"></circle>
+          <circle class="ring__bar" id="ringBar" cx="120" cy="120" r="110"></circle>
+        </svg>
+        <div class="time">
+          <div class="time__num" id="timeNum">30:00</div>
+          <div class="time__state" id="timeState"></div>
+        </div>
+      </div>
+
+      <div class="presets" id="presets">
+        <button class="preset" data-min="5">5分</button>
+        <button class="preset" data-min="10">10分</button>
+        <button class="preset" data-min="20">20分</button>
+        <button class="preset is-active" data-min="30">30分</button>
+      </div>
+
+      <div class="controls">
+        <button class="btn btn--primary" id="startBtn">スタート</button>
+        <button class="btn btn--ghost" id="resetBtn">リセット</button>
+      </div>
+    </section>
+
+    <!-- ===== 積み上げ記録 ===== -->
+    <section class="card">
+      <div class="card__label">Record</div>
+      <div class="card__ja">積み上げ・続けた証</div>
+
+      <div class="stats">
+        <div class="stat"><div class="stat__num" id="recToday">0</div><div class="stat__label">今日（分）</div></div>
+        <div class="stat"><div class="stat__num" id="recTotal">0分</div><div class="stat__label">これまで</div></div>
+        <div class="stat"><div class="stat__num" id="recDays">0</div><div class="stat__label">続けた日数</div></div>
+      </div>
+      <div class="rec-msg" id="recMsg"></div>
+    </section>
+
+    <!-- ===== 528Hz 癒しの音 ===== -->
+    <section class="card" id="toneCard">
+      <div class="card__label">Healing Tone</div>
+      <div class="card__ja">528Hz・癒しの響き</div>
+      <div class="muted-note">♪ 音楽中はお休み</div>
+
+      <div class="metro__dot-row"><div class="metro__dot" id="toneDot"></div></div>
+
+      <div class="controls">
+        <button class="btn btn--primary" id="toneBtn">スタート</button>
+      </div>
+    </section>
+
+    <!-- ===== 音楽（各自のリンク） ===== -->
+    <section class="card">
+      <div class="card__label">Music</div>
+      <div class="card__ja">好きな音楽を流す（各自）</div>
+
+      <input class="music-input" id="musicInput" type="text" inputmode="url"
+             placeholder="YouTubeなどのリンクを貼る" />
+      <div class="controls">
+        <button class="btn btn--primary" id="musicSet">セット</button>
+        <button class="btn btn--ghost" id="musicClear">消す</button>
+      </div>
+      <div id="musicPlayer"></div>
+    </section>
+
+    <!-- ===== メトロノーム ===== -->
+    <section class="card" id="metroCard">
+      <div class="card__label">Metronome</div>
+      <div class="card__ja">リズムを刻む</div>
+      <div class="muted-note">♪ 音楽中はお休み</div>
+
+      <div class="metro__dot-row"><div class="metro__dot" id="metroDot"></div></div>
+
+      <div class="bpm">
+        <div class="bpm__num" id="bpmNum">128</div>
+        <div class="bpm__unit">BPM</div>
+      </div>
+
+      <div class="bpm__adjust">
+        <button class="step" id="bpmDown" aria-label="テンポを下げる">−</button>
+        <button class="step" id="bpmUp" aria-label="テンポを上げる">＋</button>
+      </div>
+
+      <div class="bpm__presets" id="bpmPresets">
+        <button class="preset is-active" data-bpm="128">128</button>
+        <button class="preset" data-bpm="140">140</button>
+      </div>
+
+      <div class="controls">
+        <button class="btn btn--primary" id="metroBtn">スタート</button>
+      </div>
+    </section>
+
+    <div class="foot"><div class="foot__title">Be Grace</div></div>
+  </div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ===== 共通：音（Web Audio。ファイル不要・オフラインでも鳴る） =====
+  var actx = null;
+  function audio() {
+    if (!actx) {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      actx = new AC();
+      // 音が止められたら、戻ってきたときに鳴らし直せるよう復帰させる
+      actx.onstatechange = function () { if (actx.state === "suspended") actx.resume(); };
+      document.addEventListener("visibilitychange", function () {
+        if (!document.hidden && actx && actx.state === "suspended") actx.resume();
+      });
+      document.addEventListener("touchstart", function () {
+        if (actx && actx.state === "suspended") actx.resume();
+      }, { passive: true });
+    }
+    if (actx.state === "suspended") actx.resume();
+    return actx;
+  }
+  // やさしいベル（タイマー終了用）— ゆっくり立ち上がって、長くやわらかく消える
+  function chime() {
+    var ctx = audio(), t = ctx.currentTime;
+    // 528Hz とその5度上を、そっと重ねた穏やかな音
+    [528, 792].forEach(function (f, i) {
+      var o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = "sine"; o.frequency.value = f;
+      var peak = i === 0 ? 0.11 : 0.05;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.linearRampToValueAtTime(peak, t + 0.5);   // 0.5秒かけてふわっと（急に鳴らない）
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 3.4); // ゆっくり消えていく
+      o.connect(g).connect(ctx.destination);
+      o.start(t); o.stop(t + 3.5);
+    });
+  }
+  // メトロノームのクリック（木のカチッに近い自然な音）
+  var noiseBuf = null;
+  function getNoise(ctx) {
+    if (noiseBuf) return noiseBuf;
+    var len = Math.floor(ctx.sampleRate * 0.05);
+    noiseBuf = ctx.createBuffer(1, len, ctx.sampleRate);
+    var d = noiseBuf.getChannelData(0);
+    for (var i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    return noiseBuf;
+  }
+  function click(time, accent) {
+    var ctx = audio();
+    // やさしい「ポッ」だけ — サイン波ひとつ、なめらかな出だしと短い余韻
+    var o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = "sine";
+    o.frequency.value = 1000;
+    g.gain.setValueAtTime(0.0001, time);
+    g.gain.linearRampToValueAtTime(0.18, time + 0.006);
+    g.gain.exponentialRampToValueAtTime(0.0001, time + 0.06);
+    o.connect(g).connect(ctx.destination);
+    o.start(time); o.stop(time + 0.07);
+  }
+
+  // ===== タイマー =====
+  var CIRC = 2 * Math.PI * 110;
+  var ringBar = document.getElementById("ringBar");
+  ringBar.style.strokeDasharray = CIRC;
+  ringBar.style.strokeDashoffset = 0;
+
+  var timeNum = document.getElementById("timeNum");
+  var timeState = document.getElementById("timeState");
+  var startBtn = document.getElementById("startBtn");
+  var resetBtn = document.getElementById("resetBtn");
+  var timerCard = document.getElementById("timerCard");
+
+  function clearDoneCue() {
+    timeState.classList.remove("is-done");
+    timeNum.classList.remove("is-done");
+    timerCard.classList.remove("is-done");
+    ringBar.classList.remove("is-done");
+  }
+  function showDoneCue() {
+    timeState.classList.add("is-done");
+    timeNum.classList.add("is-done");
+    timerCard.classList.add("is-done");
+    ringBar.classList.add("is-done");
+    ringBar.style.strokeDashoffset = 0;   // リングが緑で“完成”する
+  }
+
+  var totalSec = 30 * 60;
+  var remain = totalSec;
+  var running = false;
+  var endAt = 0;     // 終了予定の時刻(ms)
+  var tick = null;
+  var segStart = remain;  // この運動区間を始めたときの残り秒
+
+  function fmt(s) {
+    var m = Math.floor(s / 60), ss = s % 60;
+    return m + ":" + (ss < 10 ? "0" : "") + ss;
+  }
+  function render() {
+    timeNum.textContent = fmt(remain);
+    var ratio = totalSec === 0 ? 0 : remain / totalSec;
+    ringBar.style.strokeDashoffset = CIRC * (1 - ratio);
+  }
+  function setTotal(min) {
+    stop();                       // 走っていれば、やった分を先に記録
+    totalSec = min * 60; remain = totalSec; segStart = remain;
+    clearDoneCue(); timeState.textContent = ""; render();
+  }
+  function update() {
+    remain = Math.max(0, Math.round((endAt - Date.now()) / 1000));
+    render();
+    if (remain <= 0) {
+      stop(); chime();            // stop()の中で「やった分」を積み上げ
+      timeState.textContent = "整いました🩶";
+      showDoneCue();              // 音が鳴らなくても、見てわかる合図
+    }
+  }
+  function start() {
+    if (running || remain <= 0) return;
+    audio();
+    running = true;
+    segStart = remain;            // 区間の開始点を記録
+    clearDoneCue();
+    endAt = Date.now() + remain * 1000;
+    startBtn.textContent = "一時停止";
+    timeState.textContent = "運動中";
+    tick = setInterval(update, 250);
+  }
+  function stop() {
+    if (running) {                // 動いていた分だけ積み上げる
+      var done = segStart - remain;
+      if (done > 0) addSeconds(done);
+      segStart = remain;
+    }
+    running = false;
+    if (tick) { clearInterval(tick); tick = null; }
+    startBtn.textContent = "スタート";
+  }
+  startBtn.addEventListener("click", function () {
+    if (running) { stop(); timeState.textContent = "一時停止中"; }
+    else { start(); }
+  });
+  resetBtn.addEventListener("click", function () {
+    stop(); remain = totalSec; segStart = remain;
+    clearDoneCue(); timeState.textContent = ""; render();
+  });
+  document.getElementById("presets").addEventListener("click", function (e) {
+    var b = e.target.closest(".preset"); if (!b) return;
+    [].forEach.call(this.children, function (c) { c.classList.remove("is-active"); });
+    b.classList.add("is-active");
+    setTotal(parseInt(b.dataset.min, 10));
+  });
+  render();
+
+  // ===== 積み上げ記録（この端末に保存） =====
+  var LS = window.localStorage;
+  var recToday = document.getElementById("recToday");
+  var recTotal = document.getElementById("recTotal");
+  var recDays  = document.getElementById("recDays");
+  var recMsg   = document.getElementById("recMsg");
+
+  function todayStr() {
+    var d = new Date();
+    return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+  }
+  function hm(sec) {
+    var m = Math.floor(sec / 60);
+    if (m < 1) return "0分";
+    if (m < 60) return m + "分";
+    var h = Math.floor(m / 60), mm = m % 60;
+    return h + "時間" + (mm ? mm + "分" : "");
+  }
+  var totalSecRec = parseInt(LS.getItem("bg_karada_total") || "0", 10);
+  var daysArr = [];
+  try { daysArr = JSON.parse(LS.getItem("bg_karada_days") || "[]"); } catch (e) { daysArr = []; }
+  var todaySecRec = (LS.getItem("bg_karada_today_date") === todayStr())
+    ? parseInt(LS.getItem("bg_karada_today_sec") || "0", 10) : 0;
+
+  function renderRecord() {
+    recToday.textContent = Math.floor(todaySecRec / 60);
+    recTotal.textContent = hm(totalSecRec);
+    recDays.textContent = daysArr.length;
+    recMsg.textContent = totalSecRec > 0 ? "よく続けています🩶" : "";
+  }
+  function addSeconds(sec) {
+    sec = Math.round(sec);
+    if (sec <= 0) return;
+    var t = todayStr();
+    totalSecRec += sec; LS.setItem("bg_karada_total", totalSecRec);
+    if (LS.getItem("bg_karada_today_date") !== t) {
+      LS.setItem("bg_karada_today_date", t); todaySecRec = 0;
+    }
+    todaySecRec += sec; LS.setItem("bg_karada_today_sec", todaySecRec);
+    if (daysArr.indexOf(t) < 0) { daysArr.push(t); LS.setItem("bg_karada_days", JSON.stringify(daysArr)); }
+    renderRecord();
+  }
+  renderRecord();
+
+  // ===== 音楽（各自のリンク・この端末に保存） =====
+  var musicInput  = document.getElementById("musicInput");
+  var musicPlayer = document.getElementById("musicPlayer");
+
+  function parseMusic(raw) {
+    var url = (raw || "").trim();
+    if (!url) return null;
+    var yt = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/|live\/))([\w-]{11})/);
+    var list = url.match(/[?&]list=([\w-]+)/);
+    if (yt || (list && /youtu\.?be/.test(url))) {
+      var src;
+      if (yt && list) src = "https://www.youtube.com/embed/" + yt[1] + "?list=" + list[1];
+      else if (yt)    src = "https://www.youtube.com/embed/" + yt[1];
+      else            src = "https://www.youtube.com/embed/videoseries?list=" + list[1];
+      return { type: "yt", src: src };
+    }
+    if (/\.(mp3|m4a|ogg|wav|aac)(\?.*)?$/i.test(url)) return { type: "audio", src: url };
+    return { type: "unknown", src: url };
+  }
+  var toneCard = document.getElementById("toneCard");
+  var metroCard = document.getElementById("metroCard");
+  function enterMusicMode() {
+    // 音楽中は、音を出す2つ（メトロノーム・528Hz）をお休みにする
+    if (typeof metroOn !== "undefined" && metroOn) metroStop();
+    if (typeof toneOn !== "undefined" && toneOn) toneStop();
+    toneCard.classList.add("is-muted");
+    metroCard.classList.add("is-muted");
+  }
+  function exitMusicMode() {
+    toneCard.classList.remove("is-muted");
+    metroCard.classList.remove("is-muted");
+  }
+
+  function renderMusic(raw) {
+    musicPlayer.innerHTML = "";
+    var info = parseMusic(raw);
+    if (!info) { exitMusicMode(); return; }
+    if (info.type === "unknown") { /* 再生不可は通常表示のまま */ }
+    else { enterMusicMode(); }
+    if (info.type === "yt") {
+      var box = document.createElement("div"); box.className = "embed";
+      var f = document.createElement("iframe");
+      f.src = info.src; f.loading = "lazy"; f.allowFullscreen = true;
+      f.setAttribute("allow", "autoplay; encrypted-media; picture-in-picture");
+      box.appendChild(f); musicPlayer.appendChild(box);
+    } else if (info.type === "audio") {
+      var a = document.createElement("audio");
+      a.className = "music-audio"; a.controls = true; a.src = info.src;
+      musicPlayer.appendChild(a);
+    } else {
+      var p = document.createElement("p"); p.className = "hint";
+      p.textContent = "このリンクは再生できないかもしれません。YouTubeのリンク、または mp3 などの音声リンクを貼ってください。";
+      musicPlayer.appendChild(p);
+    }
+  }
+  document.getElementById("musicSet").addEventListener("click", function () {
+    var v = musicInput.value.trim();
+    if (!v) return;
+    LS.setItem("bg_karada_music", v);
+    renderMusic(v);
+  });
+  document.getElementById("musicClear").addEventListener("click", function () {
+    LS.removeItem("bg_karada_music");
+    musicInput.value = "";
+    musicPlayer.innerHTML = "";
+    exitMusicMode();
+  });
+  var savedMusic = LS.getItem("bg_karada_music");
+  if (savedMusic) { musicInput.value = savedMusic; renderMusic(savedMusic); }
+
+  // ===== 528Hz 癒しの音（純粋な正弦波・なめらかに出入り） =====
+  var toneOn = false, toneOsc = null, toneGain = null;
+  var toneBtn = document.getElementById("toneBtn");
+  var toneDot = document.getElementById("toneDot");
+
+  function toneStart() {
+    var ctx = audio();
+    toneGain = ctx.createGain();
+    toneGain.gain.setValueAtTime(0.0001, ctx.currentTime);
+    toneGain.gain.linearRampToValueAtTime(0.07, ctx.currentTime + 1.6); // ふわっと立ち上げ（控えめ）
+    toneOsc = ctx.createOscillator();
+    toneOsc.type = "sine";
+    toneOsc.frequency.value = 528;                                       // 正確に528Hz
+    toneOsc.connect(toneGain).connect(ctx.destination);
+    toneOsc.start();
+    toneOn = true;
+    toneBtn.textContent = "ストップ";
+    toneBtn.classList.remove("btn--primary"); toneBtn.classList.add("btn--ghost");
+    toneDot.classList.add("is-on");
+  }
+  function toneStop() {
+    var ctx = audio();
+    if (toneGain) {
+      toneGain.gain.cancelScheduledValues(ctx.currentTime);
+      toneGain.gain.setValueAtTime(toneGain.gain.value, ctx.currentTime);
+      toneGain.gain.linearRampToValueAtTime(0.0001, ctx.currentTime + 0.7); // ふわっと消す
+    }
+    if (toneOsc) { toneOsc.stop(ctx.currentTime + 0.8); toneOsc = null; }
+    toneOn = false;
+    toneBtn.textContent = "スタート";
+    toneBtn.classList.add("btn--primary"); toneBtn.classList.remove("btn--ghost");
+    toneDot.classList.remove("is-on");
+  }
+  toneBtn.addEventListener("click", function () { toneOn ? toneStop() : toneStart(); });
+
+  // ===== メトロノーム =====
+  var bpm = 128;
+  var metroOn = false;
+  var nextNote = 0;       // 次の拍の時刻(秒)
+  var beat = 0;
+  var sched = null;
+  var bpmNum = document.getElementById("bpmNum");
+  var metroBtn = document.getElementById("metroBtn");
+  var metroDot = document.getElementById("metroDot");
+
+  function flashDot() {
+    metroDot.classList.add("is-beat");
+    setTimeout(function () { metroDot.classList.remove("is-beat"); }, 90);
+  }
+  function scheduler() {
+    var ctx = audio();
+    while (nextNote < ctx.currentTime + 0.1) {
+      // すべて同じ音（均一）— アクセントなし
+      click(nextNote, false);
+      // 画面の光は、その拍の時刻に合わせて点ける
+      var delay = (nextNote - ctx.currentTime) * 1000;
+      setTimeout(flashDot, Math.max(0, delay));
+      nextNote += 60 / bpm;
+    }
+  }
+  function metroStart() {
+    var ctx = audio();
+    metroOn = true; beat = 0;
+    nextNote = ctx.currentTime + 0.06;
+    metroBtn.textContent = "ストップ";
+    metroBtn.classList.remove("btn--primary"); metroBtn.classList.add("btn--ghost");
+    sched = setInterval(scheduler, 25);
+  }
+  function metroStop() {
+    metroOn = false;
+    if (sched) { clearInterval(sched); sched = null; }
+    metroBtn.textContent = "スタート";
+    metroBtn.classList.add("btn--primary"); metroBtn.classList.remove("btn--ghost");
+  }
+  function setBpm(v) {
+    bpm = Math.min(208, Math.max(40, v));
+    bpmNum.textContent = bpm;
+    [].forEach.call(document.querySelectorAll("#bpmPresets .preset"), function (c) {
+      c.classList.toggle("is-active", parseInt(c.dataset.bpm, 10) === bpm);
+    });
+  }
+  metroBtn.addEventListener("click", function () { metroOn ? metroStop() : metroStart(); });
+  document.getElementById("bpmUp").addEventListener("click", function () { setBpm(bpm + 1); });
+  document.getElementById("bpmDown").addEventListener("click", function () { setBpm(bpm - 1); });
+  document.getElementById("bpmPresets").addEventListener("click", function (e) {
+    var b = e.target.closest(".preset"); if (!b) return;
+    setBpm(parseInt(b.dataset.bpm, 10));
+  });
+  setBpm(128);
+})();
+</script>
+</body>
+</html>

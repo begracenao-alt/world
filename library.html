@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ライブラリー｜Be Grace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ivory: #f6f1e9; --ivory-deep: #ece3d6;
+    --ink: #3c3833; --ink-soft: #6b645b; --ink-faint: #9a9286;
+    --gold: #b0966a; --line: rgba(60,56,51,0.10);
+    --card: rgba(255,255,255,0.55); --accent: #b0966a; --accent-deep: #927742;
+    --shadow: 0 18px 50px -28px rgba(70,60,45,0.45);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+    color: var(--ink); min-height: 100vh; line-height: 1.95; letter-spacing: 0.04em;
+    background: radial-gradient(120% 80% at 50% -10%, #fbf8f2 0%, rgba(251,248,242,0) 55%),
+                linear-gradient(180deg, var(--ivory) 0%, var(--ivory-deep) 100%);
+    background-attachment: fixed; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { width: 100%; max-width: 640px; margin: 0 auto; padding: 0 22px; }
+  .top { padding: 26px 0 8px; }
+  .back { display: inline-flex; align-items: center; gap: 8px; font-family: "Cormorant Garamond", serif;
+    font-style: italic; font-size: 15px; letter-spacing: 0.12em; color: var(--ink-soft); text-decoration: none; transition: color .3s; }
+  .back:hover { color: var(--ink); }
+
+  .head { text-align: center; padding: 28px 0 6px; }
+  .head__en { font-family: "Cormorant Garamond", serif; font-style: italic; font-weight: 300; font-size: 15px; letter-spacing: 0.3em; color: var(--gold); text-transform: uppercase; }
+  .head__name { margin-top: 8px; font-size: clamp(32px, 9vw, 44px); font-weight: 500; letter-spacing: 0.16em; }
+  .head__line { width: 1px; height: 40px; margin: 18px auto 0; background: linear-gradient(180deg, transparent, var(--accent), transparent); opacity: .7; }
+
+  .lead { text-align: center; font-size: 15px; color: var(--ink-soft); letter-spacing: 0.08em; margin: 30px auto 36px; max-width: 480px; }
+
+  /* 本棚（カテゴリ）— 中身はこれから */
+  .shelf { margin: 0 0 30px; }
+  .shelf__title { display: flex; align-items: baseline; gap: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+  .shelf__en { font-family: "Cormorant Garamond", serif; font-style: italic; font-weight: 300; font-size: 22px; letter-spacing: 0.16em; color: var(--ink); }
+  .shelf__ja { font-size: 12px; letter-spacing: 0.34em; color: var(--ink-faint); }
+  .shelf__empty { margin-top: 18px; font-size: 13px; letter-spacing: 0.12em; color: var(--ink-faint); }
+  .shelf__empty::before { content: "—"; margin-right: 12px; color: var(--gold); }
+
+  .shelf__list { margin-top: 18px; }
+  .shelf__item { margin-bottom: 24px; }
+  .shelf__item-title { font-size: 14px; font-weight: 500; letter-spacing: 0.06em; margin-bottom: 9px; color: var(--ink); }
+  .embed { position: relative; width: 100%; padding-top: 56.25%; border-radius: 10px; overflow: hidden; box-shadow: var(--shadow); }
+  .embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  audio.snd { width: 100%; }
+
+  .foot { text-align: center; padding: 30px 0 56px; }
+  .foot__title { font-family: "Cormorant Garamond", serif; font-weight: 300; font-size: 20px; letter-spacing: 0.3em; color: var(--ink-soft); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top"><a class="back" href="index.html">← Be Grace</a></div>
+
+    <div class="head">
+      <div class="head__name">Library</div>
+      <div class="head__line"></div>
+    </div>
+
+    <p class="lead">すきなときに、どうぞ🩶</p>
+
+    <!-- ひとつの場所。動画・ホームページ・Googleの資料など、なんでも一緒に -->
+    <section class="shelf">
+      <div class="shelf__list" id="allList"></div>
+    </section>
+
+    <div class="foot"><div class="foot__title">Be Grace</div></div>
+  </div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* =========================================================
+     ▼▼▼ ここに足す（みんなに表示されます）▼▼▼
+     ITEMS に { title, url } を1行足すだけ。種類は自動で見分けて表示します。
+       ・動画         … Vimeo（動画／ショーケース）・YouTube
+       ・ホームページ … そのままURL（「ひらく →」で開く）
+       ・Google       … スライド／ドキュメント／スプレッドシート／フォーム／ドライブ
+       ・音声         … .mp3 などの音声ファイル
+     ★Vimeoは「ショーケース」を入れておけば、以後はVimeo側に足すだけで自動更新。
+     ★Googleは、中身を書き換えれば、URLそのままで最新が反映されます。
+       （Googleは「リンクを知っている全員が閲覧可」に設定してください）
+     空のときは「これから加えていきます」と静かに表示します。
+     ========================================================= */
+  var ITEMS = [
+    { title: "Be Grace Collection", url: "https://docs.google.com/spreadsheets/d/1ZYR1z2FgePip_96r4oY2Jw4xJEhBO_mBbaa12z6ErJs/edit?usp=sharing" },
+    // ここに1行足すだけ：{ title: "（名前）", url: "（動画・HP・Googleなどのリンク）" },
+  ];
+  /* ▲▲▲ ここまで ▲▲▲ */
+
+  function parseMedia(raw) {
+    var url = (raw || "").trim();
+    if (!url) return null;
+    var yt = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/|live\/))([\w-]{11})/);
+    var list = url.match(/[?&]list=([\w-]+)/);
+    if (yt || (list && /youtu\.?be/.test(url))) {
+      var src;
+      if (yt && list) src = "https://www.youtube.com/embed/" + yt[1] + "?list=" + list[1];
+      else if (yt)    src = "https://www.youtube.com/embed/" + yt[1];
+      else            src = "https://www.youtube.com/embed/videoseries?list=" + list[1];
+      return { type: "yt", src: src };
+    }
+    var vshow = url.match(/vimeo\.com\/showcase\/(\d+)/);
+    if (vshow) return { type: "yt", src: "https://vimeo.com/showcase/" + vshow[1] + "/embed" };
+    var vid = url.match(/(?:player\.)?vimeo\.com\/(?:video\/)?(\d+)(?:\/(\w+))?/);
+    if (vid) {
+      var vh = url.match(/[?&]h=(\w+)/);
+      var hash = vid[2] || (vh ? vh[1] : "");
+      return { type: "yt", src: "https://player.vimeo.com/video/" + vid[1] + (hash ? "?h=" + hash : "") };
+    }
+    // Google スライド → そのまま埋め込み表示
+    var gslide = url.match(/docs\.google\.com\/presentation\/d\/([\w-]+)/);
+    if (gslide) return { type: "yt", src: "https://docs.google.com/presentation/d/" + gslide[1] + "/embed?start=false&loop=false&delayms=5000" };
+    // Google ドライブのファイル（PDF・画像・動画など） → プレビュー埋め込み
+    var gdrive = url.match(/drive\.google\.com\/file\/d\/([\w-]+)/);
+    if (gdrive) return { type: "yt", src: "https://drive.google.com/file/d/" + gdrive[1] + "/preview" };
+    // Google ドキュメント / スプレッドシート / フォーム → 「資料をひらく」
+    if (/docs\.google\.com\/(document|spreadsheets|forms)\//.test(url) || /forms\.gle\//.test(url)) return { type: "link", src: url, label: "ひらく" };
+    // Google ドライブのフォルダ → ひらくと中の最新ファイル一覧へ
+    if (/drive\.google\.com\/drive\/.*folders\//.test(url)) return { type: "link", src: url, label: "ひらく" };
+    if (/\.(mp3|m4a|ogg|wav|aac)(\?.*)?$/i.test(url)) return { type: "audio", src: url };
+    return { type: "link", src: url, label: "ひらく" };
+  }
+
+  function mediaNode(it) {
+    var box = document.createElement("div"); box.className = "shelf__item";
+    if (it.title) {
+      var t = document.createElement("div"); t.className = "shelf__item-title"; t.textContent = it.title;
+      box.appendChild(t);
+    }
+    var info = parseMedia(it.url);
+    if (!info) return box;
+    if (info.type === "yt") {
+      var e = document.createElement("div"); e.className = "embed";
+      var f = document.createElement("iframe");
+      f.src = info.src; f.loading = "lazy"; f.allowFullscreen = true;
+      f.setAttribute("allow", "autoplay; encrypted-media; picture-in-picture");
+      e.appendChild(f); box.appendChild(e);
+    } else if (info.type === "audio") {
+      var a = document.createElement("audio"); a.className = "snd"; a.controls = true; a.src = info.src;
+      box.appendChild(a);
+    } else {
+      var lk = document.createElement("a"); lk.href = info.src; lk.target = "_blank"; lk.rel = "noopener";
+      lk.textContent = (info.label || "ひらく") + " →";
+      lk.style.cssText = "color:var(--accent-deep);text-decoration:underline;text-underline-offset:3px";
+      box.appendChild(lk);
+    }
+    return box;
+  }
+
+  function fill(id, arr) {
+    var box = document.getElementById(id);
+    var items = (arr || []).filter(function (it) { return it && it.url; });
+    if (!items.length) {
+      var e = document.createElement("div"); e.className = "shelf__empty";
+      e.textContent = "これから加えていきます";
+      box.appendChild(e); return;
+    }
+    items.forEach(function (it) { box.appendChild(mediaNode(it)); });
+  }
+  fill("allList", ITEMS);
+})();
+</script>
+</body>
+</html>

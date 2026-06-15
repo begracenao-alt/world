@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>潜在意識｜Be Grace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ivory: #f6f1e9;
+    --ivory-deep: #ece3d6;
+    --ink: #3c3833;
+    --ink-soft: #6b645b;
+    --ink-faint: #9a9286;
+    --gold: #b0966a;
+    --line: rgba(60, 56, 51, 0.10);
+    --card: rgba(255, 255, 255, 0.6);
+    --accent: #7f8aa6;       /* 潜在意識 — 奥の藍 */
+    --accent-deep: #5f6a86;
+    --accent-soft: rgba(127, 138, 166, 0.12);
+    --shadow: 0 18px 50px -28px rgba(70, 60, 45, 0.45);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+    color: var(--ink);
+    background:
+      radial-gradient(120% 80% at 50% -10%, #fbf8f2 0%, rgba(251,248,242,0) 55%),
+      linear-gradient(180deg, var(--ivory) 0%, var(--ivory-deep) 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    line-height: 1.9;
+    letter-spacing: 0.04em;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { width: 100%; max-width: 640px; margin: 0 auto; padding: 0 22px; }
+
+  /* ヘッダー */
+  .top { padding: 26px 0 8px; }
+  .back {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: "Cormorant Garamond", serif; font-style: italic;
+    font-size: 15px; letter-spacing: 0.12em; color: var(--ink-soft);
+    text-decoration: none; transition: color .3s; background: none; border: none; cursor: pointer;
+  }
+  .back:hover { color: var(--ink); }
+
+  .head { text-align: center; padding: 22px 0 6px; }
+  .head__name { font-size: clamp(38px, 10vw, 56px); font-weight: 500; letter-spacing: 0.18em; }
+  .head__copy { margin-top: 10px; font-size: 14px; letter-spacing: 0.22em; color: var(--ink-soft); }
+  .head__line { width: 1px; height: 36px; margin: 16px auto 0;
+    background: linear-gradient(180deg, transparent, var(--accent), transparent); opacity: .7; }
+
+  /* カード共通 */
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 6px;
+    box-shadow: var(--shadow); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    padding: clamp(26px, 6vw, 38px) clamp(22px, 5vw, 32px);
+    margin: 22px 0;
+  }
+  .card__label {
+    text-align: center; font-family: "Cormorant Garamond", serif; font-style: italic;
+    font-size: 14px; letter-spacing: 0.28em; color: var(--accent-deep); text-transform: uppercase;
+  }
+  .card__ja { text-align: center; font-size: 13px; letter-spacing: 0.30em; color: var(--ink-faint); margin-top: 6px; }
+
+  /* ボタン */
+  .controls { display: flex; justify-content: center; gap: 14px; margin-top: 24px; flex-wrap: wrap; }
+  .btn {
+    font-family: inherit; font-size: 15px; letter-spacing: 0.16em; cursor: pointer;
+    border-radius: 999px; padding: 13px 30px; transition: all .3s; border: 1px solid var(--accent);
+  }
+  .btn--primary { background: var(--accent); color: #fff; }
+  .btn--primary:hover { background: var(--accent-deep); border-color: var(--accent-deep); }
+  .btn--ghost { background: transparent; color: var(--ink-soft); border-color: var(--line); }
+  .btn--ghost:hover { border-color: var(--accent); color: var(--ink); }
+
+  .is-hidden { display: none !important; }
+
+  /* ===== 2つの入口（ゲート） ===== */
+  .gate { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+  @media (max-width: 480px) { .gate { grid-template-columns: 1fr; } }
+  .gate__card {
+    font-family: inherit;
+    display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px;
+    background: var(--card); border: 1px solid var(--line); border-radius: 6px;
+    box-shadow: var(--shadow); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    padding: clamp(28px, 7vw, 40px) 20px; cursor: pointer; color: inherit; text-decoration: none;
+    transition: transform .5s cubic-bezier(.2,.7,.2,1), background .4s ease, box-shadow .4s ease;
+  }
+  .gate__card:hover { transform: translateY(-6px); background: rgba(255,255,255,0.8);
+    box-shadow: 0 28px 60px -26px rgba(70, 60, 45, 0.5); }
+  .gate__en {
+    font-family: "Cormorant Garamond", serif; font-style: italic; font-weight: 300;
+    font-size: 15px; letter-spacing: 0.24em; color: var(--accent-deep); text-transform: uppercase;
+  }
+  .gate__ja { font-size: clamp(19px, 5vw, 22px); font-weight: 500; letter-spacing: 0.10em; }
+  .gate__copy { font-size: 12.5px; letter-spacing: 0.06em; color: var(--ink-soft); line-height: 1.7; }
+
+  /* ===== 診断：質問 ===== */
+  .quiz__progress { text-align: center; font-family: "Cormorant Garamond", serif; letter-spacing: 0.2em;
+    color: var(--ink-faint); font-size: 14px; margin-bottom: 8px; }
+  .quiz__bar { height: 3px; background: rgba(60,56,51,0.10); border-radius: 999px; overflow: hidden; margin-bottom: 26px; }
+  .quiz__bar-in { height: 100%; width: 0; background: var(--accent); transition: width .5s ease; border-radius: 999px; }
+  .quiz__q { text-align: center; font-size: clamp(18px, 4.8vw, 22px); font-weight: 500;
+    letter-spacing: 0.06em; line-height: 1.7; min-height: 64px; }
+  .quiz__opts { display: flex; flex-direction: column; gap: 12px; margin-top: 26px; }
+  .opt {
+    font-family: inherit; font-size: 15.5px; letter-spacing: 0.04em; line-height: 1.7; text-align: left;
+    color: var(--ink); background: rgba(255,255,255,0.55); border: 1px solid var(--line);
+    border-radius: 12px; padding: 16px 18px; cursor: pointer; transition: all .3s;
+  }
+  .opt:hover { border-color: var(--accent); background: rgba(255,255,255,0.85); transform: translateX(2px); }
+  .quiz__nav { display: flex; justify-content: center; margin-top: 22px; }
+
+  /* ===== 診断：結果 ===== */
+  .result__type { text-align: center; margin-bottom: 6px; }
+  .result__crown { font-family: "Cormorant Garamond", serif; font-style: italic; letter-spacing: 0.2em;
+    color: var(--accent-deep); font-size: 14px; text-transform: uppercase; }
+  .result__name { font-size: clamp(30px, 8vw, 42px); font-weight: 500; letter-spacing: 0.12em; margin-top: 8px; }
+  .result__lead { text-align: center; color: var(--ink-soft); font-size: 13.5px; letter-spacing: 0.08em;
+    margin-top: 10px; line-height: 1.8; }
+
+  .block { margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--line); }
+  .block:first-of-type { border-top: none; }
+  .block__h { display: flex; align-items: baseline; gap: 12px; margin-bottom: 12px; }
+  .block__en { font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 13px;
+    letter-spacing: 0.16em; color: var(--accent-deep); text-transform: uppercase; flex: none; }
+  .block__ja { font-size: 15px; letter-spacing: 0.10em; font-weight: 500; }
+  .block p { font-size: 14.5px; letter-spacing: 0.04em; line-height: 1.95; color: var(--ink); }
+  .block ul { list-style: none; margin-top: 6px; }
+  .block li { position: relative; padding-left: 20px; margin-bottom: 10px; font-size: 14.5px; line-height: 1.85; }
+  .block li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+
+  .grace { background: var(--accent-soft); border-radius: 8px; padding: 20px 20px; margin-top: 26px; }
+  .grace p { font-size: 14.5px; line-height: 2.1; letter-spacing: 0.06em; text-align: center; }
+
+  /* 関連コンテンツ（後から差し替え可能） */
+  .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .link-chip {
+    display: inline-flex; align-items: center; gap: 8px; font-family: inherit; font-size: 13.5px;
+    letter-spacing: 0.04em; color: var(--ink); background: rgba(255,255,255,0.6);
+    border: 1px solid var(--line); border-radius: 999px; padding: 9px 16px; cursor: pointer;
+    text-decoration: none; transition: all .3s;
+  }
+  .link-chip:hover { border-color: var(--accent); background: rgba(255,255,255,0.9); }
+  .link-chip__kind { font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 11px;
+    letter-spacing: 0.1em; color: var(--accent-deep); }
+  .link-chip.is-soon { opacity: 0.6; cursor: default; }
+  .link-chip.is-soon:hover { border-color: var(--line); background: rgba(255,255,255,0.6); }
+  .link-chip.is-soon::after { content: "準備中"; font-size: 11px; color: var(--ink-faint); letter-spacing: 0.08em; }
+
+  /* ===== 瞑想ルーム ===== */
+  .med { display: flex; flex-direction: column; gap: 16px; margin-top: 4px; }
+  .med__item { background: rgba(255,255,255,0.55); border: 1px solid var(--line); border-radius: 12px; padding: 18px 18px; }
+  .med__title { font-size: 16px; font-weight: 500; letter-spacing: 0.06em; }
+  .med__desc { font-size: 13px; color: var(--ink-soft); letter-spacing: 0.04em; margin-top: 4px; }
+  .med__action { margin-top: 14px; }
+  .med__btn {
+    font-family: inherit; font-size: 14px; letter-spacing: 0.12em; cursor: pointer;
+    border-radius: 999px; padding: 10px 22px; border: 1px solid var(--accent);
+    background: var(--accent); color: #fff; transition: all .3s; text-decoration: none; display: inline-block;
+  }
+  .med__btn:hover { background: var(--accent-deep); border-color: var(--accent-deep); }
+  .med__btn.is-soon { background: transparent; color: var(--ink-faint); border-color: var(--line); cursor: default; }
+  .med__player { margin-top: 14px; }
+  .embed { position: relative; width: 100%; padding-top: 56.25%; border-radius: 10px; overflow: hidden; box-shadow: var(--shadow); }
+  .embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .music-input {
+    width: 100%; font-family: inherit; font-size: 15px; color: var(--ink);
+    background: rgba(255,255,255,0.65); border: 1px solid var(--line); border-radius: 10px;
+    padding: 13px 16px; letter-spacing: 0.03em; text-align: center; margin-top: 20px;
+  }
+  .music-input::placeholder { color: var(--ink-faint); }
+  .music-input:focus { outline: none; border-color: var(--accent); }
+  .music-audio { width: 100%; margin-top: 18px; }
+  .hint { text-align: center; font-size: 12px; color: var(--ink-faint); margin-top: 14px; letter-spacing: 0.06em; line-height: 1.7; }
+  .med__empty { text-align: center; color: var(--ink-faint); font-size: 13px; letter-spacing: 0.08em;
+    line-height: 1.9; padding: 10px 0; }
+
+  .foot { text-align: center; padding: 30px 0 56px; }
+  .foot__title { font-family: "Cormorant Garamond", serif; font-weight: 300; font-size: 20px; letter-spacing: 0.3em; color: var(--ink-soft); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <a class="back" href="../index.html" id="topBack">← Be Grace</a>
+    </div>
+
+    <div class="head">
+      <div class="head__name">潜在意識</div>
+      <div class="head__copy">奥の静けさへ</div>
+      <div class="head__line"></div>
+    </div>
+
+    <!-- ============ 入口（2つのゲート） ============ -->
+    <section id="viewGate">
+      <div class="gate">
+        <button class="gate__card" id="goQuiz">
+          <span class="gate__en">Diagnosis</span>
+          <span class="gate__ja">自分に合う整え方診断</span>
+          <span class="gate__copy">今のあなたに合う方法へ</span>
+        </button>
+        <button class="gate__card" id="goMed">
+          <span class="gate__en">Meditation</span>
+          <span class="gate__ja">瞑想</span>
+          <span class="gate__copy">ただ、還る場所</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ============ 診断：質問 ============ -->
+    <section id="viewQuiz" class="is-hidden">
+      <div class="card">
+        <div class="card__label">Diagnosis</div>
+        <div class="card__ja">入口診断・どの方法で変化しやすい？</div>
+        <div style="margin-top:24px">
+          <div class="quiz__progress" id="quizProgress">1 / 7</div>
+          <div class="quiz__bar"><div class="quiz__bar-in" id="quizBar"></div></div>
+          <div class="quiz__q" id="quizQ"></div>
+          <div class="quiz__opts" id="quizOpts"></div>
+          <div class="quiz__nav">
+            <button class="btn btn--ghost is-hidden" id="quizBack2">← ひとつ戻る</button>
+          </div>
+        </div>
+      </div>
+      <div class="controls"><button class="back" id="quizExit">← 入口にもどる</button></div>
+    </section>
+
+    <!-- ============ 診断：結果 ============ -->
+    <section id="viewResult" class="is-hidden">
+      <div class="card" id="resultCard"></div>
+      <div class="controls">
+        <button class="btn btn--ghost" id="quizAgain">もう一度診断する</button>
+      </div>
+      <div class="controls" style="margin-top:14px"><button class="back" id="resultExit">← 入口にもどる</button></div>
+    </section>
+
+    <!-- ============ 瞑想ルーム ============ -->
+    <section id="viewMed" class="is-hidden">
+      <div class="card">
+        <div class="card__label">Meditation</div>
+        <div class="card__ja">瞑想ルーム・そのまま、ゆだねる</div>
+        <div class="med" id="medList" style="margin-top:24px"></div>
+      </div>
+
+      <!-- ===== 音楽（各自のリンク・この端末に保存） ===== -->
+      <div class="card">
+        <div class="card__label">Music</div>
+        <div class="card__ja">好きな音楽を流す（各自）</div>
+        <input class="music-input" id="musicInput" type="text" inputmode="url"
+               placeholder="YouTubeなどのリンクを貼る" />
+        <div class="controls">
+          <button class="btn btn--primary" id="musicSet">セット</button>
+          <button class="btn btn--ghost" id="musicClear">消す</button>
+        </div>
+        <div id="musicPlayer"></div>
+      </div>
+
+      <div class="controls"><button class="back" id="medExit">← 入口にもどる</button></div>
+    </section>
+
+    <div class="foot"><div class="foot__title">Be Grace</div></div>
+  </div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* =========================================================
+     ▼▼▼ 後から差し替え可能なコンテンツ（ここだけ編集すればOK） ▼▼▼
+     ========================================================= */
+
+  // 瞑想ルーム。後から自由に追加・差し替えできます（上から順に並びます）。
+  //   title : 表示名 ／ desc : ひとこと説明
+  //   url   : Googleスライド（瞑想のやり方）／ YouTube ／ 音声(.mp3等) など
+  //   ※ Googleスライドは「リンクを知っている全員が閲覧可」に設定。
+  //      中身をスライド側で増やせば、URLそのままでここも最新になります。
+  //   ※ 増やすときは、この下に1行 { title, desc, url } を足すだけ。
+  //   例（Googleスライド）:
+  //     { title: "瞑想のやり方", desc: "まずはここから", url: "https://docs.google.com/presentation/d/XXXX/edit" }
+  //   例（YouTube）:
+  //     { title: "はじめての瞑想", desc: "3分、呼吸に還る", url: "https://youtu.be/XXXXXXXXXXX" }
+  var MEDITATION = [
+    { title: "いろんな瞑想", desc: "今のあなたに合うものを", url: "https://docs.google.com/spreadsheets/d/1J6RlY0VR4hRyeqvgBt5dPFnuUCEr50ZmBG_QSPBoDOM/edit?usp=sharing" },
+  ];
+
+  // 診断結果の「つながる場所」。ここに書いた講座・動画・資料は “みんなに” 表示されます。
+  // 用途：講座のアーカイブ動画／そのタイプに合った書き換え方の資料など。
+  //   ・動画 … Vimeo（動画/ショーケース）・YouTube＝URLを貼るだけで自動埋め込み。
+  //   ・資料 … Google スライド／ドキュメント／シート／フォーム、Googleドライブのファイル（PDF等）。
+  //   ・差し替えは、その行のURLを書き換えるだけ。
+  //   ・★おすすめ：Vimeoでタイプごとに「ショーケース」を作り、そのURLを入れる。
+  //     以後はVimeoにアップ→ショーケースへ追加するだけでサイトも自動更新（システム不要・スマホだけ）。
+  //   ・★資料：中身はGoogle側で書き換えればURLそのままで最新が反映（全員が閲覧可に設定）。
+  //   ・空のタイプは「つながる場所」自体を出しません（準備中は出さない）。
+  //   例:
+  //   v: [
+  //     { title: "視覚タイプ｜講座", url: "https://vimeo.com/showcase/0000000" },
+  //     { title: "視覚タイプ｜書き換え方", url: "https://docs.google.com/document/d/XXXX/edit" }
+  //   ]
+  var LINKS = {
+    v: [
+      // { title: "", url: "" },
+    ],
+    a: [
+      // { title: "", url: "" },
+    ],
+    k: [
+      // { title: "", url: "" },
+    ]
+  };
+
+  /* ▲▲▲ 差し替え可能コンテンツ ここまで ▲▲▲ */
+
+
+  // ===== 診断の質問（VAK） =====
+  var QUESTIONS = [
+    { q: "何かを思い出すとき、まず浮かびやすいのは？", o: [
+      ["景色や人の顔など「映像」", "v"],
+      ["声や音、言葉のやりとり", "a"],
+      ["そのときの気持ちや體の感じ", "k"] ] },
+    { q: "新しいことを身につけるとき、しっくりくるのは？", o: [
+      ["見本や図を見ること", "v"],
+      ["説明を聞く・口に出すこと", "a"],
+      ["とりあえずやってみること", "k"] ] },
+    { q: "心地よいと感じる時間は？", o: [
+      ["きれいな景色や好きな映像を眺める", "v"],
+      ["音楽や心地よい声に包まれる", "a"],
+      ["お風呂や肌ざわり、體がゆるむ感覚", "k"] ] },
+    { q: "人と話すとき、つい気になるのは？", o: [
+      ["表情や身ぶり、見た目", "v"],
+      ["声のトーンや言葉選び", "a"],
+      ["その場の空気や距離感", "k"] ] },
+    { q: "迷ったとき、落ち着く整理のしかたは？", o: [
+      ["紙に書いて「見て」整理する", "v"],
+      ["誰かに話す・声に出す", "a"],
+      ["しっくりくるかを「感じて」決める", "k"] ] },
+    { q: "気分が上向くきっかけは？", o: [
+      ["美しいもの・好きな色を見たとき", "v"],
+      ["好きな音や、かけられた言葉", "a"],
+      ["心地よい感触や、體を動かすこと", "k"] ] },
+    { q: "つい使いやすい言葉は？", o: [
+      ["「見える」「イメージ」「明るい」", "v"],
+      ["「聞こえる」「響く」「しっくり来る」", "a"],
+      ["「感じる」「あたたかい」「ゆるむ」", "k"] ] },
+    { q: "誰かに何かを伝えるとき、自然に出るのは？", o: [
+      ["図や写真を見せる・絵に描く", "v"],
+      ["言葉をつくして、ていねいに話す", "a"],
+      ["まず動いて見せる・その場の空気で伝える", "k"] ] },
+    { q: "心が安らぐ場所は？", o: [
+      ["景色のひらけた、光のきれいな場所", "v"],
+      ["静かな音や、心地よい音が流れる場所", "a"],
+      ["肌ざわりや温度が心地よい、こもれる場所", "k"] ] },
+    { q: "うれしかった出来事を思い返すと、よみがえるのは？", o: [
+      ["その場面の映像や、表情・景色", "v"],
+      ["かけられた言葉や、その場の音", "a"],
+      ["そのときの気持ちや、體に残る感じ", "k"] ] },
+    { q: "気持ちが乱れたとき、いちばん効くのは？", o: [
+      ["きれいなものや、好きな景色を見る", "v"],
+      ["音楽を聴く・誰かと話す・書いて読み返す", "a"],
+      ["深呼吸する・湯につかる・體をゆるめる", "k"] ] },
+    { q: "やりたいことを思い描くとき、先に浮かぶのは？", o: [
+      ["叶った場面の「絵」", "v"],
+      ["それを語る「言葉」やまわりの「声」", "a"],
+      ["叶ったときの「感覚」や安心感", "k"] ] }
+  ];
+
+  // ===== タイプ別の結果（7ステップ） =====
+  var TYPES = {
+    v: {
+      name: "視覚タイプ",
+      crown: "Visual",
+      lead: "物事を「映像・イメージ」で受け取りやすい傾向があります。",
+      about: "頭の中に絵や景色が浮かびやすく、見たものから多くを受け取る方です。未来やなりたい自分を、ありありと思い描く力があります。",
+      strength: ["全体像をすばやくつかむ", "理想や未来を鮮やかに描ける", "美しさや色への感性が豊か", "目標を「見える形」にするのが得意"],
+      pattern: ["情報や理想を見すぎて、頭がいっぱいになりやすい", "つい人と比べてしまう", "先のことを描きすぎて、不安が大きくなることがある"],
+      rewrite: [
+        "なりたい自分の写真や景色を、そっと眺める",
+        "理想の場面を、色や光まで細かくイメージしてみる",
+        "大切にしたい言葉を、目に入る場所に置く",
+        "寝る前に、叶った景色を一枚の絵のように思い浮かべる"
+      ],
+      body: "目や頭が疲れていると、イメージが乱れて不安な未来を描きやすくなります。目を休める・遠くを見る・しっかり眠ることで視覚の神経がゆるむと、穏やかなイメージが戻ってきやすくなります。"
+    },
+    a: {
+      name: "聴覚タイプ",
+      crown: "Auditory",
+      lead: "「言葉・音・声」で物事を受け取りやすい傾向があります。",
+      about: "頭の中で会話や音、言葉が流れやすい方です。言葉の意味や響きを大切にし、人の話を深く受け取る力があります。",
+      strength: ["言葉で考え、整理するのが得意", "音やリズム、声の感性が豊か", "人の話をていねいに聴ける", "論理立てて伝えられる"],
+      pattern: ["頭の中の独り言（自己対話）が止まりにくい", "ぐるぐると考え込みやすい", "かけられた言葉が、長く心に残りやすい"],
+      rewrite: [
+        "やさしい言葉を声に出す、または録音して聴く",
+        "心地よい音楽や周波数を流す",
+        "自分への言葉を、やわらかい言い回しに変えてみる",
+        "頭の中の言葉を紙に書き出して、外に置く"
+      ],
+      body: "疲れていると、内側の独り言が強く・きつくなりやすい傾向があります。静かな環境や深い呼吸、十分な休息で神経が静まると、自分にかける言葉もやわらかく戻ってきます。"
+    },
+    k: {
+      name: "体感タイプ",
+      crown: "Kinesthetic",
+      lead: "「感覚・気持ち・體の感じ」で物事を受け取りやすい傾向があります。",
+      about: "「しっくりくるかどうか」で動く方です。直感や共感の力が強く、その場の空気や安心感を、體で感じ取ることができます。",
+      strength: ["直感が働く", "共感する力・場の空気を感じる力", "やってみて體で覚えるのが得意", "安心できる状態を大切にできる"],
+      pattern: ["感情や體の不快感に、大きく影響されやすい", "気分の波が出やすい", "考えるより感じてしまい、疲れをためやすい"],
+      rewrite: [
+        "體をゆるめてから、なりたい状態を「感じて」みる",
+        "手を胸やお腹に当てて、安心の感覚を思い出す",
+        "心地よい温度・肌ざわり・呼吸で「整った感じ」を味わう",
+        "小さく體を動かしてから、整える（體→神経→潜在意識）"
+      ],
+      body: "體の状態が、そのまま心になりやすいタイプです。冷えや疲れ・緊張があると不安になりやすく、温める・ゆるめる・整えるだけで、現実の感じ方そのものが変わっていきます。いちばん體の影響を受けやすい方です。"
+    }
+  };
+
+  var GRACE_MESSAGE =
+    "どのタイプでも、はじまりは體から。<br>" +
+    "考えすぎたら、まず整える。<br>" +
+    "呼吸がゆるむと、<br>" +
+    "必要な言葉も感覚も戻ってきます。";
+
+  // ===== ビュー切り替え =====
+  var views = {
+    gate:   document.getElementById("viewGate"),
+    quiz:   document.getElementById("viewQuiz"),
+    result: document.getElementById("viewResult"),
+    med:    document.getElementById("viewMed")
+  };
+  function show(name) {
+    Object.keys(views).forEach(function (k) { views[k].classList.add("is-hidden"); });
+    views[name].classList.remove("is-hidden");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  // ===== 診断ロジック =====
+  var step = 0;
+  var answers = [];
+  var quizQ = document.getElementById("quizQ");
+  var quizOpts = document.getElementById("quizOpts");
+  var quizProgress = document.getElementById("quizProgress");
+  var quizBar = document.getElementById("quizBar");
+  var quizBack2 = document.getElementById("quizBack2");
+
+  function renderQuestion() {
+    var item = QUESTIONS[step];
+    quizProgress.textContent = (step + 1) + " / " + QUESTIONS.length;
+    quizBar.style.width = ((step) / QUESTIONS.length * 100) + "%";
+    quizQ.textContent = item.q;
+    quizOpts.innerHTML = "";
+    item.o.forEach(function (opt) {
+      var b = document.createElement("button");
+      b.className = "opt"; b.textContent = opt[0];
+      b.addEventListener("click", function () { choose(opt[1]); });
+      quizOpts.appendChild(b);
+    });
+    quizBack2.classList.toggle("is-hidden", step === 0);
+  }
+  function choose(type) {
+    answers[step] = type;
+    if (step < QUESTIONS.length - 1) { step++; renderQuestion(); }
+    else { finish(); }
+  }
+  quizBack2.addEventListener("click", function () {
+    if (step > 0) { step--; renderQuestion(); }
+  });
+  function startQuiz() { step = 0; answers = []; renderQuestion(); show("quiz"); }
+
+  function finish() {
+    quizBar.style.width = "100%";
+    var tally = { v: 0, a: 0, k: 0 };
+    answers.forEach(function (t) { tally[t]++; });
+    // 多い順に並べる（同数のときは v→a→k の順を保つ＝sortは安定）
+    var order = ["v", "a", "k"].sort(function (x, y) { return tally[y] - tally[x]; });
+    renderResult(order[0], order[1], tally);
+    show("result");
+  }
+
+  // ===== 結果の描画 =====
+  // 「つながる場所」＝ファイルに書いた動画・音声を、みんなに表示（YouTube/音声は埋め込み）
+  function mediaNode(it) {
+    var box = document.createElement("div"); box.style.marginBottom = "20px";
+    if (it.title) {
+      var t = document.createElement("div");
+      t.style.cssText = "font-size:14px;font-weight:500;letter-spacing:.06em;margin-bottom:9px;color:var(--ink)";
+      t.textContent = it.title; box.appendChild(t);
+    }
+    var info = parseMedia(it.url);
+    if (!info) return box;
+    if (info.type === "yt") {
+      var e = document.createElement("div"); e.className = "embed";
+      var f = document.createElement("iframe");
+      f.src = info.src; f.loading = "lazy"; f.allowFullscreen = true;
+      f.setAttribute("allow", "autoplay; encrypted-media; picture-in-picture");
+      e.appendChild(f); box.appendChild(e);
+    } else if (info.type === "audio") {
+      var a = document.createElement("audio"); a.controls = true; a.src = info.src;
+      a.style.width = "100%"; box.appendChild(a);
+    } else {
+      var lk = document.createElement("a"); lk.className = "med__btn"; lk.href = info.src;
+      lk.target = "_blank"; lk.rel = "noopener"; lk.textContent = info.label || "ひらく"; box.appendChild(lk);
+    }
+    return box;
+  }
+  function block(en, ja, bodyNode) {
+    var b = document.createElement("div"); b.className = "block";
+    var h = document.createElement("div"); h.className = "block__h";
+    var e = document.createElement("span"); e.className = "block__en"; e.textContent = en;
+    var j = document.createElement("span"); j.className = "block__ja"; j.textContent = ja;
+    h.appendChild(e); h.appendChild(j); b.appendChild(h); b.appendChild(bodyNode);
+    return b;
+  }
+  function pEl(text) { var p = document.createElement("p"); p.textContent = text; return p; }
+  function ulEl(arr) {
+    var ul = document.createElement("ul");
+    arr.forEach(function (x) { var li = document.createElement("li"); li.textContent = x; ul.appendChild(li); });
+    return ul;
+  }
+  var SHORT = { v: "視覚", a: "聴覚", k: "体感" };
+  function renderResult(key, secKey, tally) {
+    var t = TYPES[key];
+    var card = document.getElementById("resultCard");
+    card.innerHTML = "";
+
+    // ① タイプ判定
+    var head = document.createElement("div"); head.className = "result__type";
+    head.innerHTML =
+      '<div class="result__crown">Your entrance — ' + t.crown + '</div>' +
+      '<div class="result__name">' + t.name + '</div>' +
+      '<div class="result__lead">' + t.lead + '</div>';
+    card.appendChild(head);
+
+    // 傾向の内訳（バーで“いまの自分”を細かく映す）
+    var total = (tally.v + tally.a + tally.k) || 1;
+    function pct(x) { return Math.round(tally[x] / total * 100); }
+    var bd = document.createElement("div");
+    ["v", "a", "k"].forEach(function (x) {
+      var row = document.createElement("div");
+      row.style.cssText = "display:flex;align-items:center;gap:10px;margin:9px 0";
+      var label = document.createElement("span");
+      label.style.cssText = "flex:none;width:34px;font-size:12px;letter-spacing:.1em;color:var(--ink-soft)";
+      label.textContent = SHORT[x];
+      var track = document.createElement("div");
+      track.style.cssText = "flex:1;height:6px;border-radius:999px;background:rgba(60,56,51,0.08);overflow:hidden";
+      var fill = document.createElement("div");
+      fill.style.cssText = "height:100%;border-radius:999px;background:var(--accent);width:" + pct(x) + "%;opacity:" + (x === key ? 1 : 0.4);
+      track.appendChild(fill);
+      var num = document.createElement("span");
+      num.style.cssText = "flex:none;width:40px;text-align:right;font-size:12px;color:var(--ink-faint);font-family:'Cormorant Garamond',serif";
+      num.textContent = pct(x) + "%";
+      row.appendChild(label); row.appendChild(track); row.appendChild(num);
+      bd.appendChild(row);
+    });
+    card.appendChild(block("Balance", "今のあなたの傾向", bd));
+
+    // 寄り添う傾向（第二の入口）
+    if (secKey && tally[secKey] > 0) {
+      var same = tally[key] === tally[secKey];
+      var lead2 = (same
+        ? TYPES[secKey].name + "の傾向も、同じくらい強く出ています。"
+        : "あわせて、" + TYPES[secKey].name + "の傾向も持っています。") + TYPES[secKey].lead +
+        "どちらか一方ではなく、両方を行き来できるのが、今のあなたの自然な姿です。";
+      card.appendChild(block("Sub", "寄り添う、もうひとつの入口", pEl(lead2)));
+    }
+
+    // ② 説明 / ③ 強み / ④ パターン / ⑤ 書き換え / ⑥ 體とのつながり
+    card.appendChild(block("About",     "こんな傾向があります",   pEl(t.about)));
+    card.appendChild(block("Strength",  "あなたの中にある力",     ulEl(t.strength)));
+    card.appendChild(block("Pattern",   "ときどき、こうなりやすい", ulEl(t.pattern)));
+    card.appendChild(block("Rewrite",   "あなたに合う整え方",      ulEl(t.rewrite)));
+    card.appendChild(block("Body",      "體とのつながり",         pEl(t.body)));
+
+    // つながる場所（ファイルに書いた動画・音声を表示。無ければブロックごと非表示）
+    var items = (LINKS[key] || []).filter(function (it) { return it && it.url; });
+    if (items.length) {
+      var linksWrap = document.createElement("div");
+      items.forEach(function (it) { linksWrap.appendChild(mediaNode(it)); });
+      card.appendChild(block("Next", "つながる場所", linksWrap));
+    }
+
+    // ⑦ Be Graceメッセージ
+    var grace = document.createElement("div"); grace.className = "grace";
+    var gp = document.createElement("p"); gp.innerHTML = GRACE_MESSAGE;
+    grace.appendChild(gp);
+    card.appendChild(grace);
+  }
+
+  // ===== 瞑想ルームの描画 =====
+  function parseMedia(raw) {
+    var url = (raw || "").trim();
+    if (!url) return null;
+    var yt = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/|live\/))([\w-]{11})/);
+    var list = url.match(/[?&]list=([\w-]+)/);
+    if (yt || (list && /youtu\.?be/.test(url))) {
+      var src;
+      if (yt && list) src = "https://www.youtube.com/embed/" + yt[1] + "?list=" + list[1];
+      else if (yt)    src = "https://www.youtube.com/embed/" + yt[1];
+      else            src = "https://www.youtube.com/embed/videoseries?list=" + list[1];
+      return { type: "yt", src: src };
+    }
+    // Vimeo（ショーケース＝アルバム）
+    var vshow = url.match(/vimeo\.com\/showcase\/(\d+)/);
+    if (vshow) return { type: "yt", src: "https://vimeo.com/showcase/" + vshow[1] + "/embed" };
+    // Vimeo（単体動画。非公開リンクの /ハッシュ や ?h= にも対応）
+    var vid = url.match(/(?:player\.)?vimeo\.com\/(?:video\/)?(\d+)(?:\/(\w+))?/);
+    if (vid) {
+      var vh = url.match(/[?&]h=(\w+)/);
+      var hash = vid[2] || (vh ? vh[1] : "");
+      return { type: "yt", src: "https://player.vimeo.com/video/" + vid[1] + (hash ? "?h=" + hash : "") };
+    }
+    // Google スライド → そのまま埋め込み表示
+    var gslide = url.match(/docs\.google\.com\/presentation\/d\/([\w-]+)/);
+    if (gslide) return { type: "yt", src: "https://docs.google.com/presentation/d/" + gslide[1] + "/embed?start=false&loop=false&delayms=5000" };
+    // Google ドライブのファイル（PDF・画像・動画など） → プレビュー埋め込み
+    var gdrive = url.match(/drive\.google\.com\/file\/d\/([\w-]+)/);
+    if (gdrive) return { type: "yt", src: "https://drive.google.com/file/d/" + gdrive[1] + "/preview" };
+    // Google ドキュメント / スプレッドシート / フォーム → 「資料をひらく」
+    if (/docs\.google\.com\/(document|spreadsheets|forms)\//.test(url) || /forms\.gle\//.test(url)) return { type: "link", src: url, label: "資料をひらく" };
+    // Google ドライブのフォルダ（資料の入れ物） → ひらくと中の最新ファイル一覧へ
+    if (/drive\.google\.com\/drive\/.*folders\//.test(url)) return { type: "link", src: url, label: "資料フォルダをひらく" };
+    if (/\.(mp3|m4a|ogg|wav|aac)(\?.*)?$/i.test(url)) return { type: "audio", src: url };
+    return { type: "link", src: url, label: "ひらく" };
+  }
+  var medList = document.getElementById("medList");
+  function renderMed() {
+    medList.innerHTML = "";
+    if (!MEDITATION.length) { return; }   // 使える瞑想リンクが無いときは何も出さない（準備中を出さない）
+    MEDITATION.forEach(function (m) {
+      var info = parseMedia(m.url);
+      var item = document.createElement("div"); item.className = "med__item";
+      var title = document.createElement("div"); title.className = "med__title"; title.textContent = m.title;
+      var desc = document.createElement("div"); desc.className = "med__desc"; desc.textContent = m.desc || "";
+      item.appendChild(title); item.appendChild(desc);
+
+      var action = document.createElement("div"); action.className = "med__action";
+      var player = document.createElement("div"); player.className = "med__player";
+
+      if (!info) {
+        var soon = document.createElement("span"); soon.className = "med__btn is-soon"; soon.textContent = "準備中";
+        action.appendChild(soon);
+      } else if (info.type === "yt") {
+        var btn = document.createElement("button"); btn.className = "med__btn"; btn.textContent = "ひらく";
+        btn.addEventListener("click", function () {
+          if (player.innerHTML) { player.innerHTML = ""; btn.textContent = "ひらく"; return; }
+          var box = document.createElement("div"); box.className = "embed";
+          var f = document.createElement("iframe");
+          f.src = info.src; f.loading = "lazy"; f.allowFullscreen = true;
+          f.setAttribute("allow", "autoplay; encrypted-media; picture-in-picture");
+          box.appendChild(f); player.appendChild(box); btn.textContent = "とじる";
+        });
+        action.appendChild(btn);
+      } else if (info.type === "audio") {
+        var a = document.createElement("audio"); a.controls = true; a.src = info.src; a.style.width = "100%";
+        player.appendChild(a);
+      } else {
+        var link = document.createElement("a"); link.className = "med__btn"; link.href = info.src;
+        link.target = "_blank"; link.rel = "noopener"; link.textContent = "ひらく";
+        action.appendChild(link);
+      }
+      item.appendChild(action); item.appendChild(player);
+      medList.appendChild(item);
+    });
+  }
+
+  // ===== 音楽（各自のリンク・この端末に保存） =====
+  var musicInput  = document.getElementById("musicInput");
+  var musicPlayer = document.getElementById("musicPlayer");
+  var MUSIC_KEY = "bg_senzai_music";
+  function lsGet(k) { try { return window.localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { window.localStorage.setItem(k, v); } catch (e) {} }
+  function lsDel(k) { try { window.localStorage.removeItem(k); } catch (e) {} }
+
+  function renderMusic(raw) {
+    musicPlayer.innerHTML = "";
+    var info = parseMedia(raw);
+    if (!info) return;
+    if (info.type === "yt") {
+      var box = document.createElement("div"); box.className = "embed"; box.style.marginTop = "18px";
+      var f = document.createElement("iframe");
+      f.src = info.src; f.loading = "lazy"; f.allowFullscreen = true;
+      f.setAttribute("allow", "autoplay; encrypted-media; picture-in-picture");
+      box.appendChild(f); musicPlayer.appendChild(box);
+    } else if (info.type === "audio") {
+      var a = document.createElement("audio"); a.className = "music-audio"; a.controls = true; a.src = info.src;
+      musicPlayer.appendChild(a);
+    } else {
+      var p = document.createElement("p"); p.className = "hint";
+      p.textContent = "このリンクは再生できないかもしれません。YouTubeのリンク、または mp3 などの音声リンクを貼ってください。";
+      musicPlayer.appendChild(p);
+    }
+  }
+  document.getElementById("musicSet").addEventListener("click", function () {
+    var v = musicInput.value.trim();
+    if (!v) return;
+    lsSet(MUSIC_KEY, v); renderMusic(v);
+  });
+  document.getElementById("musicClear").addEventListener("click", function () {
+    lsDel(MUSIC_KEY); musicInput.value = ""; musicPlayer.innerHTML = "";
+  });
+  var savedMusic = lsGet(MUSIC_KEY);
+  if (savedMusic) { musicInput.value = savedMusic; renderMusic(savedMusic); }
+
+  // ===== 入口のボタン =====
+  document.getElementById("goQuiz").addEventListener("click", startQuiz);
+  document.getElementById("goMed").addEventListener("click", function () { renderMed(); show("med"); });
+  document.getElementById("quizExit").addEventListener("click", function () { show("gate"); });
+  document.getElementById("resultExit").addEventListener("click", function () { show("gate"); });
+  document.getElementById("medExit").addEventListener("click", function () { show("gate"); });
+  document.getElementById("quizAgain").addEventListener("click", startQuiz);
+
+  show("gate");
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>巡り辞典｜Be Grace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ivory: #f6f1e9;
+    --ivory-deep: #ece3d6;
+    --ink: #3c3833;
+    --ink-soft: #6b645b;
+    --ink-faint: #9a9286;
+    --gold: #b0966a;
+    --line: rgba(60, 56, 51, 0.10);
+    --card: rgba(255, 255, 255, 0.6);
+    --accent: #c08e72;       /* 巡り — 温いテラコッタ */
+    --accent-deep: #9c6a4f;
+    --accent-soft: rgba(192, 142, 114, 0.14);
+    --shadow: 0 18px 50px -28px rgba(70, 60, 45, 0.45);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+    color: var(--ink);
+    background:
+      radial-gradient(120% 80% at 50% -10%, #fbf8f2 0%, rgba(251,248,242,0) 55%),
+      linear-gradient(180deg, var(--ivory) 0%, var(--ivory-deep) 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    line-height: 1.9;
+    letter-spacing: 0.04em;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { width: 100%; max-width: 640px; margin: 0 auto; padding: 0 22px; }
+
+  .top { padding: 26px 0 8px; }
+  .back {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: "Cormorant Garamond", serif; font-style: italic;
+    font-size: 15px; letter-spacing: 0.12em; color: var(--ink-soft);
+    text-decoration: none; transition: color .3s; background: none; border: none; cursor: pointer;
+  }
+  .back:hover { color: var(--ink); }
+
+  .head { text-align: center; padding: 22px 0 6px; }
+  .head__name { font-size: clamp(38px, 10vw, 56px); font-weight: 500; letter-spacing: 0.18em; }
+  .head__copy { margin-top: 12px; font-size: 14px; letter-spacing: 0.20em; color: var(--ink-soft); }
+  .head__line { width: 1px; height: 36px; margin: 16px auto 0;
+    background: linear-gradient(180deg, transparent, var(--accent), transparent); opacity: .7; }
+
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 6px;
+    box-shadow: var(--shadow); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    padding: clamp(26px, 6vw, 38px) clamp(22px, 5vw, 32px);
+    margin: 22px 0;
+  }
+  .card__label {
+    text-align: center; font-family: "Cormorant Garamond", serif; font-style: italic;
+    font-size: 14px; letter-spacing: 0.28em; color: var(--accent-deep); text-transform: uppercase;
+  }
+  .card__ja { text-align: center; font-size: 13px; letter-spacing: 0.30em; color: var(--ink-faint); margin-top: 6px; }
+  .lead { text-align: center; font-size: 14.5px; color: var(--ink-soft); letter-spacing: 0.08em; line-height: 2.0; }
+
+  .controls { display: flex; justify-content: center; gap: 14px; margin-top: 24px; flex-wrap: wrap; }
+
+  .is-hidden { display: none !important; }
+
+  /* テーマ一覧 */
+  .choices { display: flex; flex-wrap: wrap; gap: 11px; margin-top: 26px; justify-content: center; }
+  .choice {
+    font-family: inherit; font-size: 14.5px; letter-spacing: 0.06em; color: var(--ink);
+    background: rgba(255,255,255,0.6); border: 1px solid var(--line); border-radius: 999px;
+    padding: 12px 20px; cursor: pointer; transition: all .3s;
+  }
+  .choice:hover { border-color: var(--accent); background: rgba(255,255,255,0.92); transform: translateY(-2px); }
+  .choice.is-on { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* ボタン */
+  .btn {
+    font-family: inherit; font-size: 15px; letter-spacing: 0.16em; cursor: pointer;
+    border-radius: 999px; padding: 12px 28px; transition: all .3s; border: 1px solid var(--accent);
+  }
+  .btn--primary { background: var(--accent); color: #fff; }
+  .btn--primary:hover { background: var(--accent-deep); border-color: var(--accent-deep); }
+
+  /* ひと呼吸ガイド */
+  .breath-wrap { text-align: center; margin-top: 22px; }
+  .breath-stage {
+    width: 150px; height: 150px; border-radius: 50%; margin: 12px auto;
+    background: radial-gradient(circle at 50% 45%, rgba(192,142,114,0.38), rgba(192,142,114,0.10));
+    border: 1px solid var(--line); transform: scale(0.62); transition: transform 4s ease-in-out;
+  }
+  .breath-stage.inhale { transform: scale(1); transition-duration: 4s; }
+  .breath-stage.exhale { transform: scale(0.62); transition-duration: 6s; }
+  .breath-text { font-size: 15px; letter-spacing: 0.2em; color: var(--accent-deep); min-height: 22px; margin-top: 6px; }
+
+  /* 巡りチェックの結果 */
+  .check-result { text-align: center; }
+
+  /* テーマ詳細 */
+  .result__type { text-align: center; margin-bottom: 6px; }
+  .result__crown { font-family: "Cormorant Garamond", serif; font-style: italic; letter-spacing: 0.2em;
+    color: var(--accent-deep); font-size: 14px; text-transform: uppercase; }
+  .result__name { font-size: clamp(28px, 7.5vw, 40px); font-weight: 500; letter-spacing: 0.10em; margin-top: 8px; }
+
+  .block { margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--line); }
+  .block:first-of-type { border-top: none; }
+  .block__h { display: flex; align-items: baseline; gap: 12px; margin-bottom: 12px; }
+  .block__en { font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 13px;
+    letter-spacing: 0.16em; color: var(--accent-deep); text-transform: uppercase; flex: none; }
+  .block__ja { font-size: 15px; letter-spacing: 0.10em; font-weight: 500; }
+  .block p { font-size: 14.5px; letter-spacing: 0.04em; line-height: 1.95; color: var(--ink); }
+  .block ul { list-style: none; margin-top: 6px; }
+  .block li { position: relative; padding-left: 20px; margin-bottom: 10px; font-size: 14.5px; line-height: 1.85; }
+  .block li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+
+  .grace { background: var(--accent-soft); border-radius: 8px; padding: 22px 20px; margin-top: 26px; }
+  .grace p { font-size: 14.5px; line-height: 2.1; letter-spacing: 0.06em; text-align: center; }
+  .tokarada { text-align: center; margin-top: 18px; }
+  .tokarada a { font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 14px;
+    letter-spacing: 0.1em; color: var(--accent-deep); text-decoration: underline; text-underline-offset: 4px; }
+
+  /* 関連コンテンツ（後から差し替え可能・今は空） */
+  .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .link-chip {
+    display: inline-flex; align-items: center; gap: 8px; font-family: inherit; font-size: 13.5px;
+    letter-spacing: 0.04em; color: var(--ink); background: rgba(255,255,255,0.6);
+    border: 1px solid var(--line); border-radius: 999px; padding: 9px 16px; cursor: pointer;
+    text-decoration: none; transition: all .3s;
+  }
+  .link-chip:hover { border-color: var(--accent); background: rgba(255,255,255,0.9); }
+  .link-chip__kind { font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 11px;
+    letter-spacing: 0.1em; color: var(--accent-deep); }
+
+  .foot { text-align: center; padding: 30px 0 56px; }
+  .foot__title { font-family: "Cormorant Garamond", serif; font-weight: 300; font-size: 20px; letter-spacing: 0.3em; color: var(--ink-soft); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <a class="back" href="../index.html">← Be Grace</a>
+    </div>
+
+    <div class="head">
+      <div class="head__name">巡り</div>
+      <div class="head__copy">本来の流れを、取り戻す</div>
+      <div class="head__line"></div>
+    </div>
+
+    <!-- ============ テーマ一覧 ============ -->
+    <section id="viewIndex">
+      <div class="card">
+        <div class="card__label">Flow</div>
+        <div class="card__ja">巡り辞典</div>
+        <p class="lead" style="margin-top:20px">
+          気になるテーマを、<br>ひとつ選んでください。<br>
+          滞りをほどいて、本来の流れへ。
+        </p>
+        <div class="choices" id="themeChoices"></div>
+      </div>
+
+      <div class="card">
+        <div class="card__label">Breath</div>
+        <div class="card__ja">ひと呼吸</div>
+        <p class="lead" style="margin-top:14px">輪に合わせて、ゆっくり呼吸を。</p>
+        <div class="choices" id="rhythmRow" style="margin-top:14px"></div>
+        <div class="breath-wrap">
+          <div class="breath-stage" id="breathStage"></div>
+          <div class="breath-text" id="breathText"></div>
+        </div>
+        <div class="controls"><button class="btn btn--primary" id="breathBtn">はじめる</button></div>
+      </div>
+    </section>
+
+    <!-- ============ テーマ詳細 ============ -->
+    <section id="viewTheme" class="is-hidden">
+      <div class="card" id="themeCard"></div>
+      <div class="controls"><button class="back" id="themeExit">← 辞典にもどる</button></div>
+    </section>
+
+    <div class="foot"><div class="foot__title">Be Grace</div></div>
+  </div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* =========================================================
+     ▼▼▼ 関連コンテンツ（おすすめリンク枠）▼▼▼
+     テーマごとに、講座・資料・動画のリンクを表示できます。
+     ・後から自由に追加・削除・差し替えできます（その行のURLを変えるだけ）。
+     ・Vimeo・YouTube・Googleスライド/ドキュメント/ドライブ等に対応。
+     ・空のテーマは「つながる場所」を表示しません。
+     ========================================================= */
+  var LINKS = {
+    ketsuryu: [], kokyu: [], lymph: [], cho: [], kanjo: [],
+    shikou: [], kodo: [], uketori: [], yohaku: [], tebanashi: []
+  };
+  /* ▲▲▲ ここまで ▲▲▲ */
+
+  // ===== テーマ一覧 =====
+  var THEMES = [
+    { k: "ketsuryu",  label: "血流" },
+    { k: "kokyu",     label: "呼吸" },
+    { k: "lymph",     label: "リンパ" },
+    { k: "cho",       label: "腸" },
+    { k: "kanjo",     label: "感情" },
+    { k: "shikou",    label: "思考" },
+    { k: "kodo",      label: "行動" },
+    { k: "uketori",   label: "受け取り" },
+    { k: "yohaku",    label: "余白" },
+    { k: "tebanashi", label: "手放し" }
+  ];
+
+  // ===== 各テーマの内容 =====
+  var THEME_DATA = {
+    ketsuryu: {
+      sign: "冷え・むくみ・肩こり・顔色のくすみ・疲れやすさが、出やすくなります。",
+      body: "血は、歩く・足踏み・腰を動かすほどめぐります。呼吸が浅い・冷え・長時間同じ姿勢でいると、流れは滞ります。",
+      today: ["足踏み・歩く", "腰の運動たくさん", "湯船で温める", "深呼吸する", "水を飲む"],
+      begrace: "血流は、體を動かすほど応えてくれます。巡りは、いつも體から始まります。"
+    },
+    kokyu: {
+      sign: "浅い呼吸が続くと、緊張・不安・疲れ・眠りの浅さが、出やすくなります。",
+      body: "姿勢が丸まると、呼吸は浅くなります。首・肩のこわばり、自律神経とも深くつながっています。",
+      today: ["息を長く、細く吐く", "姿勢を整える", "肩の力を、すとんと抜く", "瞑想する", "空を見上げる"],
+      begrace: "呼吸は、心と體をつなぐ橋。ひと呼吸ゆるめるだけで、巡りは動き出します。"
+    },
+    lymph: {
+      sign: "むくみ・だるさ・肌のくすみ・重たさが、出やすくなります。",
+      body: "リンパは、筋肉の動きで流れます。歩く・首や腰を動かす・深い呼吸が、流れを助けます。",
+      today: ["首の運動たくさん", "腰の運動たくさん", "よく歩く", "深呼吸する", "湯船で温める"],
+      begrace: "リンパは、やさしい動きで流れます。力をぬいて、體をゆらすことから。"
+    },
+    cho: {
+      sign: "便通の乱れ・肌あれ・気分の重さ・だるさが、出やすくなります。",
+      body: "腰を動かすと、腸も動きます。腸は“第二の脳”。睡眠・呼吸・自律神経と連動し、肌や心の状態にも映ります。",
+      today: ["腰の運動たくさん", "水を飲む", "発酵食品をとる", "おなかを温める", "よく歩く"],
+      begrace: "腸が整うと、心まで軽くなります。巡りは、おなかの真ん中からも始まります。"
+    },
+    kanjo: {
+      sign: "気持ちをためこむと、モヤモヤ・イライラ・涙もろさ・疲れが、出やすくなります。",
+      body: "感情は、體に宿ります。首や腰をゆらして體を動かすと、感情も流れ出します。呼吸が浅い・胸がこわばると、流れにくくなります。",
+      today: ["首の運動たくさん", "腰の運動たくさん", "感情を、そのまま書き出す", "深呼吸する", "涙が出たら、流す"],
+      begrace: "感情は、流していいもの。體がゆるめば、心も自然に流れ出します。"
+    },
+    shikou: {
+      sign: "考えすぎると、堂々めぐり・眠れない・決められない、が出やすくなります。",
+      body: "思考の渦は、首・頭のこわばりと連動します。體を動かすと、頭は静かになります。",
+      today: ["頭の中を、紙に書き出す", "首の運動たくさん", "遠くの景色を見る", "歩く", "深呼吸する"],
+      begrace: "考えを止めようとするより、體を動かす。巡りは、思考より先に體から。"
+    },
+    kodo: {
+      sign: "動けない・先延ばし・重たさ・自分を責める気持ちが、出やすくなります。",
+      body: "やる気は、體が動くと後からついてきます。睡眠不足や冷えは、行動の力を下げます。",
+      today: ["まず一歩、立ち上がる", "小さく、ひとつだけやる", "歩く", "體を温める", "早めに眠る"],
+      begrace: "やる気を待つより、體を動かす。巡りは、小さな一歩から生まれます。"
+    },
+    uketori: {
+      sign: "遠慮・気疲れ・満たされなさ・与えすぎが、出やすくなります。",
+      body: "受け取りは、體がゆるんでいるほど上手に。みぞおち・胸の力みは、受け取りを妨げます。",
+      today: ["みぞおち・胸をゆるめる", "深呼吸で、ひらく", "「ありがとう」を受け取る", "一人時間をつくる", "休息を取る"],
+      begrace: "受け取り上手な體は、ゆるんでいる體。力をぬくほど、巡りは入ってきます。"
+    },
+    yohaku: {
+      sign: "予定の詰めすぎで、焦り・余裕のなさ・疲れが、出やすくなります。",
+      body: "余白がないと、呼吸も浅くなります。何もしない時間が、神経を休ませます。",
+      today: ["何もしない時間をつくる", "スマホを少し置く", "深呼吸する", "空を見上げる", "早めに眠る"],
+      begrace: "余白は、巡りの通り道。ゆとりがあるほど、體も心も流れ出します。"
+    },
+    tebanashi: {
+      sign: "抱え込みすぎると、重たさ・こだわり・疲れが、出やすくなります。",
+      body: "手放せないものは、體の力みにも表れます。息を吐くたびに、少しずつ手放せます。",
+      today: ["長く、息を吐く", "今日はひとつ、やめてみる", "いらない物をひとつ手放す", "感情を書き出す", "湯船でゆるめる"],
+      begrace: "手放すとは、力をぬくこと。吐く息とともに、巡りはまた動き出します。"
+    }
+  };
+
+  // ===== 画面の切り替え =====
+  function show(name) {
+    if (name !== "index" && typeof stopBreath === "function") stopBreath();
+    document.getElementById("viewIndex").classList.toggle("is-hidden", name !== "index");
+    document.getElementById("viewTheme").classList.toggle("is-hidden", name !== "theme");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  // ===== リンク（おすすめコンテンツ枠） =====
+  function parseMedia(raw) {
+    var url = (raw || "").trim();
+    if (!url) return null;
+    if (/youtu\.?be/.test(url)) return { kind: "Movie", src: url };
+    if (/vimeo\.com/.test(url)) return { kind: "Movie", src: url };
+    if (/docs\.google\.com\/presentation/.test(url)) return { kind: "Slide", src: url };
+    if (/docs\.google\.com|drive\.google\.com|forms\.gle/.test(url)) return { kind: "Doc", src: url };
+    if (/\.(mp3|m4a|ogg|wav|aac)(\?.*)?$/i.test(url)) return { kind: "Sound", src: url };
+    return { kind: "Link", src: url };
+  }
+  function renderLinks(themeKey) {
+    var items = (LINKS[themeKey] || []).filter(function (it) { return it && it.url; });
+    if (!items.length) return null;
+    var wrap = document.createElement("div"); wrap.className = "links";
+    items.forEach(function (it) {
+      var info = parseMedia(it.url);
+      var a = document.createElement("a"); a.className = "link-chip";
+      a.href = info.src; a.target = "_blank"; a.rel = "noopener";
+      var kind = document.createElement("span"); kind.className = "link-chip__kind"; kind.textContent = info.kind;
+      var t = document.createElement("span"); t.textContent = it.title || "ひらく";
+      a.appendChild(kind); a.appendChild(t);
+      wrap.appendChild(a);
+    });
+    return wrap;
+  }
+
+  // ===== 描画 =====
+  function block(en, ja, bodyNode) {
+    var b = document.createElement("div"); b.className = "block";
+    var h = document.createElement("div"); h.className = "block__h";
+    var e = document.createElement("span"); e.className = "block__en"; e.textContent = en;
+    var j = document.createElement("span"); j.className = "block__ja"; j.textContent = ja;
+    h.appendChild(e); h.appendChild(j); b.appendChild(h); b.appendChild(bodyNode);
+    return b;
+  }
+  function pEl(text) { var p = document.createElement("p"); p.textContent = text; return p; }
+  function ulEl(arr) {
+    var ul = document.createElement("ul");
+    arr.forEach(function (x) { var li = document.createElement("li"); li.textContent = x; ul.appendChild(li); });
+    return ul;
+  }
+
+  function renderTheme(themeKey) {
+    var th = THEMES.filter(function (t) { return t.k === themeKey; })[0];
+    var d = THEME_DATA[themeKey];
+    var card = document.getElementById("themeCard");
+    card.innerHTML = "";
+
+    var head = document.createElement("div"); head.className = "result__type";
+    head.innerHTML =
+      '<div class="result__crown">Flow</div>' +
+      '<div class="result__name">' + th.label + '</div>';
+    card.appendChild(head);
+
+    card.appendChild(block("Sign", "滞ると起こりやすいこと", pEl(d.sign)));
+    card.appendChild(block("Body", "體とのつながり", pEl(d.body)));
+    card.appendChild(block("Today", "今日できること", ulEl(d.today)));
+
+    var bg = document.createElement("div"); bg.className = "grace";
+    var bp = document.createElement("p"); bp.textContent = d.begrace;
+    bg.appendChild(bp);
+    card.appendChild(block("Be Grace", "巡りは、體から始まる", bg));
+
+    var links = renderLinks(themeKey);
+    if (links) card.appendChild(block("Next", "つながる場所", links));
+
+    var tk = document.createElement("div"); tk.className = "tokarada";
+    tk.innerHTML = '<a href="karada.html">→ 體のお部屋で、ととのえる</a>';
+    card.appendChild(tk);
+  }
+
+  // ===== テーマ一覧の描画・遷移 =====
+  var box = document.getElementById("themeChoices");
+  THEMES.forEach(function (t) {
+    var b = document.createElement("button"); b.className = "choice"; b.textContent = t.label;
+    b.addEventListener("click", function () { renderTheme(t.k); show("theme"); });
+    box.appendChild(b);
+  });
+  document.getElementById("themeExit").addEventListener("click", function () { show("index"); });
+
+  // ===== ① ひと呼吸ガイド（リズムを選べる） =====
+  var RHYTHMS = [
+    { k: "calm",   label: "落ち着く 4-6",     inS: 4, holdS: 0, outS: 6 },
+    { k: "gentle", label: "やさしい 4-4",     inS: 4, holdS: 0, outS: 4 },
+    { k: "deep",   label: "深いリラックス 4-7-8", inS: 4, holdS: 7, outS: 8 }
+  ];
+  var curRhythm = RHYTHMS[0];
+  var breathing = false, breathTimer = null;
+  var bStage = document.getElementById("breathStage");
+  var bText  = document.getElementById("breathText");
+  var bBtn   = document.getElementById("breathBtn");
+  var rhythmRow = document.getElementById("rhythmRow");
+
+  function breathStep(phase) {
+    if (!breathing) return;
+    var r = curRhythm;
+    if (phase === "in") {
+      bText.textContent = "吸って…";
+      bStage.style.transitionDuration = r.inS + "s"; bStage.style.transform = "scale(1)";
+      breathTimer = setTimeout(function () { breathStep(r.holdS > 0 ? "hold" : "out"); }, r.inS * 1000 + 200);
+    } else if (phase === "hold") {
+      bText.textContent = "止めて…";
+      bStage.style.transitionDuration = "0s";
+      breathTimer = setTimeout(function () { breathStep("out"); }, r.holdS * 1000);
+    } else {
+      bText.textContent = "吐いて…";
+      bStage.style.transitionDuration = r.outS + "s"; bStage.style.transform = "scale(0.62)";
+      breathTimer = setTimeout(function () { breathStep("in"); }, r.outS * 1000 + 200);
+    }
+  }
+  function startBreath() { breathing = true; bBtn.textContent = "とめる"; breathStep("in"); }
+  function stopBreath() {
+    breathing = false; if (breathTimer) clearTimeout(breathTimer);
+    bBtn.textContent = "はじめる"; bText.textContent = "";
+    bStage.style.transitionDuration = "1s"; bStage.style.transform = "scale(0.62)";
+  }
+  bBtn.addEventListener("click", function () { breathing ? stopBreath() : startBreath(); });
+
+  RHYTHMS.forEach(function (r) {
+    var b = document.createElement("button");
+    b.className = "choice" + (r.k === curRhythm.k ? " is-on" : "");
+    b.textContent = r.label;
+    b.addEventListener("click", function () {
+      curRhythm = r;
+      [].forEach.call(rhythmRow.children, function (c) { c.classList.remove("is-on"); });
+      b.classList.add("is-on");
+      if (breathing) { stopBreath(); startBreath(); }
+    });
+    rhythmRow.appendChild(b);
+  });
+
+  show("index");
+})();
+</script>
+</body>
+</html>

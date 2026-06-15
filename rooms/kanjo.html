@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LOVE BODY｜Be Grace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ivory: #f6f1e9;
+    --ivory-deep: #ece3d6;
+    --ink: #3c3833;
+    --ink-soft: #6b645b;
+    --ink-faint: #9a9286;
+    --gold: #b0966a;
+    --line: rgba(60, 56, 51, 0.10);
+    --card: rgba(255, 255, 255, 0.6);
+    --accent: #c39ba0;       /* LOVE — そっと薔薇 */
+    --accent-deep: #a9767e;
+    --accent-soft: rgba(195, 155, 160, 0.14);
+    --shadow: 0 18px 50px -28px rgba(70, 60, 45, 0.45);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+    color: var(--ink);
+    background:
+      radial-gradient(120% 80% at 50% -10%, #fbf8f2 0%, rgba(251,248,242,0) 55%),
+      linear-gradient(180deg, var(--ivory) 0%, var(--ivory-deep) 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    line-height: 1.9;
+    letter-spacing: 0.04em;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { width: 100%; max-width: 640px; margin: 0 auto; padding: 0 22px; }
+
+  .top { padding: 26px 0 8px; }
+  .back {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: "Cormorant Garamond", serif; font-style: italic;
+    font-size: 15px; letter-spacing: 0.12em; color: var(--ink-soft);
+    text-decoration: none; transition: color .3s; background: none; border: none; cursor: pointer;
+  }
+  .back:hover { color: var(--ink); }
+
+  .head { text-align: center; padding: 22px 0 6px; }
+  .head__name { font-size: clamp(34px, 9vw, 52px); font-weight: 500; letter-spacing: 0.16em; }
+  .head__copy { margin-top: 12px; font-size: 14px; letter-spacing: 0.20em; color: var(--ink-soft); }
+  .head__line { width: 1px; height: 36px; margin: 16px auto 0;
+    background: linear-gradient(180deg, transparent, var(--accent), transparent); opacity: .7; }
+
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 6px;
+    box-shadow: var(--shadow); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    padding: clamp(26px, 6vw, 38px) clamp(22px, 5vw, 32px);
+    margin: 22px 0;
+  }
+  .card__label {
+    text-align: center; font-family: "Cormorant Garamond", serif; font-style: italic;
+    font-size: 14px; letter-spacing: 0.28em; color: var(--accent-deep); text-transform: uppercase;
+  }
+  .card__ja { text-align: center; font-size: 13px; letter-spacing: 0.30em; color: var(--ink-faint); margin-top: 6px; }
+  .lead { text-align: center; font-size: 14.5px; color: var(--ink-soft); letter-spacing: 0.08em; line-height: 2.0; }
+
+  .controls { display: flex; justify-content: center; gap: 14px; margin-top: 24px; flex-wrap: wrap; }
+  .btn {
+    font-family: inherit; font-size: 15px; letter-spacing: 0.16em; cursor: pointer;
+    border-radius: 999px; padding: 13px 30px; transition: all .3s; border: 1px solid var(--accent);
+  }
+  .btn--primary { background: var(--accent); color: #fff; }
+  .btn--primary:hover { background: var(--accent-deep); border-color: var(--accent-deep); }
+  .btn--ghost { background: transparent; color: var(--ink-soft); border-color: var(--line); }
+  .btn--ghost:hover { border-color: var(--accent); color: var(--ink); }
+
+  .is-hidden { display: none !important; }
+
+  /* 入口（2つのゲート） */
+  .gate { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 28px 0 20px; }
+  @media (max-width: 480px) { .gate { grid-template-columns: 1fr; } }
+  .gate__card {
+    font-family: inherit;
+    display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px;
+    background: var(--card); border: 1px solid var(--line); border-radius: 6px;
+    box-shadow: var(--shadow); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    padding: clamp(28px, 7vw, 40px) 20px; cursor: pointer; color: inherit; text-decoration: none;
+    transition: transform .5s cubic-bezier(.2,.7,.2,1), background .4s ease, box-shadow .4s ease;
+  }
+  .gate__card:hover { transform: translateY(-6px); background: rgba(255,255,255,0.8);
+    box-shadow: 0 28px 60px -26px rgba(70, 60, 45, 0.5); }
+  .gate__en {
+    font-family: "Cormorant Garamond", serif; font-style: italic; font-weight: 300;
+    font-size: 15px; letter-spacing: 0.24em; color: var(--accent-deep); text-transform: uppercase;
+  }
+  .gate__ja { font-size: clamp(18px, 4.6vw, 21px); font-weight: 500; letter-spacing: 0.08em; }
+  .gate__copy { font-size: 12.5px; letter-spacing: 0.04em; color: var(--ink-soft); line-height: 1.75; }
+
+  /* 選択チップ（状態・本音） */
+  .choices { display: flex; flex-wrap: wrap; gap: 11px; margin-top: 26px; justify-content: center; }
+  .choice {
+    font-family: inherit; font-size: 14.5px; letter-spacing: 0.04em; color: var(--ink);
+    background: rgba(255,255,255,0.6); border: 1px solid var(--line); border-radius: 999px;
+    padding: 12px 18px; cursor: pointer; transition: all .3s;
+  }
+  .choice:hover { border-color: var(--accent); background: rgba(255,255,255,0.92); transform: translateY(-2px); }
+  .ask { text-align: center; font-size: clamp(18px, 4.8vw, 22px); font-weight: 500; letter-spacing: 0.06em; line-height: 1.7; }
+  .ask__sub { text-align: center; font-size: 13px; color: var(--ink-faint); letter-spacing: 0.08em; margin-top: 10px; }
+  .field { margin-top: 22px; text-align: center; }
+  .field__label { font-size: 13px; color: var(--ink-faint); letter-spacing: 0.08em; margin-bottom: 8px; }
+  .date-input { font-family: inherit; font-size: 16px; color: var(--ink); background: rgba(255,255,255,0.7);
+    border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; text-align: center; letter-spacing: 0.04em; }
+  .date-input:focus { outline: none; border-color: var(--accent); }
+  .fnum { text-align: center; font-family: "Cormorant Garamond", serif; font-style: italic;
+    color: var(--accent-deep); letter-spacing: 0.2em; font-size: 13px; text-transform: uppercase; }
+
+  /* 結果 */
+  .result__type { text-align: center; margin-bottom: 6px; }
+  .result__crown { font-family: "Cormorant Garamond", serif; font-style: italic; letter-spacing: 0.2em;
+    color: var(--accent-deep); font-size: 14px; text-transform: uppercase; }
+  .result__name { font-size: clamp(26px, 7vw, 38px); font-weight: 500; letter-spacing: 0.08em; margin-top: 8px; }
+  .result__lead { text-align: center; color: var(--ink-soft); font-size: 13.5px; letter-spacing: 0.08em;
+    margin-top: 10px; line-height: 1.8; }
+
+  .block { margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--line); }
+  .block:first-of-type { border-top: none; }
+  .block__h { display: flex; align-items: baseline; gap: 12px; margin-bottom: 12px; }
+  .block__en { font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 13px;
+    letter-spacing: 0.16em; color: var(--accent-deep); text-transform: uppercase; flex: none; }
+  .block__ja { font-size: 15px; letter-spacing: 0.10em; font-weight: 500; }
+  .block p { font-size: 14.5px; letter-spacing: 0.04em; line-height: 1.95; color: var(--ink); }
+  .block ul { list-style: none; margin-top: 6px; }
+  .block li { position: relative; padding-left: 20px; margin-bottom: 10px; font-size: 14.5px; line-height: 1.85; }
+  .block li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+  .read { margin-bottom: 11px; font-size: 14.5px; line-height: 1.9; }
+  .read__k { color: var(--accent-deep); font-weight: 500; margin-right: 10px; letter-spacing: 0.08em; }
+
+  .grace { background: var(--accent-soft); border-radius: 8px; padding: 22px 20px; margin-top: 26px; }
+  .grace p { font-size: 14.5px; line-height: 2.1; letter-spacing: 0.06em; text-align: center; }
+  .tokarada { text-align: center; margin-top: 18px; }
+  .tokarada a { font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 14px;
+    letter-spacing: 0.1em; color: var(--accent-deep); text-decoration: underline; text-underline-offset: 4px; }
+
+  /* 関連コンテンツ（後から差し替え可能・今は空） */
+  .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .link-chip {
+    display: inline-flex; align-items: center; gap: 8px; font-family: inherit; font-size: 13.5px;
+    letter-spacing: 0.04em; color: var(--ink); background: rgba(255,255,255,0.6);
+    border: 1px solid var(--line); border-radius: 999px; padding: 9px 16px; cursor: pointer;
+    text-decoration: none; transition: all .3s;
+  }
+  .link-chip:hover { border-color: var(--accent); background: rgba(255,255,255,0.9); }
+  .link-chip__kind { font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 11px;
+    letter-spacing: 0.1em; color: var(--accent-deep); }
+
+  .foot { text-align: center; padding: 30px 0 56px; }
+  .foot__title { font-family: "Cormorant Garamond", serif; font-weight: 300; font-size: 20px; letter-spacing: 0.3em; color: var(--ink-soft); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <a class="back" href="../index.html" id="topBack">← Be Grace</a>
+    </div>
+
+    <div class="head">
+      <div class="head__name">LOVE BODY</div>
+      <div class="head__copy">受け取り上手な體に還る</div>
+      <div class="head__line"></div>
+    </div>
+
+    <!-- ============ 入口 ============ -->
+    <section id="viewGate">
+      <p class="lead" style="margin:28px auto 4px;max-width:480px">
+        愛も豊かさも、<br>受け取る力からはじまります。
+      </p>
+      <div class="gate">
+        <button class="gate__card" id="goCare">
+          <span class="gate__en">Reading</span>
+          <span class="gate__ja">LOVE BODY診断</span>
+          <span class="gate__copy">今の自分を知り、<br>受け取り上手な體へ整える</span>
+        </button>
+        <button class="gate__card" id="goAisho">
+          <span class="gate__en">Fortune</span>
+          <span class="gate__ja">相性占い</span>
+          <span class="gate__copy">生まれ持った相性を、<br>軽やかに楽しむ</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ============ 相性占い（生年月日・数秘） ============ -->
+    <section id="viewAisho" class="is-hidden">
+      <div class="card">
+        <div class="card__label">Fortune</div>
+        <div class="card__ja">相性占い</div>
+        <p class="lead" style="margin-top:20px">
+          生まれ持った、あなたの愛のかたち。<br>軽やかに、占ってみましょう。
+        </p>
+        <div class="field">
+          <div class="field__label">あなたの生年月日</div>
+          <input class="date-input" id="myDate" type="date" />
+        </div>
+        <div class="field">
+          <div class="field__label">お相手の生年月日（任意）</div>
+          <input class="date-input" id="youDate" type="date" />
+        </div>
+        <div class="controls"><button class="btn btn--primary" id="aishoGo">占う</button></div>
+        <div id="aishoResult"></div>
+      </div>
+      <div class="controls"><button class="back" id="aishoExit">← 入口にもどる</button></div>
+    </section>
+
+    <!-- ============ ② 今のあなたに近いもの ============ -->
+    <section id="viewState" class="is-hidden">
+      <div class="card">
+        <div class="card__label">Now</div>
+        <div class="card__ja">今のあなた</div>
+        <div style="margin-top:26px">
+          <div class="ask">今のあなたに近いもの</div>
+          <div class="ask__sub">いちばん近いものを、ひとつ</div>
+          <div class="choices" id="stateChoices"></div>
+        </div>
+      </div>
+      <div class="controls"><button class="back" id="stateExit">← 入口にもどる</button></div>
+    </section>
+
+    <!-- ============ ③ 本当はどうしたい ============ -->
+    <section id="viewWant" class="is-hidden">
+      <div class="card">
+        <div class="card__label">Wish</div>
+        <div class="card__ja">本当は、どうしたい？</div>
+        <div style="margin-top:26px">
+          <div class="ask">本当は、どうしたい？</div>
+          <div class="ask__sub">こころの声を、ひとつ</div>
+          <div class="choices" id="wantChoices"></div>
+        </div>
+      </div>
+      <div class="controls"><button class="back" id="wantBack">← 状態をえらび直す</button></div>
+    </section>
+
+    <!-- ============ ④⑤ リーディング・今日の整え方 ============ -->
+    <section id="viewResult" class="is-hidden">
+      <div class="card" id="resultCard"></div>
+      <div class="controls">
+        <button class="btn btn--ghost" id="resultAgain">もう一度みる</button>
+      </div>
+      <div class="controls" style="margin-top:14px"><button class="back" id="resultExit">← 入口にもどる</button></div>
+    </section>
+
+    <div class="foot"><div class="foot__title">Be Grace</div></div>
+  </div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* =========================================================
+     ▼▼▼ 関連コンテンツ（おすすめリンク枠）▼▼▼
+     診断結果（状態）ごとに、講座・資料・動画のリンクを表示できます。
+     ・後から自由に追加・削除・差し替えできます（その行のURLを変えるだけ）。
+     ・Vimeo（動画/ショーケース）・YouTube・Googleスライド/ドキュメント/ドライブ等に対応。
+     ・空の状態は「つながる場所」自体を表示しません。
+       例:
+       tanoshi: [
+         { title: "愛を循環させるワーク", url: "https://vimeo.com/showcase/0000000" }
+       ]
+     ========================================================= */
+  var LINKS = {
+    kincho:   [],
+    kizukai:  [],
+    ganbari:  [],
+    nomikomi: [],
+    muri:     [],
+    odayaka:  [],
+    anshin:   [],
+    uketore:  [],
+    jibun:    [],
+    tanoshi:  []
+  };
+  /* ▲▲▲ ここまで ▲▲▲ */
+
+  // ===== 今のあなたに近いもの（②・ネガ/フラット/ポジをバランスよく） =====
+  var STATES = [
+    { k: "kincho",   label: "少し緊張している" },
+    { k: "kizukai",  label: "気を使っている" },
+    { k: "ganbari",  label: "頑張りすぎている" },
+    { k: "nomikomi", label: "言いたいことを飲み込んでいる" },
+    { k: "muri",     label: "少し無理している" },
+    { k: "odayaka",  label: "穏やかに過ごせている" },
+    { k: "anshin",   label: "安心している" },
+    { k: "uketore",  label: "愛を受け取れている" },
+    { k: "jibun",    label: "自分らしくいられる" },
+    { k: "tanoshi",  label: "今の関係を楽しめている" }
+  ];
+
+  // ===== 本当はどうしたい？（③） =====
+  var WANTS = [
+    { k: "anshin",   label: "安心したい" },
+    { k: "uketoru",  label: "受け取りたい" },
+    { k: "amae",     label: "甘えたい" },
+    { k: "sunao",    label: "素直に伝えたい" },
+    { k: "kyori",    label: "距離を取りたい" },
+    { k: "taisetsu", label: "自分を大切にしたい" },
+    { k: "ajiwau",   label: "今の幸せを味わいたい" },
+    { k: "motto",    label: "もっと楽しみたい" },
+    { k: "junkan",   label: "愛を循環させたい" },
+    { k: "sodateru", label: "このまま大切に育てたい" }
+  ];
+
+  // ===== 状態ごとのリーディング（④）＋今日の整え方（⑤） =====
+  // 重くしない・問題探しにしない。ポジティブな状態は「味わう・めぐらせる」へ。
+  var STATE_DATA = {
+    kincho: {
+      kanjo: "ちょっと気を張って、肩に力が入っているみたい。",
+      shikou: "「ちゃんとしなきゃ」が、そっと顔を出している。",
+      shinkei: "アクセルが少しオン。ゆるめどきのサイン。",
+      karada: "肩・首がかたく、息が浅め。",
+      careLead: "ふっと力をぬくと、ちょうどよくなります。",
+      care: ["肩を、すとんと落とす", "息を長めに吐く", "あたたかいものを、ひと口"]
+    },
+    kizukai: {
+      kanjo: "まわりを思いやれる、やさしい状態。ちょっと自分は後回し。",
+      shikou: "人の気持ちに、よく気づいている。",
+      shinkei: "アンテナが外向き。自分にも少し戻すと楽。",
+      karada: "背中・首が、かたくなりがち。",
+      careLead: "アンテナを、自分にもひとつ向けて。",
+      care: ["首と背中をゆるめる", "ひとりの時間を少し", "深呼吸を、ゆっくり3回"]
+    },
+    ganbari: {
+      kanjo: "前を向く力がある。ちょっと走りすぎかも。",
+      shikou: "「もっと」と、自分に優しくしわすれている。",
+      shinkei: "ずっと稼働中。休符を、ひとつ。",
+      karada: "全身に、余分な力み。",
+      careLead: "やめても大丈夫。ひとつ、力をぬいて。",
+      care: ["首を、ゆっくり回す", "頭の中を、紙に書き出す", "遠くの景色を、ぼーっと見る"]
+    },
+    nomikomi: {
+      kanjo: "本音が、喉のあたりで待っている。",
+      shikou: "「今じゃないかな」と、そっとブレーキ。",
+      shinkei: "声が出にくい、控えめモード。",
+      karada: "喉・あごが、つまりがち。",
+      careLead: "一気に言わなくて大丈夫。まず紙の上で、声にして。",
+      care: ["呼吸を整える", "本音を、書き出す", "小さく、ひとつ伝えてみる"]
+    },
+    muri: {
+      kanjo: "本当は、ちょっと休みたいサイン。",
+      shikou: "「これくらい平気」と、感覚にフタ。",
+      shinkei: "そろそろ、充電のころ。",
+      karada: "體が重め、疲れが残りがち。",
+      careLead: "今日はひとつ、手放していい日に。",
+      care: ["呼吸を整える", "本音を、書き出す", "今日はひとつ、やめてみる"]
+    },
+    odayaka: {
+      kanjo: "心がなぎ。落ち着いた、いい状態。",
+      shikou: "余白があって、視界がクリア。",
+      shinkei: "ゆるんで、ちょうどいいバランス。",
+      karada: "呼吸が深く、體がやわらか。",
+      careLead: "この心地よさを、たっぷり味わって。",
+      care: ["ゆっくり深呼吸して、味わう", "好きな景色や音に、ひたる", "この感覚を、體に覚えさせる"]
+    },
+    anshin: {
+      kanjo: "ほっと満ちている、あたたかい状態。",
+      shikou: "信じられている、ゆるやかな心。",
+      shinkei: "リラックス優位。受け取りやすい時。",
+      karada: "胸がひらいて、息がふかい。",
+      careLead: "ひらいた今こそ、受け取りどき。",
+      care: ["胸をひらいて、深呼吸", "うれしかったことを、書き出す", "誰かに「ありがとう」を伝える"]
+    },
+    uketore: {
+      kanjo: "愛や豊かさが、ちゃんと届いている。",
+      shikou: "「受け取っていい」と、自分を許せている。",
+      shinkei: "ひらいて、めぐっている状態。",
+      karada: "みぞおち・胸が、やわらかい。",
+      careLead: "受け取ったぶん、めぐらせていきましょう。",
+      care: ["受け取ったものを、書き出す", "誰かに、小さく分けてみる", "満ちた感覚を、體で味わう"]
+    },
+    jibun: {
+      kanjo: "等身大で、のびのび。とてもいい状態。",
+      shikou: "人と比べず、自分の真ん中にいる。",
+      shinkei: "安定して、軸がある。",
+      karada: "呼吸が自然で、姿勢がらく。",
+      careLead: "この“わたし”を、もっと味わって。",
+      care: ["好きなことを、ひとつする", "自分のいいところを、書き出す", "のびをして、體をひらく"]
+    },
+    tanoshi: {
+      kanjo: "つながりを、軽やかに楽しめている。",
+      shikou: "相手も自分も、責めずにいられる。",
+      shinkei: "ゆるんで、あそびがある。",
+      karada: "ふっと笑える、やわらかさ。",
+      careLead: "楽しい今を、循環させていきましょう。",
+      care: ["うれしい瞬間を、味わう", "感謝を、言葉にして伝える", "この心地よさを、體に記憶する"]
+    }
+  };
+
+  // ===== 本音ごとの、こころの向き（③） =====
+  var WANT_MSG = {
+    anshin:   "安心は、もらう前に、自分の體がゆるむことから。ひと呼吸から始まります。",
+    uketoru:  "受け取るコツは、力をぬくこと。ゆるんだ體に、ちゃんと入ってきます。",
+    amae:     "甘えたい気持ちは、自然な願い。まず自分が、自分に甘えていい。",
+    sunao:    "素直さは、整った體から出てきます。伝える前に、まず一呼吸。",
+    kyori:    "距離をとるのは、自分を大切にする知恵。ひとり時間で、體を戻して。",
+    taisetsu: "大切にする第一歩は、體の声を、ひとつ聞いてあげること。",
+    ajiwau:   "幸せは、味わうほど深まります。今ここを、體で感じて。",
+    motto:    "もっと楽しむコツは、ゆるむこと。軽い體に、よろこびはめぐります。",
+    junkan:   "受け取って、めぐらせる。あなたを通って、愛は循環していきます。",
+    sodateru: "育てるのは、相手より先に、自分との関係。小さなケアから。"
+  };
+
+  var GRACE_MESSAGE =
+    "愛も豊かさも、受け取る力からはじまります。<br>" +
+    "満ちている日も、ゆれた日も、どちらも愛しい。<br>" +
+    "あなたの體がゆるむほど、愛はめぐっていきます。<br>" +
+    "今日のひとつを、體で味わって🩶";
+
+  // ===== 画面の切り替え =====
+  var views = ["Gate", "Aisho", "State", "Want", "Result"];
+  function show(name) {
+    views.forEach(function (v) {
+      document.getElementById("view" + v).classList.toggle("is-hidden", v.toLowerCase() !== name);
+    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  // ===== ②③ 選択肢の描画 =====
+  var chosenState = null;
+  function renderChoices(boxId, list, onPick) {
+    var box = document.getElementById(boxId); box.innerHTML = "";
+    list.forEach(function (item) {
+      var b = document.createElement("button"); b.className = "choice"; b.textContent = item.label;
+      b.addEventListener("click", function () { onPick(item.k); });
+      box.appendChild(b);
+    });
+  }
+
+  // ===== リンク（おすすめコンテンツ枠） =====
+  function parseMedia(raw) {
+    var url = (raw || "").trim();
+    if (!url) return null;
+    if (/youtu\.?be/.test(url)) return { kind: "Movie", src: url };
+    if (/vimeo\.com/.test(url)) return { kind: "Movie", src: url };
+    if (/docs\.google\.com\/presentation/.test(url)) return { kind: "Slide", src: url };
+    if (/docs\.google\.com|drive\.google\.com|forms\.gle/.test(url)) return { kind: "Doc", src: url };
+    if (/\.(mp3|m4a|ogg|wav|aac)(\?.*)?$/i.test(url)) return { kind: "Sound", src: url };
+    return { kind: "Link", src: url };
+  }
+  function renderLinks(stateKey) {
+    var items = (LINKS[stateKey] || []).filter(function (it) { return it && it.url; });
+    if (!items.length) return null;
+    var wrap = document.createElement("div"); wrap.className = "links";
+    items.forEach(function (it) {
+      var info = parseMedia(it.url);
+      var a = document.createElement("a"); a.className = "link-chip";
+      a.href = info.src; a.target = "_blank"; a.rel = "noopener";
+      var kind = document.createElement("span"); kind.className = "link-chip__kind"; kind.textContent = info.kind;
+      var t = document.createElement("span"); t.textContent = it.title || "ひらく";
+      a.appendChild(kind); a.appendChild(t);
+      wrap.appendChild(a);
+    });
+    return wrap;
+  }
+
+  // ===== ④⑤ 結果の描画 =====
+  function block(en, ja, bodyNode) {
+    var b = document.createElement("div"); b.className = "block";
+    var h = document.createElement("div"); h.className = "block__h";
+    var e = document.createElement("span"); e.className = "block__en"; e.textContent = en;
+    var j = document.createElement("span"); j.className = "block__ja"; j.textContent = ja;
+    h.appendChild(e); h.appendChild(j); b.appendChild(h); b.appendChild(bodyNode);
+    return b;
+  }
+  function pEl(text) { var p = document.createElement("p"); p.textContent = text; return p; }
+  function readLine(k, text) {
+    var p = document.createElement("p"); p.className = "read";
+    var s = document.createElement("span"); s.className = "read__k"; s.textContent = k;
+    p.appendChild(s); p.appendChild(document.createTextNode(text));
+    return p;
+  }
+  function ulEl(arr) {
+    var ul = document.createElement("ul");
+    arr.forEach(function (x) { var li = document.createElement("li"); li.textContent = x; ul.appendChild(li); });
+    return ul;
+  }
+
+  function renderResult(stateKey, wantKey) {
+    var st = STATES.filter(function (s) { return s.k === stateKey; })[0];
+    var d = STATE_DATA[stateKey];
+    var wt = WANTS.filter(function (w) { return w.k === wantKey; })[0];
+    var card = document.getElementById("resultCard");
+    card.innerHTML = "";
+
+    var head = document.createElement("div"); head.className = "result__type";
+    head.innerHTML =
+      '<div class="result__crown">Love Body Reading</div>' +
+      '<div class="result__name">' + st.label + '</div>' +
+      '<div class="result__lead">本当は「' + wt.label + '」あなたへ</div>';
+    card.appendChild(head);
+
+    // ④ リーディング
+    var read = document.createElement("div");
+    read.appendChild(readLine("感情", d.kanjo));
+    read.appendChild(readLine("思考", d.shikou));
+    read.appendChild(readLine("神経", d.shinkei));
+    read.appendChild(readLine("體", d.karada));
+    card.appendChild(block("Reading", "いまの、あなた", read));
+
+    // こころの向き（③）
+    card.appendChild(block("Wish", "こころの向き", pEl(WANT_MSG[wantKey])));
+
+    // ⑤ 今日の整え方
+    var careWrap = document.createElement("div");
+    careWrap.appendChild(pEl(d.careLead));
+    careWrap.appendChild(ulEl(d.care));
+    card.appendChild(block("Care", "今日の整え方", careWrap));
+
+    // つながる場所（リンク枠・空なら出さない）
+    var links = renderLinks(stateKey);
+    if (links) card.appendChild(block("Next", "つながる場所", links));
+
+    // 體に戻す ＋ Graceメッセージ
+    var grace = document.createElement("div"); grace.className = "grace";
+    var gp = document.createElement("p"); gp.innerHTML = GRACE_MESSAGE;
+    grace.appendChild(gp);
+    card.appendChild(grace);
+
+    var tk = document.createElement("div"); tk.className = "tokarada";
+    tk.innerHTML = '<a href="karada.html">→ 體のお部屋で、ととのえる</a>';
+    card.appendChild(tk);
+  }
+
+  // ===== 相性占い（生年月日・数秘ライフナンバー） =====
+  // 生まれ持った「愛のかたち」を、軽やかに楽しむ。占い＝あそびとして。
+  var FORTUNE = {
+    1: { name: "ひらく人",     desc: "自分から愛を切りひらく、芯のある人。引っぱる力と情熱を生まれ持っています。", tip: "力をゆるめて、人に委ねるほど、もっと受け取れます。" },
+    2: { name: "よりそう人",   desc: "共感とつながりの名手。そばにいると、ふっと安心される人。", tip: "相手だけでなく、自分の本音も、そっと大切に。" },
+    3: { name: "たのしむ人",   desc: "明るさで愛を循環させる、表現ゆたかな人。場を華やかにします。", tip: "楽しさの奥にある、深い感情も味わってあげて。" },
+    4: { name: "ととのえる人", desc: "誠実で安定。安心の土台を、こつこつ築ける人。", tip: "ときどき、ゆるみとあそびを、自分に許してあげて。" },
+    5: { name: "自由な人",     desc: "変化と冒険を愛する、軽やかでしなやかな人。", tip: "落ち着いて根を張る時間も、心地よさになります。" },
+    6: { name: "愛する人",     desc: "包み、与える愛のゆたかな人。あたたかい家庭的なエネルギー。", tip: "与えるだけでなく、受け取ることも、愛のうち。" },
+    7: { name: "深める人",     desc: "本質を見つめる、内省的で静かな人。心に深い世界を持っています。", tip: "心をひらいて分かち合うと、つながりが深まります。" },
+    8: { name: "豊かさの人",   desc: "力強く、豊かさを引き寄せる人。確かな実現力があります。", tip: "やわらかさと、委ねる心で、もっとめぐります。" },
+    9: { name: "大きな愛の人", desc: "包容力ゆたかな、博愛の人。広い視野で人を受けとめます。", tip: "みんなへの愛とおなじだけ、自分にも愛を。" }
+  };
+  function lifeNumber(dateStr) {
+    var digits = (dateStr || "").replace(/[^0-9]/g, "");
+    if (digits.length < 8) return null;
+    var n = 0; for (var i = 0; i < digits.length; i++) n += parseInt(digits[i], 10);
+    while (n > 9) { n = String(n).split("").reduce(function (a, c) { return a + parseInt(c, 10); }, 0); }
+    return n || null;
+  }
+  var HIRAKU = [1, 3, 5, 8];
+  function compatMsg(a, b) {
+    if (a === b) return "そっくりなリズムを持つ二人。安心とラクさの相性です。たまに新しい風を入れると、もっと輝きます。";
+    var sameGroup = (HIRAKU.indexOf(a) >= 0) === (HIRAKU.indexOf(b) >= 0);
+    if (sameGroup) return "似た空気感で、わかり合いやすい二人。その心地よさを、大切にしてください。";
+    return "「ひらく力」と「つつむ力」。たがいを補い合える、いっしょに育っていく相性です。";
+  }
+  var aishoResult = document.getElementById("aishoResult");
+  document.getElementById("aishoGo").addEventListener("click", function () {
+    var myN = lifeNumber(document.getElementById("myDate").value);
+    aishoResult.innerHTML = "";
+    if (!myN) {
+      var hint = document.createElement("p"); hint.className = "ask__sub"; hint.style.marginTop = "18px";
+      hint.textContent = "あなたの生年月日を選んでください。";
+      aishoResult.appendChild(hint); return;
+    }
+    var me = FORTUNE[myN];
+    var head = document.createElement("div"); head.className = "result__type"; head.style.marginTop = "28px";
+    head.innerHTML =
+      '<div class="result__crown">Your Love Body Type</div>' +
+      '<div class="result__name">' + me.name + '</div>' +
+      '<div class="fnum">Life Number ' + myN + '</div>';
+    aishoResult.appendChild(head);
+    aishoResult.appendChild(block("Nature", "生まれ持った愛のかたち", pEl(me.desc)));
+    aishoResult.appendChild(block("Receive", "受け取りのコツ", pEl(me.tip)));
+
+    var youN = lifeNumber(document.getElementById("youDate").value);
+    if (youN) {
+      var you = FORTUNE[youN];
+      var wrap = document.createElement("div");
+      wrap.appendChild(pEl("あなた（" + me.name + "）×　お相手（" + you.name + "）"));
+      wrap.appendChild(pEl(compatMsg(myN, youN)));
+      aishoResult.appendChild(block("Match", "お相手との相性", wrap));
+    }
+
+    var note = document.createElement("p"); note.className = "ask__sub"; note.style.marginTop = "20px";
+    note.textContent = "※遊びとして、軽やかに楽しんでください🩶";
+    aishoResult.appendChild(note);
+    aishoResult.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  // ===== 入口・遷移 =====
+  document.getElementById("goCare").addEventListener("click", function () { show("state"); });
+  document.getElementById("goAisho").addEventListener("click", function () { show("aisho"); });
+  document.getElementById("aishoExit").addEventListener("click", function () { show("gate"); });
+  document.getElementById("stateExit").addEventListener("click", function () { show("gate"); });
+  document.getElementById("wantBack").addEventListener("click", function () { show("state"); });
+  document.getElementById("resultExit").addEventListener("click", function () { show("gate"); });
+  document.getElementById("resultAgain").addEventListener("click", function () { show("state"); });
+
+  renderChoices("stateChoices", STATES, function (k) { chosenState = k; show("want"); });
+  renderChoices("wantChoices", WANTS, function (k) { renderResult(chosenState, k); show("result"); });
+
+  show("gate");
+})();
+</script>
+</body>
+</html>
