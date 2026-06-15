@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#F7F2EC" />
+    <meta name="theme-color" content="#FFF5F4" />
     <title>Be Grace ─ 今日の私診断</title>
     <meta
       name="description"
@@ -41,21 +41,24 @@
    ============================================================ */
 
 :root {
-  --cream: #f6f1ea;
-  --cream-deep: #ece2d4;
-  --ivory: #fdfbf7;
-  --ink: #443c34;
-  --ink-soft: #8c8178;
-  --gold: #c2a368;
-  --gold-deep: #a8863f;
-  --gold-light: #e3cf9f;
-  --line: #e8decf;
+  --cream: #fdf5f4;
+  --cream-deep: #f9ece9;
+  --ivory: #ffffff;
+  --ink: #4a3d42;
+  --ink-soft: #7a6a70;
+  --gold: #c9a85f;
+  --gold-deep: #b88a32;
+  --gold-light: #f4e3b6;
+  --rose: #e6a6b4;
+  --rose-soft: #f6d2da;
+  --rosegold: #e3b79e;
+  --line: #f0dcd4;
   --radius: 26px;
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
-  --shadow: 0 30px 60px -24px rgba(150, 122, 80, 0.28);
-  --shadow-card: 0 26px 54px -24px rgba(150, 122, 80, 0.32), 0 4px 14px -8px rgba(150, 122, 80, 0.16);
-  --shadow-soft: 0 16px 38px -22px rgba(150, 122, 80, 0.24);
-  --shadow-btn: 0 16px 30px -10px rgba(168, 134, 63, 0.45);
+  --shadow: 0 30px 60px -24px rgba(205, 165, 170, 0.30);
+  --shadow-card: 0 26px 54px -24px rgba(205, 165, 170, 0.32), 0 4px 14px -8px rgba(205, 165, 170, 0.18);
+  --shadow-soft: 0 16px 38px -22px rgba(205, 165, 170, 0.26);
+  --shadow-btn: 0 16px 30px -10px rgba(220, 160, 170, 0.45);
 }
 
 * {
@@ -73,7 +76,7 @@ body {
   font-family: 'Noto Sans JP', sans-serif;
   color: var(--ink);
   background:
-    radial-gradient(150% 65% at 50% -14%, #fefcf7 0%, var(--cream) 50%, var(--cream-deep) 100%) fixed;
+    radial-gradient(150% 65% at 50% -14%, #ffffff 0%, var(--cream) 52%, var(--cream-deep) 100%) fixed;
   -webkit-font-smoothing: antialiased;
   line-height: 1.85;
   letter-spacing: 0.02em;
@@ -152,7 +155,7 @@ body::before {
     opacity 0.3s;
 }
 .btn--primary {
-  background: linear-gradient(135deg, #e2c585 0%, #c2a368 46%, #a8863f 100%);
+  background: linear-gradient(135deg, #e6a6b4 0%, #e3b79e 52%, #c9a85f 100%);
   color: #fffdf8;
   box-shadow: var(--shadow-btn), inset 0 1px 0 rgba(255, 255, 255, 0.38);
   text-shadow: 0 1px 1px rgba(120, 90, 40, 0.16);
@@ -450,7 +453,7 @@ body::before {
   transform: translateY(-1px);
 }
 .chip.is-on {
-  background: linear-gradient(135deg, #e2c585, var(--gold-deep));
+  background: linear-gradient(135deg, #e3c477, var(--gold-deep));
   color: #fffdf8;
   border-color: transparent;
   box-shadow:
@@ -459,7 +462,7 @@ body::before {
 }
 /* tone でほのかに色味を分ける */
 .chip[data-tone='shine'].is-on {
-  background: linear-gradient(135deg, #d9b96f, #c79a3f);
+  background: linear-gradient(135deg, #e3c477, #c9a85f);
 }
 .chip.is-disabled {
   opacity: 0.4;
