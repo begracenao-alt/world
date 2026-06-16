@@ -1473,11 +1473,11 @@ function diagnose(selectedIds) {
     oneshot: {
       limit: 'days', max: 1, // 1日（その日は何度でも・翌日からロック）
       inviteLead:
-        '今のあなたに合う整え方を、一緒に見つけませんか？🤍<br />この診断を引き続き使える、特別なご案内があります。',
+        '今のあなたに合う整え方を、一緒に見つけませんか？🩶<br />この診断を引き続き使える、特別なご案内があります。',
       ctaLabel: 'ご案内を見る',
       ctaUrl: CFG.CONSULT_URL || '#',
       lockLead:
-        '無料でのお試しは、ここまで🤍<br />今のあなたに合う整え方を、一緒に見つけませんか？<br />この診断を引き続き使える、特別なご案内があります。',
+        '無料でのお試しは、ここまで🩶<br />今のあなたに合う整え方を、一緒に見つけませんか？<br />この診断を引き続き使える、特別なご案内があります。',
     },
     trial30: {
       limit: 'days', max: 30, // フロントエンド（ミニ講座）用・30日
@@ -1556,7 +1556,7 @@ function diagnose(selectedIds) {
     const entries = Object.keys(log)
       .filter((d) => !startStr || d >= startStr)
       .map((d) => log[d]);
-    if (!entries.length) return '30日間、そっと積み重ねた日々に、ありがとう🤍';
+    if (!entries.length) return '30日間、そっと積み重ねた日々に、ありがとう🩶';
     const cnt = {};
     let suf = 0;
     let bea = 0;
@@ -1572,9 +1572,9 @@ function diagnose(selectedIds) {
     });
     const topName = (typeof TYPES !== 'undefined' && TYPES[topId] && TYPES[topId].name) || '';
     let closing;
-    if (suf > bea) closing = '立ち止まって、自分を整えることを大切にできた1ヶ月でした。その積み重ねが、これからのあなたを支えていきます🤍';
-    else if (bea > suf) closing = '軽やかに、前へ進めた1ヶ月でした。この流れを、これからも大切にしてくださいね🤍';
-    else closing = '整える日も、進む日も、どちらも大切にできた1ヶ月でした🤍';
+    if (suf > bea) closing = '立ち止まって、自分を整えることを大切にできた1ヶ月でした。その積み重ねが、これからのあなたを支えていきます🩶';
+    else if (bea > suf) closing = '軽やかに、前へ進めた1ヶ月でした。この流れを、これからも大切にしてくださいね🩶';
+    else closing = '整える日も、進む日も、どちらも大切にできた1ヶ月でした🩶';
     return (
       '<span style="font-family:\'Cormorant Garamond\',serif;letter-spacing:.22em;font-size:12px;text-transform:uppercase;color:var(--gold-deep);display:block;margin-bottom:18px">Your 30 Days</span>' +
       'この1ヶ月、いちばん多かったのは<br>「<strong>' + topName + '</strong>」でした。<br><br>' +
@@ -1595,8 +1595,8 @@ function diagnose(selectedIds) {
     if (!n) return '';
 
     const dayLine = n === 1
-      ? '今日から、はじまりました🤍'
-      : 'これまで <strong>' + n + '日</strong>、積み重ねました🤍';
+      ? '今日から、はじまりました🩶'
+      : 'これまで <strong>' + n + '日</strong>、積み重ねました🩶';
 
     let trend = '';
     if (n % 14 === 0) {                    // 14日（2週間）ごとの節目だけ
@@ -1634,10 +1634,10 @@ function diagnose(selectedIds) {
       const stats = statsRows ? '<div class="type-stats">' + statsRows + '</div>' : '';
       trend =
         '<p class="verdict" style="margin-top:26px">この14日間の傾向</p>' +
-        '<p class="type-stats__round">' + round + '回目の節目🤍</p>' +
+        '<p class="type-stats__round">' + round + '回目の節目🩶</p>' +
         (tendency ? '<p class="block-body">' + tendency + '</p>' : '') +
         stats +
-        '<p class="type-stats__note">くらべるものではなく、今のあなたを知るヒントに🤍</p>';
+        '<p class="type-stats__note">くらべるものではなく、今のあなたを知るヒントに🩶</p>';
     }
 
     return (
@@ -1904,7 +1904,7 @@ function diagnose(selectedIds) {
     const doorLine = `<p class="door-line">${phr('毎日の小さな選択が、未来を作る。今日のあなたが、どんな状態でも大丈夫。')}</p>`;
     const doorInvite =
       mode === 'member' || mode === 'trial30'
-        ? '<p class="door-invite">また明日も、整えにきてくださいね🤍</p>'
+        ? '<p class="door-invite">また明日も、整えにきてくださいね🩶</p>'
         : `<p class="door-invite">${phr(cfg.inviteLead)}</p>
            <a class="btn btn--soft door-cta" href="${cfg.ctaUrl}" target="_blank" rel="noopener">${cfg.ctaLabel}</a>`;
     const doorHtml = `<div class="result-door"><div class="door-mark">❀</div>${doorLine}${doorInvite}</div>`;
