@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Diary｜Be Grace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ivory: #f6f1e9;
+    --ivory-deep: #ece3d6;
+    --ink: #3c3833;
+    --ink-soft: #6b645b;
+    --ink-faint: #9a9286;
+    --gold: #b0966a;
+    --line: rgba(60, 56, 51, 0.10);
+    --card: rgba(255, 255, 255, 0.6);
+    --accent: #bb9a93;        /* 歩み — 重ねた日々のローズ・トープ */
+    --accent-deep: #9a7a73;
+    --accent-soft: rgba(187, 154, 147, 0.16);
+    --shadow: 0 18px 50px -28px rgba(70, 60, 45, 0.45);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+    color: var(--ink);
+    background:
+      radial-gradient(120% 80% at 50% -10%, #fbf8f2 0%, rgba(251,248,242,0) 55%),
+      linear-gradient(180deg, var(--ivory) 0%, var(--ivory-deep) 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    line-height: 1.9;
+    letter-spacing: 0.04em;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .wrap { width: 100%; max-width: 620px; margin: 0 auto; padding: 0 22px 56px; }
+
+  /* ヘッダー */
+  .top { padding: 26px 0 8px; }
+  .back {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: "Cormorant Garamond", serif; font-style: italic;
+    font-size: 15px; letter-spacing: 0.12em; color: var(--ink-soft);
+    text-decoration: none; transition: color .3s;
+  }
+  .back:hover { color: var(--ink); }
+
+  .head { text-align: center; padding: 26px 0 10px; }
+  .head__name { font-family: "Cormorant Garamond", serif; font-weight: 400; text-transform: uppercase;
+    font-size: clamp(40px, 11vw, 60px); letter-spacing: 0.22em; }
+  .head__copy { margin-top: 10px; font-size: 14px; letter-spacing: 0.22em; color: var(--ink-soft); }
+  .head__line { width: 1px; height: 40px; margin: 18px auto 0;
+    background: linear-gradient(180deg, transparent, var(--accent), transparent); opacity: .7; }
+
+  /* カード共通 */
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 6px;
+    box-shadow: var(--shadow); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    padding: clamp(24px, 5vw, 36px) clamp(20px, 4.5vw, 32px);
+    margin: 24px 0;
+  }
+  .card__label {
+    text-align: center; font-family: "Cormorant Garamond", serif; font-style: italic;
+    font-size: 14px; letter-spacing: 0.28em; color: var(--accent-deep); text-transform: uppercase;
+  }
+  .card__ja { text-align: center; font-size: 13px; letter-spacing: 0.34em; color: var(--ink-faint); margin-top: 6px; margin-bottom: 22px; }
+
+  /* ===== 集計 ===== */
+  .stats { display: flex; }
+  .stat { flex: 1; text-align: center; padding: 4px 6px; }
+  .stat + .stat { border-left: 1px solid var(--line); }
+  .stat__num {
+    font-family: "Cormorant Garamond", serif; font-weight: 300;
+    font-size: clamp(34px, 9vw, 44px); line-height: 1; color: var(--accent-deep);
+  }
+  .stat__num .u { font-size: 14px; color: var(--ink-faint); letter-spacing: .04em; }
+  .stat__lbl { margin-top: 8px; font-size: 11.5px; letter-spacing: 0.22em; color: var(--ink-faint); }
+
+  /* ===== 励まし ===== */
+  .cheer {
+    text-align: center; font-size: 13.5px; letter-spacing: 0.08em; color: var(--ink-soft);
+    line-height: 1.85; margin: -4px 0 2px;
+  }
+
+  /* ===== カレンダー ===== */
+  .calhead { display: flex; align-items: center; justify-content: center; gap: 22px; margin-bottom: 16px; }
+  .calhead .ym { font-size: 17px; letter-spacing: 0.16em; font-weight: 500; min-width: 120px; text-align: center; }
+  .navbtn {
+    border: 1px solid var(--line); background: transparent; color: var(--ink-soft);
+    width: 38px; height: 38px; border-radius: 50%; font-size: 16px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; transition: all .3s;
+    font-family: "Cormorant Garamond", serif;
+  }
+  .navbtn:hover { border-color: var(--accent); color: var(--ink); }
+  .navbtn:active { transform: scale(.9); }
+  .weekrow { display: grid; grid-template-columns: repeat(7,1fr); text-align: center;
+    font-size: 11px; letter-spacing: .06em; color: var(--ink-faint); margin-bottom: 8px; }
+  .grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 5px; }
+  .cell {
+    aspect-ratio: 1/1; border: 1px solid transparent; background: transparent; cursor: pointer;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: var(--ink); position: relative; padding: 0;
+    font-family: "Cormorant Garamond", "Shippori Mincho", serif; transition: all .2s;
+  }
+  .cell.empty { visibility: hidden; }
+  .cell:active { transform: scale(.9); }
+  .cell.today { font-weight: 600; }
+  .cell.today::after { content: ""; position: absolute; bottom: 5px; width: 4px; height: 4px;
+    border-radius: 50%; background: var(--gold); }
+  .cell.partial { background: var(--accent-soft); color: var(--accent-deep); }
+  .cell.full { background: var(--accent); color: #fff; box-shadow: 0 4px 12px -4px rgba(154,122,115,.6); }
+  .cell.full.today::after { background: rgba(255,255,255,.9); }
+  .cell.selected { border-color: var(--accent); }
+  .cell.future { color: #cbc3b7; cursor: default; }
+  .cell.future:active { transform: none; }
+
+  /* ===== 当日パネル ===== */
+  .pdate { text-align: center; font-size: 16px; letter-spacing: 0.1em; margin-bottom: 2px; }
+  .pdate .tag { font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 12px;
+    color: var(--accent-deep); margin-left: 10px; letter-spacing: .14em; }
+  .psub { text-align: center; font-size: 12px; letter-spacing: 0.14em; color: var(--ink-faint); margin-bottom: 20px; }
+  .pillars { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+  .pillar {
+    display: flex; align-items: center; gap: 14px; width: 100%;
+    border: 1px solid var(--line); background: rgba(255,255,255,.5); border-radius: 6px;
+    padding: 14px 16px; cursor: pointer; text-align: left; transition: all .25s;
+    color: var(--ink); font-family: inherit;
+  }
+  .pillar .ptxt { flex: 1; }
+  .pillar .ptxt b { display: block; font-size: 15px; font-weight: 500; letter-spacing: .08em; }
+  .pillar .ptxt span { font-size: 11.5px; color: var(--ink-faint); letter-spacing: .04em; }
+  .pillar .chk { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center; font-size: 13px; color: #fff;
+    flex-shrink: 0; transition: all .25s; }
+  .pillar.on { border-color: var(--accent); background: var(--accent-soft); }
+  .pillar.on .chk { background: var(--accent); border-color: var(--accent); }
+
+  .memolbl { font-size: 12px; letter-spacing: 0.16em; color: var(--ink-faint); margin-bottom: 10px;
+    display: flex; align-items: baseline; justify-content: space-between; }
+  .memolbl .en { font-family: "Cormorant Garamond", serif; font-style: italic; letter-spacing: .14em;
+    color: var(--accent-deep); font-size: 12.5px; }
+  .memo { width: 100%; border: 1px solid var(--line); border-radius: 6px; padding: 16px 16px;
+    font-size: 14px; font-family: inherit; color: var(--ink); resize: vertical; min-height: 190px;
+    background: rgba(255,255,255,.5); line-height: 2.0; }
+  .memo:focus { outline: none; border-color: var(--accent); }
+  .saved { text-align: center; font-size: 11.5px; letter-spacing: .2em; color: var(--accent-deep);
+    height: 18px; margin-top: 10px; opacity: 0; transition: opacity .25s; }
+  .saved.show { opacity: 1; }
+
+  /* ===== バックアップ ===== */
+  .backup { text-align: center; margin-top: 8px; }
+  .backup summary { font-family: "Cormorant Garamond", serif; font-style: italic;
+    font-size: 13px; letter-spacing: 0.16em; color: var(--ink-faint); cursor: pointer; list-style: none; }
+  .backup summary::-webkit-details-marker { display: none; }
+  .backup .btns { display: flex; gap: 12px; margin-top: 16px; }
+  .btn { flex: 1; font-family: inherit; font-size: 13px; letter-spacing: 0.12em; cursor: pointer;
+    border-radius: 999px; padding: 12px; transition: all .3s; border: 1px solid var(--accent); }
+  .btn--primary { background: var(--accent); color: #fff; }
+  .btn--primary:hover { background: var(--accent-deep); border-color: var(--accent-deep); }
+  .btn--ghost { background: transparent; color: var(--ink-soft); border-color: var(--line); }
+  .btn--ghost:hover { border-color: var(--accent); color: var(--ink); }
+  .backup .note { font-size: 11.5px; letter-spacing: .04em; color: var(--ink-faint);
+    margin-top: 14px; line-height: 1.85; }
+
+  @media (max-width: 430px) {
+    .wrap { padding: 0 16px 48px; }
+    .card { padding: 22px 16px; }
+    .grid { gap: 4px; }
+    .pillar { padding: 13px 14px; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <a class="back" href="../index.html">← Be Grace</a>
+    </div>
+
+    <div class="head">
+      <div class="head__name">Diary</div>
+      <div class="head__copy">重ねた日々を、綴る</div>
+      <div class="head__line"></div>
+    </div>
+
+    <!-- ===== 集計 ===== -->
+    <section class="card">
+      <div class="stats">
+        <div class="stat">
+          <div class="stat__num"><span id="streak">0</span><span class="u"> 日</span></div>
+          <div class="stat__lbl">連続</div>
+        </div>
+        <div class="stat">
+          <div class="stat__num"><span id="monthDone">0</span><span class="u"> /<span id="monthTotal">0</span></span></div>
+          <div class="stat__lbl">今月</div>
+        </div>
+        <div class="stat">
+          <div class="stat__num"><span id="totalDone">0</span><span class="u"> 日</span></div>
+          <div class="stat__lbl">合計</div>
+        </div>
+      </div>
+      <div class="cheer" id="cheer" style="margin-top:22px;">今日のわたしを、整えた印を残しましょう。</div>
+    </section>
+
+    <!-- ===== カレンダー ===== -->
+    <section class="card">
+      <div class="card__label">Calendar</div>
+      <div class="card__ja">整えた日に、印がともる</div>
+      <div class="calhead">
+        <button class="navbtn" id="prev" aria-label="前の月">‹</button>
+        <div class="ym" id="ym">2026年6月</div>
+        <button class="navbtn" id="next" aria-label="次の月">›</button>
+      </div>
+      <div class="weekrow">
+        <div>日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div>土</div>
+      </div>
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <!-- ===== 当日の記録 ===== -->
+    <section class="card">
+      <div class="pdate" id="pdate">6月15日（日）<span class="tag">today</span></div>
+      <div class="psub">整えたものに触れて、今日のことを綴る（自動で残ります）</div>
+      <div class="pillars">
+        <button class="pillar" data-key="karada">
+          <span class="ptxt"><b>體（からだ）</b><span>セルフ骨格・巡り・姿勢</span></span>
+          <span class="chk">✓</span>
+        </button>
+        <button class="pillar" data-key="kokoro">
+          <span class="ptxt"><b>心（こころ）</b><span>マインドセット・感情のケア</span></span>
+          <span class="chk">✓</span>
+        </button>
+        <button class="pillar" data-key="mirai">
+          <span class="ptxt"><b>未来（みらい）</b><span>女性性・なりたい自分</span></span>
+          <span class="chk">✓</span>
+        </button>
+      </div>
+      <div class="memolbl"><span>今日の日記</span><span class="en">today's note</span></div>
+      <textarea class="memo" id="memo" placeholder="今日のこと、気づいたこと、うれしかったこと、からだの変化…&#10;思うままに、自由に綴ってください。"></textarea>
+      <div class="saved" id="saved">残しました</div>
+    </section>
+
+    <!-- ===== バックアップ ===== -->
+    <details class="backup card">
+      <summary>data — バックアップ・引き継ぎ</summary>
+      <div class="btns">
+        <button class="btn btn--primary" id="export">保存（書き出し）</button>
+        <button class="btn btn--ghost" id="importBtn">戻す（読み込み）</button>
+        <input type="file" id="importFile" accept="application/json" style="display:none">
+      </div>
+      <p class="note">
+        記録はこの端末（スマホ／PC）の中に、そっと保存されます。<br>
+        機種変更の前や念のために「保存」でファイルに書き出し、<br>
+        新しい端末では「戻す」で読み込めば引き継げます。
+      </p>
+    </details>
+
+  </div>
+
+<script>
+/* =========================================================
+   Be Grace ── 歩み（セルフケアカレンダー）
+   ・記録はこの端末（localStorage）に保存＝サーバー不要・無料・壊れない
+   ・データ構造: records["YYYY-MM-DD"] = {karada,kokoro,mirai, memo}
+   ========================================================= */
+
+const STORE_KEY = "begrace_selfcare_v1";
+const PILLARS = ["karada","kokoro","mirai"];
+const WD = ["日","月","火","水","木","金","土"];
+
+function loadAll(){
+  try{ return JSON.parse(localStorage.getItem(STORE_KEY)) || {records:{}}; }
+  catch(e){ return {records:{}}; }
+}
+function saveAll(data){ localStorage.setItem(STORE_KEY, JSON.stringify(data)); }
+let DB = loadAll();
+
+function ymd(d){
+  const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,"0"), day=String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
+}
+function parseYmd(s){ const[y,m,d]=s.split("-").map(Number); return new Date(y,m-1,d); }
+const TODAY = new Date(); TODAY.setHours(0,0,0,0);
+const TODAY_S = ymd(TODAY);
+
+function isDone(rec){ return !!rec && PILLARS.some(k=>rec[k]); }
+function isFull(rec){ return !!rec && PILLARS.every(k=>rec[k]); }
+
+let viewYear = TODAY.getFullYear();
+let viewMonth = TODAY.getMonth();
+let selected = TODAY_S;
+
+function renderCalendar(){
+  document.getElementById("ym").textContent = `${viewYear}年${viewMonth+1}月`;
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+  const first = new Date(viewYear, viewMonth, 1);
+  const startWd = first.getDay();
+  const daysInMonth = new Date(viewYear, viewMonth+1, 0).getDate();
+
+  for(let i=0;i<startWd;i++){
+    const c=document.createElement("div"); c.className="cell empty"; grid.appendChild(c);
+  }
+  for(let day=1; day<=daysInMonth; day++){
+    const d = new Date(viewYear, viewMonth, day);
+    const key = ymd(d);
+    const rec = DB.records[key];
+    const isFuture = d > TODAY;
+
+    const btn = document.createElement("button");
+    btn.className = "cell";
+    if(isFull(rec)) btn.classList.add("full");
+    else if(isDone(rec)) btn.classList.add("partial");
+    if(key===TODAY_S) btn.classList.add("today");
+    if(key===selected) btn.classList.add("selected");
+    if(isFuture) btn.classList.add("future");
+    btn.textContent = day;
+
+    if(!isFuture){
+      btn.addEventListener("click", ()=>{ selected=key; renderCalendar(); renderPanel(); });
+    }
+    grid.appendChild(btn);
+  }
+  updateStats();
+}
+
+function renderPanel(){
+  const d = parseYmd(selected);
+  document.getElementById("pdate").innerHTML =
+    `${d.getMonth()+1}月${d.getDate()}日（${WD[d.getDay()]}）` +
+    (selected===TODAY_S ? '<span class="tag">today</span>' : "");
+  const rec = DB.records[selected] || {};
+  document.querySelectorAll(".pillar").forEach(p=>{
+    p.classList.toggle("on", !!rec[p.dataset.key]);
+  });
+  document.getElementById("memo").value = rec.memo || "";
+}
+
+document.querySelectorAll(".pillar").forEach(p=>{
+  p.addEventListener("click", ()=>{
+    const k = p.dataset.key;
+    const rec = DB.records[selected] || {};
+    rec[k] = !rec[k];
+    if(!PILLARS.some(x=>rec[x]) && !(rec.memo||"").trim()){ delete DB.records[selected]; }
+    else { DB.records[selected] = rec; }
+    saveAll(DB);
+    p.classList.toggle("on", !!rec[k]);
+    flashSaved();
+    renderCalendar();
+  });
+});
+
+const memoEl = document.getElementById("memo");
+memoEl.addEventListener("input", ()=>{
+  const rec = DB.records[selected] || {};
+  rec.memo = memoEl.value;
+  if(!PILLARS.some(x=>rec[x]) && !rec.memo.trim()){ delete DB.records[selected]; }
+  else { DB.records[selected] = rec; }
+  saveAll(DB);
+});
+memoEl.addEventListener("blur", flashSaved);
+
+let savedTimer;
+function flashSaved(){
+  const s=document.getElementById("saved");
+  s.classList.add("show"); clearTimeout(savedTimer);
+  savedTimer=setTimeout(()=>s.classList.remove("show"),1200);
+}
+
+function updateStats(){
+  let streak=0;
+  let cur=new Date(TODAY);
+  if(!isDone(DB.records[ymd(cur)])) cur.setDate(cur.getDate()-1);
+  while(isDone(DB.records[ymd(cur)])){ streak++; cur.setDate(cur.getDate()-1); }
+  document.getElementById("streak").textContent = streak;
+
+  let mDone=0;
+  const daysInMonth=new Date(viewYear,viewMonth+1,0).getDate();
+  for(let day=1;day<=daysInMonth;day++){
+    if(isDone(DB.records[ymd(new Date(viewYear,viewMonth,day))])) mDone++;
+  }
+  let denom=daysInMonth;
+  if(viewYear===TODAY.getFullYear() && viewMonth===TODAY.getMonth()) denom=TODAY.getDate();
+  document.getElementById("monthDone").textContent=mDone;
+  document.getElementById("monthTotal").textContent=denom;
+
+  let total=0;
+  for(const k in DB.records){ if(isDone(DB.records[k])) total++; }
+  document.getElementById("totalDone").textContent=total;
+
+  renderCheer(streak,total);
+}
+
+function renderCheer(streak,total){
+  const todayDone=isDone(DB.records[TODAY_S]);
+  let msg;
+  if(total===0){ msg="今日のわたしを、整えた印を残しましょう。"; }
+  else if(todayDone && streak>=30){ msg=`${streak}日連続。もう、続けられる人です。本来のあなたに還っています。`; }
+  else if(todayDone && streak>=7){ msg=`${streak}日連続。積み重ねは、必ず見た目に表れます。`; }
+  else if(todayDone){ msg="今日もできました。この小さな一歩が、未来をつくります。"; }
+  else if(streak>=1){ msg=`昨日まで${streak}日連続。今日も、自分を整えてあげましょう。`; }
+  else { msg="また今日から。整えれば、ちゃんと還れます。"; }
+  document.getElementById("cheer").textContent=msg;
+}
+
+document.getElementById("prev").addEventListener("click", ()=>{
+  viewMonth--; if(viewMonth<0){viewMonth=11;viewYear--;} renderCalendar();
+});
+document.getElementById("next").addEventListener("click", ()=>{
+  viewMonth++; if(viewMonth>11){viewMonth=0;viewYear++;} renderCalendar();
+});
+
+document.getElementById("export").addEventListener("click", ()=>{
+  const blob=new Blob([JSON.stringify(DB,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url; a.download=`begrace-ayumi-${TODAY_S}.json`;
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+});
+document.getElementById("importBtn").addEventListener("click", ()=>document.getElementById("importFile").click());
+document.getElementById("importFile").addEventListener("change", (e)=>{
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const data=JSON.parse(reader.result);
+      if(!data.records) throw new Error("形式が違います");
+      if(confirm("バックアップを読み込みます。今の記録は上書きされます。よろしいですか？")){
+        DB=data; saveAll(DB); renderCalendar(); renderPanel();
+        alert("読み込みました");
+      }
+    }catch(err){ alert("読み込めませんでした。正しいバックアップファイルか確認してください。"); }
+  };
+  reader.readAsText(file);
+  e.target.value="";
+});
+
+renderCalendar();
+renderPanel();
+</script>
+</body>
+</html>

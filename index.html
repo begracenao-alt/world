@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="description" content="Be Grace — 本来の自分に還る場所" />
 <title>Be Grace｜本来の自分に還る場所</title>
+<meta name="theme-color" content="#f6f1e9" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="icon" href="icon-192.png" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Be Grace" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
@@ -28,6 +36,7 @@
     --c-bi:     #c4a86d;   /* 美 — 金 */
     --c-meguri: #c08e72;   /* 巡り — 温いテラコッタ */
     --c-kyou:   #9fb1b8;   /* 今日の私 — 朝のひかり */
+    --c-diary:  #bb9a93;   /* Diary — 重ねた日々のローズ・トープ */
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -231,6 +240,23 @@
   .room:hover .room__enter,
   .room:focus-visible .room__enter { opacity: 0.85; transform: translateX(0); }
 
+  /* 横長の1枚（Diary）— どの画面でも「浮かず」幅いっぱいに据える */
+  .room--wide {
+    grid-column: 1 / -1;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    min-height: clamp(150px, 22vw, 190px);
+  }
+  .room--wide .room__num { position: static; margin-bottom: 10px; }
+  .room--wide .room__name { margin-top: 0; }
+  .room--wide .room__copy { margin-top: 10px; }
+  .room--wide .room__enter { margin-top: 14px; }
+  /* にじむ光を中央寄りに */
+  .room--wide::after { right: 50%; transform: translateX(50%); bottom: -50%; width: 60%; }
+  .room--wide:hover::after,
+  .room--wide:focus-visible::after { transform: translateX(50%) scale(1.15); }
+
   /* ====== NEWS ====== */
   .news { padding-bottom: clamp(80px, 14vh, 140px); }
 
@@ -431,6 +457,13 @@
             <span class="room__num">06</span>
             <span class="room__name">今日の私</span>
             <span class="room__copy">今の私に、気づく</span>
+            <span class="room__enter">enter →</span>
+          </a>
+
+          <a class="room room--wide reveal d9" style="--accent: var(--c-diary);" href="rooms/diary.html" aria-label="Diaryへ">
+            <span class="room__num">毎日の記録</span>
+            <span class="room__name room__name--en">Diary</span>
+            <span class="room__copy">重ねた日々を、綴る</span>
             <span class="room__enter">enter →</span>
           </a>
         </div>
