@@ -1904,7 +1904,7 @@ function diagnose(selectedIds) {
     const doorLine = `<p class="door-line">${phr('毎日の小さな選択が、未来を作る。今日のあなたが、どんな状態でも大丈夫。')}</p>`;
     const doorInvite =
       mode === 'member' || mode === 'trial30'
-        ? '<p class="door-invite">また明日も、整えにきてくださいね🤍</p>'
+        ? '<p class="door-invite">また明日も、整えにきてね🤍</p>'
         : `<p class="door-invite">${phr(cfg.inviteLead)}</p>
            <a class="btn btn--soft door-cta" href="${cfg.ctaUrl}" target="_blank" rel="noopener">${cfg.ctaLabel}</a>`;
     const doorHtml = `<div class="result-door"><div class="door-mark">❀</div>${doorLine}${doorInvite}</div>`;
