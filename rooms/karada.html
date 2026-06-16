@@ -400,7 +400,7 @@
     render();
     if (remain <= 0) {
       stop(); chime();            // stop()の中で「やった分」を積み上げ
-      timeState.textContent = "整いました🩶";
+      timeState.textContent = "整いました🤍";
       showDoneCue();              // 音が鳴らなくても、見てわかる合図
     }
   }
@@ -469,7 +469,7 @@
     recToday.textContent = Math.floor(todaySecRec / 60);
     recTotal.textContent = hm(totalSecRec);
     recDays.textContent = daysArr.length;
-    recMsg.textContent = totalSecRec > 0 ? "よく続けています🩶" : "";
+    recMsg.textContent = totalSecRec > 0 ? "よく続けています🤍" : "";
   }
   function addSeconds(sec) {
     sec = Math.round(sec);
