@@ -401,7 +401,12 @@
       breathTimer = setTimeout(function () { breathStep("in"); }, r.outS * 1000 + 200);
     }
   }
-  function startBreath() { breathing = true; bBtn.textContent = "とめる"; breathStep("in"); }
+  function startBreath() {
+    breathing = true; bBtn.textContent = "とめる";
+    // 最初の「吸って」も、ちゃんと"小さい→大きい"で始まるよう、まず小さく整えてから吸う
+    bStage.style.transitionDuration = "0s"; bStage.style.transform = "scale(0.62)";
+    requestAnimationFrame(function () { requestAnimationFrame(function () { if (breathing) breathStep("in"); }); });
+  }
   function stopBreath() {
     breathing = false; if (breathTimer) clearTimeout(breathTimer);
     bBtn.textContent = "はじめる"; bText.textContent = "";
