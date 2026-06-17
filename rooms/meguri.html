@@ -9,15 +9,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --ivory: #f6f1e9;
-    --ivory-deep: #ece3d6;
-    --ink: #3c3833;
-    --ink-soft: #6b645b;
-    --ink-faint: #9a9286;
-    --gold: #b0966a;
+    --ivory: #faf8f5;
+    --ivory-deep: #eef0f1;
+    --ink: #2f2e2c;
+    --ink-soft: #6c6a64;
+    --ink-faint: #a6a29b;
+    --gold: #3a96bf;
     --line: rgba(60, 56, 51, 0.10);
     --card: rgba(255, 255, 255, 0.6);
-    --accent: #c08e72;       /* 巡り — 温いテラコッタ */
+    --accent: #c89381;       /* 巡り — 温いテラコッタ */
     --accent-deep: #9c6a4f;
     --accent-soft: rgba(192, 142, 114, 0.14);
     --shadow: 0 18px 50px -28px rgba(70, 60, 45, 0.45);
@@ -79,6 +79,8 @@
   }
   .choice:hover { border-color: var(--accent); background: rgba(255,255,255,0.92); transform: translateY(-2px); }
   .choice.is-on { background: var(--accent); color: #fff; border-color: var(--accent); }
+  #rhythmRow .choice:hover { border-color: #9fd0e0; color: #3a96bf; }
+  #rhythmRow .choice.is-on { background: #fff; color: #3a96bf; border-color: #9fd0e0; box-shadow: 0 6px 16px rgba(58,150,191,0.16); font-weight: 600; }
 
   /* ボタン */
   .btn {
@@ -87,17 +89,20 @@
   }
   .btn--primary { background: var(--accent); color: #fff; }
   .btn--primary:hover { background: var(--accent-deep); border-color: var(--accent-deep); }
+  #breathBtn { background: #3a96bf; border-color: #3a96bf; color: #fff; }
+  #breathBtn:hover { background: #2f86ad; border-color: #2f86ad; }
 
   /* ひと呼吸ガイド */
   .breath-wrap { text-align: center; margin-top: 22px; }
   .breath-stage {
     width: 150px; height: 150px; border-radius: 50%; margin: 12px auto;
-    background: radial-gradient(circle at 50% 45%, rgba(192,142,114,0.38), rgba(192,142,114,0.10));
-    border: 1px solid var(--line); transform: scale(0.62); transition: transform 4s ease-in-out;
+    background: radial-gradient(circle at 50% 40%, rgba(120,200,224,0.46), rgba(58,150,191,0.18));
+    border: 1px solid rgba(58,150,191,0.18); box-shadow: 0 0 42px rgba(90,168,202,0.28);
+    transform: scale(0.62); transition: transform 4s ease-in-out;
   }
   .breath-stage.inhale { transform: scale(1); transition-duration: 4s; }
   .breath-stage.exhale { transform: scale(0.62); transition-duration: 6s; }
-  .breath-text { font-size: 15px; letter-spacing: 0.2em; color: var(--accent-deep); min-height: 22px; margin-top: 6px; }
+  .breath-text { font-size: 15px; letter-spacing: 0.2em; color: #3a96bf; min-height: 22px; margin-top: 6px; }
 
   /* 巡りチェックの結果 */
   .check-result { text-align: center; }

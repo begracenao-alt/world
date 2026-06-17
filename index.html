@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="description" content="Be Grace — 本来の自分に還る場所" />
 <title>Be Grace｜本来の自分に還る場所</title>
-<meta name="theme-color" content="#f6f1e9" />
+<meta name="theme-color" content="#faf8f5" />
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="icon" href="icon-192.png" />
 <link rel="apple-touch-icon" href="apple-touch-icon.png" />
@@ -18,25 +18,25 @@
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --ivory: #f6f1e9;
-    --ivory-deep: #ece3d6;
-    --ink: #3c3833;
-    --ink-soft: #6b645b;
-    --ink-faint: #9a9286;
-    --gold: #b0966a;
-    --line: rgba(60, 56, 51, 0.10);
-    --card: rgba(255, 255, 255, 0.55);
-    --card-hover: rgba(255, 255, 255, 0.78);
-    --shadow: 0 18px 50px -28px rgba(70, 60, 45, 0.45);
+    --ivory: #faf8f5;      /* 明るく軽いベース */
+    --ivory-deep: #eef0f1; /* ほんのり涼やかな陰影 */
+    --ink: #2f2e2c;        /* くっきり、でも重すぎない */
+    --ink-soft: #6c6a64;
+    --ink-faint: #a6a29b;
+    --gold: #3a96bf;       /* アクセント＝水色（呼吸・ギフトとおそろい） */
+    --line: rgba(50, 60, 70, 0.10);
+    --card: rgba(255, 255, 255, 0.66);
+    --card-hover: rgba(255, 255, 255, 0.9);
+    --shadow: 0 20px 50px -30px rgba(60, 90, 110, 0.32);
 
-    /* 各お部屋のほのかな色 */
-    --c-karada: #8fa288;   /* 體 — 整える緑 */
-    --c-senzai: #7f8aa6;   /* 潜在意識 — 奥の藍 */
-    --c-kanjo:  #c39ba0;   /* 感情 — そっと薔薇 */
-    --c-bi:     #c4a86d;   /* 美 — 金 */
-    --c-meguri: #c08e72;   /* 巡り — 温いテラコッタ */
-    --c-kyou:   #9fb1b8;   /* 今日の私 — 朝のひかり */
-    --c-diary:  #bb9a93;   /* Diary — 重ねた日々のローズ・トープ */
+    /* 各お部屋のほのかな色（水色トーンで統一・濃淡で変化） */
+    --c-karada: #c46b72;   /* 體 — 第1ルート・赤（土台・グラウンディング） */
+    --c-senzai: #6671ad;   /* 潜在意識 — 第6第三の目・藍（直感） */
+    --c-kanjo:  #6fae8f;   /* Love — 第4ハート・緑（愛） */
+    --c-bi:     #d6b35c;   /* 美 — 第3太陽神経叢・黄金（輝き） */
+    --c-meguri: #5aa8ca;   /* 巡り — 第5喉・水色（呼吸・流れ） */
+    --c-kyou:   #9b85c0;   /* 今日の私 — 第7クラウン・紫（気づき） */
+    --c-diary:  #df9b63;   /* Diary — 第2仙骨・橙（日々の創造） */
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -164,21 +164,21 @@
     content: "";
     position: absolute;
     top: 0; left: 0; right: 0;
-    height: 3px;
+    height: 4px;
     background: var(--accent);
-    opacity: 0.55;
+    opacity: 0.85;
     transition: opacity .55s ease, height .55s ease;
   }
   /* 部屋に灯る、にじむ光 */
   .room::after {
     content: "";
     position: absolute;
-    right: -30%;
-    bottom: -40%;
-    width: 70%;
-    height: 80%;
-    background: radial-gradient(circle, var(--accent) 0%, transparent 68%);
-    opacity: 0.10;
+    right: -18%;
+    bottom: -28%;
+    width: 92%;
+    height: 96%;
+    background: radial-gradient(circle, var(--accent) 0%, transparent 66%);
+    opacity: 0.20;
     transition: opacity .6s ease, transform .6s ease;
     pointer-events: none;
   }
@@ -193,13 +193,14 @@
   .room:hover::before,
   .room:focus-visible::before { opacity: 0.9; height: 4px; }
   .room:hover::after,
-  .room:focus-visible::after { opacity: 0.22; transform: scale(1.15); }
+  .room:focus-visible::after { opacity: 0.34; transform: scale(1.15); }
 
   .room__num {
     font-family: "Cormorant Garamond", serif;
     font-size: 13px;
     letter-spacing: 0.24em;
-    color: var(--ink-faint);
+    color: var(--accent);
+    font-weight: 500;
   }
 
   .room__name {
