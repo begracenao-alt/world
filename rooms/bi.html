@@ -83,7 +83,8 @@
     background: rgba(255,255,255,0.6); border: 1px solid var(--line); border-radius: 999px;
     padding: 12px 20px; cursor: pointer; transition: all .3s;
   }
-  .choice:hover { border-color: var(--accent); background: rgba(255,255,255,0.92); transform: translateY(-2px); }
+  .choice:hover { border-color: var(--accent); color: var(--accent-deep); background: #fff; transform: translateY(-2px); box-shadow: 0 12px 24px -10px var(--accent); }
+  .choice.is-on { background: #fff; color: var(--accent-deep); border-color: var(--accent); box-shadow: 0 6px 18px -10px var(--accent); font-weight: 600; }
 
   /* 美容習慣の積み上げ */
   .habit-row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 22px; }
@@ -92,8 +93,8 @@
     background: rgba(255,255,255,0.6); border: 1px solid var(--line); border-radius: 999px;
     padding: 11px 16px; cursor: pointer; transition: all .3s;
   }
-  .habit:hover { border-color: var(--accent); }
-  .habit.is-on { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .habit:hover { border-color: var(--accent); color: var(--accent-deep); transform: translateY(-1px); box-shadow: 0 10px 20px -10px var(--accent); }
+  .habit.is-on { background: #fff; color: var(--accent-deep); border-color: var(--accent); box-shadow: 0 6px 16px -8px var(--accent); font-weight: 600; }
   .stats { display: flex; justify-content: center; gap: 34px; margin-top: 26px; }
   .stat { text-align: center; }
   .stat__num { font-family: "Cormorant Garamond", serif; font-size: 32px; color: var(--accent-deep); line-height: 1.1; }
