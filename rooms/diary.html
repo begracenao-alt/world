@@ -4,23 +4,18 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Diary｜Be Grace</title>
+<meta name="theme-color" content="#f6f1e9" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --ivory: #fcfdfe;
-    --ivory-deep: #eaf2f6;
-    --ink: #2f2e2c;
-    --ink-soft: #6c6a64;
-    --ink-faint: #a6a29b;
-    --gold: #3a96bf;
-    --line: rgba(60, 56, 51, 0.10);
-    --card: rgba(255, 255, 255, 0.6);
-    --accent: #df9b63;        /* 歩み — 重ねた日々のローズ・トープ */
-    --accent-deep: #c47a45;
-    --accent-soft: rgba(187, 154, 147, 0.16);
-    --shadow: 0 18px 50px -28px rgba(70, 60, 45, 0.45);
+    --ivory: #fdf9f5; --ivory-deep: #f3e9df;
+    --ink: #45392f; --ink-soft: #6e5f50; --ink-faint: #9c8e7e;
+    --gold: #c2a36b; --line: rgba(150, 115, 80, 0.12); --card: rgba(255, 255, 255, 0.62);
+    --accent: #df9b63; --accent-deep: #c47a45; --accent-soft: rgba(223, 155, 99, 0.16);
+    --period: #d18aa0;
+    --shadow: 0 18px 50px -28px rgba(180, 130, 90, 0.42);
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
@@ -28,18 +23,13 @@
     font-family: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
     color: var(--ink);
     background:
-      radial-gradient(120% 80% at 50% -10%, #fbfdff 0%, rgba(251,248,242,0) 55%),
+      radial-gradient(125% 90% at 50% -12%, #fffdf9 0%, #fbf3ea 44%, #f4ece1 100%),
       linear-gradient(180deg, var(--ivory) 0%, var(--ivory-deep) 100%);
-    background-attachment: fixed;
-    min-height: 100vh;
-    line-height: 1.9;
-    letter-spacing: 0.04em;
-    -webkit-font-smoothing: antialiased;
-    -webkit-tap-highlight-color: transparent;
+    background-attachment: fixed; min-height: 100vh; line-height: 1.9; letter-spacing: 0.04em;
+    -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent;
   }
-  .wrap { width: 100%; max-width: 620px; margin: 0 auto; padding: 0 22px 56px; }
+  .wrap { width: 100%; max-width: 620px; margin: 0 auto; padding: 0 22px 64px; }
 
-  /* ヘッダー */
   .top { padding: 26px 0 8px; }
   .back {
     display: inline-flex; align-items: center; gap: 8px;
@@ -48,126 +38,121 @@
     text-decoration: none; transition: color .3s;
   }
   .back:hover { color: var(--ink); }
-
-  .head { text-align: center; padding: 26px 0 10px; }
-  .head__name { font-family: "Cormorant Garamond", serif; font-weight: 400; text-transform: uppercase;
-    font-size: clamp(40px, 11vw, 60px); letter-spacing: 0.22em; }
+  .head { text-align: center; padding: 22px 0 10px; }
+  .head__name { font-family: "Cormorant Garamond", serif; font-weight: 400; font-size: clamp(40px, 11vw, 60px); letter-spacing: 0.22em; }
   .head__copy { margin-top: 10px; font-size: 14px; letter-spacing: 0.22em; color: var(--ink-soft); }
-  .head__line { width: 1px; height: 40px; margin: 18px auto 0;
-    background: linear-gradient(180deg, transparent, var(--accent), transparent); opacity: .7; }
+  .head__line { width: 1px; height: 40px; margin: 18px auto 0; background: linear-gradient(180deg, transparent, var(--accent), transparent); opacity: .7; }
 
-  /* カード共通 */
-  .card {
-    background: var(--card); border: 1px solid var(--line); border-radius: 6px;
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 6px;
     box-shadow: var(--shadow); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-    padding: clamp(24px, 5vw, 36px) clamp(20px, 4.5vw, 32px);
-    margin: 24px 0;
-  }
-  .card__label {
-    text-align: center; font-family: "Cormorant Garamond", serif; font-style: italic;
-    font-size: 14px; letter-spacing: 0.28em; color: var(--accent-deep); text-transform: uppercase;
-  }
+    padding: clamp(24px, 5vw, 36px) clamp(20px, 4.5vw, 32px); margin: 24px 0; }
+  .card--theme { border-color: var(--gold); background: linear-gradient(135deg, rgba(255,255,255,.72), rgba(247,240,232,.6)); }
+  .card__label { text-align: center; font-family: "Cormorant Garamond", serif; font-style: italic;
+    font-size: 14px; letter-spacing: 0.28em; color: var(--accent-deep); }
   .card__ja { text-align: center; font-size: 13px; letter-spacing: 0.34em; color: var(--ink-faint); margin-top: 6px; margin-bottom: 22px; }
 
-  /* ===== 集計 ===== */
   .stats { display: flex; }
   .stat { flex: 1; text-align: center; padding: 4px 6px; }
   .stat + .stat { border-left: 1px solid var(--line); }
-  .stat__num {
-    font-family: "Cormorant Garamond", serif; font-weight: 300;
-    font-size: clamp(34px, 9vw, 44px); line-height: 1; color: var(--accent-deep);
-  }
+  .stat__num { font-family: "Cormorant Garamond", serif; font-weight: 300; font-size: clamp(34px, 9vw, 44px); line-height: 1; color: var(--accent-deep); }
   .stat__num .u { font-size: 14px; color: var(--ink-faint); letter-spacing: .04em; }
   .stat__lbl { margin-top: 8px; font-size: 11.5px; letter-spacing: 0.22em; color: var(--ink-faint); }
+  .cheer { text-align: center; font-size: 13.5px; letter-spacing: 0.08em; color: var(--ink-soft); line-height: 1.85; margin-top: 22px; }
+  .cheer.bday { color: var(--gold); font-size: 15px; font-weight: 500; padding: 18px 14px; border-radius: 16px; background: linear-gradient(135deg, rgba(255,255,255,.7), rgba(247,240,232,.7)); border: 1px solid var(--gold); white-space: pre-line; line-height: 2.05; }
 
-  /* ===== 励まし ===== */
-  .cheer {
-    text-align: center; font-size: 13.5px; letter-spacing: 0.08em; color: var(--ink-soft);
-    line-height: 1.85; margin: -4px 0 2px;
-  }
-
-  /* ===== カレンダー ===== */
   .calhead { display: flex; align-items: center; justify-content: center; gap: 22px; margin-bottom: 16px; }
   .calhead .ym { font-size: 17px; letter-spacing: 0.16em; font-weight: 500; min-width: 120px; text-align: center; }
-  .navbtn {
-    border: 1px solid var(--line); background: transparent; color: var(--ink-soft);
-    width: 38px; height: 38px; border-radius: 50%; font-size: 16px; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; transition: all .3s;
-    font-family: "Cormorant Garamond", serif;
-  }
+  .navbtn { border: 1px solid var(--line); background: transparent; color: var(--ink-soft); width: 38px; height: 38px;
+    border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all .3s; font-family: "Cormorant Garamond", serif; }
   .navbtn:hover { border-color: var(--accent); color: var(--ink); }
   .navbtn:active { transform: scale(.9); }
-  .weekrow { display: grid; grid-template-columns: repeat(7,1fr); text-align: center;
-    font-size: 11px; letter-spacing: .06em; color: var(--ink-faint); margin-bottom: 8px; }
+  .weekrow { display: grid; grid-template-columns: repeat(7,1fr); text-align: center; font-size: 11px; letter-spacing: .06em; color: var(--ink-faint); margin-bottom: 8px; }
   .grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 5px; }
-  .cell {
-    aspect-ratio: 1/1; border: 1px solid transparent; background: transparent; cursor: pointer;
-    border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    font-size: 14px; color: var(--ink); position: relative; padding: 0;
-    font-family: "Cormorant Garamond", "Shippori Mincho", serif; transition: all .2s;
-  }
+  .cell { aspect-ratio: 1/1; border: 1px solid transparent; background: transparent; cursor: pointer; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--ink); position: relative;
+    padding: 0; font-family: "Cormorant Garamond", "Shippori Mincho", serif; transition: all .2s; }
   .cell.empty { visibility: hidden; }
   .cell:active { transform: scale(.9); }
   .cell.today { font-weight: 600; }
-  .cell.today::after { content: ""; position: absolute; bottom: 5px; width: 4px; height: 4px;
-    border-radius: 50%; background: var(--gold); }
+  .cell.today::after { content: ""; position: absolute; bottom: 5px; width: 4px; height: 4px; border-radius: 50%; background: var(--gold); }
   .cell.partial { background: var(--accent-soft); color: var(--accent-deep); }
   .cell.full { background: var(--accent); color: #fff; box-shadow: 0 4px 12px -4px rgba(154,122,115,.6); }
   .cell.full.today::after { background: rgba(255,255,255,.9); }
   .cell.selected { border-color: var(--accent); }
-  .cell.future { color: #cbc3b7; cursor: default; }
-  .cell.future:active { transform: none; }
+  .cell.future { color: #b3a896; cursor: pointer; }
+  .cell .pdot { position: absolute; top: 5px; right: 7px; width: 5px; height: 5px; border-radius: 50%; background: var(--period); }
+  .cell.full .pdot { background: #fff; }
+  .calleg { display: flex; justify-content: center; gap: 18px; margin-top: 14px; font-size: 11px; letter-spacing: .08em; color: var(--ink-faint); }
+  .calleg span { display: inline-flex; align-items: center; gap: 6px; }
+  .calleg .sw { width: 10px; height: 10px; border-radius: 50%; }
 
-  /* ===== 当日パネル ===== */
   .pdate { text-align: center; font-size: 16px; letter-spacing: 0.1em; margin-bottom: 2px; }
-  .pdate .tag { font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 12px;
-    color: var(--accent-deep); margin-left: 10px; letter-spacing: .14em; }
-  .psub { text-align: center; font-size: 12px; letter-spacing: 0.14em; color: var(--ink-faint); margin-bottom: 20px; }
-  .pillars { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
-  .pillar {
-    display: flex; align-items: center; gap: 14px; width: 100%;
-    border: 1px solid var(--line); background: rgba(255,255,255,.5); border-radius: 6px;
-    padding: 14px 16px; cursor: pointer; text-align: left; transition: all .25s;
-    color: var(--ink); font-family: inherit;
-  }
+  .pdate .tag { font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 12px; color: var(--accent-deep); margin-left: 10px; letter-spacing: .14em; }
+  .psub { text-align: center; font-size: 12px; letter-spacing: 0.14em; color: var(--ink-faint); margin-bottom: 24px; }
+
+  .field { margin-bottom: 24px; }
+  .field:last-child { margin-bottom: 0; }
+  .field__lbl { font-size: 12.5px; letter-spacing: 0.16em; color: var(--ink-soft); margin-bottom: 10px; display: flex; align-items: baseline; justify-content: space-between; }
+  .field__lbl .en { font-family: "Cormorant Garamond", serif; font-style: italic; letter-spacing: .14em; color: var(--accent-deep); font-size: 12px; }
+
+  .pillars { display: flex; flex-direction: column; gap: 10px; }
+  .pillar { display: flex; align-items: center; gap: 14px; width: 100%; border: 1px solid var(--line); background: rgba(255,255,255,.5);
+    border-radius: 6px; padding: 14px 16px; cursor: pointer; text-align: left; transition: all .25s; color: var(--ink); font-family: inherit; }
   .pillar .ptxt { flex: 1; }
   .pillar .ptxt b { display: block; font-size: 15px; font-weight: 500; letter-spacing: .08em; }
   .pillar .ptxt span { font-size: 11.5px; color: var(--ink-faint); letter-spacing: .04em; }
-  .pillar .chk { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--line);
-    display: flex; align-items: center; justify-content: center; font-size: 13px; color: #fff;
-    flex-shrink: 0; transition: all .25s; }
+  .pillar .chk { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 13px; color: #fff; flex-shrink: 0; transition: all .25s; }
   .pillar.on { border-color: var(--accent); background: var(--accent-soft); }
   .pillar.on .chk { background: var(--accent); border-color: var(--accent); }
 
-  .memolbl { font-size: 12px; letter-spacing: 0.16em; color: var(--ink-faint); margin-bottom: 10px;
-    display: flex; align-items: baseline; justify-content: space-between; }
-  .memolbl .en { font-family: "Cormorant Garamond", serif; font-style: italic; letter-spacing: .14em;
-    color: var(--accent-deep); font-size: 12.5px; }
-  .memo { width: 100%; border: 1px solid var(--line); border-radius: 6px; padding: 16px 16px;
-    font-size: 14px; font-family: inherit; color: var(--ink); resize: vertical; min-height: 190px;
-    background: rgba(255,255,255,.5); line-height: 2.0; }
-  .memo:focus { outline: none; border-color: var(--accent); }
-  .saved { text-align: center; font-size: 11.5px; letter-spacing: .2em; color: var(--accent-deep);
-    height: 18px; margin-top: 10px; opacity: 0; transition: opacity .25s; }
+  .gline { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .gline .gno { font-family: "Cormorant Garamond", serif; font-style: italic; color: var(--accent); font-size: 16px; width: 16px; flex-shrink: 0; }
+  .line-input { flex: 1; width: 100%; border: none; border-bottom: 1px solid var(--line); background: transparent; padding: 7px 2px; font-family: inherit; font-size: 14px; color: var(--ink); }
+  .line-input:focus { outline: none; border-color: var(--accent); }
+
+  .area { width: 100%; border: 1px solid var(--line); border-radius: 6px; padding: 13px 14px; font-size: 14px; font-family: inherit; color: var(--ink); resize: vertical; background: rgba(255,255,255,.5); line-height: 1.95; }
+  .area:focus { outline: none; border-color: var(--accent); }
+  .area--sm { min-height: 70px; }
+  .area--lg { min-height: 170px; line-height: 2.0; }
+
+  .toggle { display: inline-flex; align-items: center; gap: 10px; border: 1px solid var(--line); background: rgba(255,255,255,.5); border-radius: 999px; padding: 10px 20px; cursor: pointer; font-family: inherit; font-size: 13.5px; letter-spacing: .1em; color: var(--ink-soft); transition: all .25s; }
+  .toggle .dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid var(--line); transition: all .25s; }
+  .toggle.on { border-color: var(--period); color: var(--period); background: rgba(207,138,147,.1); }
+  .toggle.on .dot { background: var(--period); border-color: var(--period); }
+
+  .saved { text-align: center; font-size: 11.5px; letter-spacing: .2em; color: var(--accent-deep); height: 18px; margin-top: 18px; opacity: 0; transition: opacity .25s; }
   .saved.show { opacity: 1; }
 
-  /* ===== バックアップ ===== */
-  .backup { text-align: center; margin-top: 8px; }
-  .backup summary { font-family: "Cormorant Garamond", serif; font-style: italic;
-    font-size: 13px; letter-spacing: 0.16em; color: var(--ink-faint); cursor: pointer; list-style: none; }
+  /* バランスホイール */
+  .wheel-wrap { display: flex; flex-direction: column; align-items: center; }
+  .wheel svg { width: min(100%, 340px); height: auto; display: block; }
+  .wheel-items { width: 100%; margin-top: 22px; }
+  .warea { border: 1px solid var(--line); border-radius: 6px; margin-bottom: 10px; background: rgba(255,255,255,.5); overflow: hidden; }
+  .warea > summary { list-style: none; cursor: pointer; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .warea > summary::-webkit-details-marker { display: none; }
+  .warea[open] > summary { border-bottom: 1px solid var(--line); }
+  .wname { font-size: 14.5px; font-weight: 500; letter-spacing: .06em; }
+  .wscore { font-size: 11.5px; color: var(--ink-faint); letter-spacing: .08em; white-space: nowrap; }
+  .wscore b { font-family: "Cormorant Garamond", serif; color: var(--accent-deep); font-size: 16px; }
+  .wbody { padding: 18px 16px; }
+  .wrow-score { display: flex; align-items: center; gap: 12px; }
+  .wrow-score input[type=range] { flex: 1; accent-color: var(--accent); }
+  .wrow-score .val { width: 18px; text-align: right; font-family: "Cormorant Garamond", serif; color: var(--accent-deep); font-size: 16px; }
+
+  .backup { text-align: center; }
+  .backup summary { font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 13px; letter-spacing: 0.16em; color: var(--ink-faint); cursor: pointer; list-style: none; }
   .backup summary::-webkit-details-marker { display: none; }
   .backup .btns { display: flex; gap: 12px; margin-top: 16px; }
-  .btn { flex: 1; font-family: inherit; font-size: 13px; letter-spacing: 0.12em; cursor: pointer;
-    border-radius: 999px; padding: 12px; transition: all .3s; border: 1px solid var(--accent); }
+  .btn { flex: 1; font-family: inherit; font-size: 13px; letter-spacing: 0.12em; cursor: pointer; border-radius: 999px; padding: 12px; transition: all .3s; border: 1px solid var(--accent); }
   .btn--primary { background: var(--accent); color: #fff; }
   .btn--primary:hover { background: var(--accent-deep); border-color: var(--accent-deep); }
   .btn--ghost { background: transparent; color: var(--ink-soft); border-color: var(--line); }
   .btn--ghost:hover { border-color: var(--accent); color: var(--ink); }
-  .backup .note { font-size: 11.5px; letter-spacing: .04em; color: var(--ink-faint);
-    margin-top: 14px; line-height: 1.85; }
+  .backup .note { font-size: 11.5px; letter-spacing: .04em; color: var(--ink-faint); margin-top: 14px; line-height: 1.85; }
 
   @media (max-width: 430px) {
-    .wrap { padding: 0 16px 48px; }
+    .wrap { padding: 0 16px 52px; }
     .card { padding: 22px 16px; }
     .grid { gap: 4px; }
     .pillar { padding: 13px 14px; gap: 12px; }
@@ -176,74 +161,133 @@
 </head>
 <body>
   <div class="wrap">
-    <div class="top">
-      <a class="back" href="../index.html">← Be Grace</a>
-    </div>
+    <div class="top"><a class="back" href="../index.html">← Be Grace</a></div>
 
     <div class="head">
       <div class="head__name">Diary</div>
-      <div class="head__copy">重ねた日々を、綴る</div>
+      <div class="head__copy">なりたい私へ、一日ずつ</div>
       <div class="head__line"></div>
     </div>
 
-    <!-- ===== 集計 ===== -->
+    <!-- 今月のテーマ（頭・月ごと） -->
+    <section class="card card--theme">
+      <div class="card__label">this month</div>
+      <div class="card__ja" id="monthLabel">今月のテーマ</div>
+      <div class="field">
+        <div class="field__lbl"><span>テーマ</span><span class="en">theme</span></div>
+        <textarea class="area area--sm" id="mTheme" placeholder="今月、どんな自分でいたい？（ひとことで）"></textarea>
+      </div>
+      <div class="field">
+        <div class="field__lbl"><span>手放す</span><span class="en">let go</span></div>
+        <textarea class="area area--sm" id="mLetgo" placeholder="今月、そっと手放したいこと"></textarea>
+      </div>
+      <div class="field">
+        <div class="field__lbl"><span>余白</span><span class="en">space</span></div>
+        <textarea class="area area--sm" id="mSpace" placeholder="どこに、ゆとりの時間をつくる？"></textarea>
+      </div>
+    </section>
+
+    <!-- 集計 -->
     <section class="card">
       <div class="stats">
-        <div class="stat">
-          <div class="stat__num"><span id="streak">0</span><span class="u"> 日</span></div>
-          <div class="stat__lbl">連続</div>
-        </div>
-        <div class="stat">
-          <div class="stat__num"><span id="monthDone">0</span><span class="u"> /<span id="monthTotal">0</span></span></div>
-          <div class="stat__lbl">今月</div>
-        </div>
-        <div class="stat">
-          <div class="stat__num"><span id="totalDone">0</span><span class="u"> 日</span></div>
-          <div class="stat__lbl">合計</div>
-        </div>
+        <div class="stat"><div class="stat__num"><span id="streak">0</span><span class="u"> 日</span></div><div class="stat__lbl">連続</div></div>
+        <div class="stat"><div class="stat__num"><span id="monthDone">0</span><span class="u"> /<span id="monthTotal">0</span></span></div><div class="stat__lbl">今月</div></div>
+        <div class="stat"><div class="stat__num"><span id="totalDone">0</span><span class="u"> 日</span></div><div class="stat__lbl">合計</div></div>
       </div>
-      <div class="cheer" id="cheer" style="margin-top:22px;">今日のわたしを、整えた印を残しましょう。</div>
+      <div class="cheer" id="cheer">なりたい私へ、今日の一歩を残しましょう。</div>
     </section>
 
-    <!-- ===== カレンダー ===== -->
+    <!-- カレンダー -->
     <section class="card">
-      <div class="card__label">Calendar</div>
-      <div class="card__ja">整えた日に、印がともる</div>
+      <div class="card__label">calendar</div>
+      <div class="card__ja">綴った日に、印がともる</div>
       <div class="calhead">
         <button class="navbtn" id="prev" aria-label="前の月">‹</button>
-        <div class="ym" id="ym">2026年6月</div>
+        <div class="ym" id="ym"></div>
         <button class="navbtn" id="next" aria-label="次の月">›</button>
       </div>
-      <div class="weekrow">
-        <div>日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div>土</div>
-      </div>
+      <div class="weekrow"><div>日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div>土</div></div>
       <div class="grid" id="grid"></div>
+      <div class="calleg">
+        <span><span class="sw" style="background:var(--accent);"></span>整えた日</span>
+        <span><span class="sw" style="background:var(--period);"></span>生理</span>
+      </div>
     </section>
 
-    <!-- ===== 当日の記録 ===== -->
+    <!-- その日のページ -->
     <section class="card">
-      <div class="pdate" id="pdate">6月15日（日）<span class="tag">today</span></div>
-      <div class="psub">整えたものに触れて、今日のことを綴る（自動で残ります）</div>
-      <div class="pillars">
-        <button class="pillar" data-key="karada">
-          <span class="ptxt"><b>體（からだ）</b><span>セルフ骨格・巡り・姿勢</span></span>
-          <span class="chk">✓</span>
-        </button>
-        <button class="pillar" data-key="kokoro">
-          <span class="ptxt"><b>心（こころ）</b><span>マインドセット・感情のケア</span></span>
-          <span class="chk">✓</span>
-        </button>
-        <button class="pillar" data-key="mirai">
-          <span class="ptxt"><b>未来（みらい）</b><span>女性性・なりたい自分</span></span>
-          <span class="chk">✓</span>
-        </button>
+      <div class="pdate" id="pdate"></div>
+      <div class="psub">この日のページ（書いたものは自動で残ります）</div>
+
+      <div class="field">
+        <div class="field__lbl"><span>感謝を、三つ</span><span class="en">gratitude</span></div>
+        <div class="gline"><span class="gno">i</span><input class="line-input grat" data-i="0" placeholder="ありがとう…"></div>
+        <div class="gline"><span class="gno">ii</span><input class="line-input grat" data-i="1" placeholder="ありがとう…"></div>
+        <div class="gline"><span class="gno">iii</span><input class="line-input grat" data-i="2" placeholder="ありがとう…"></div>
       </div>
-      <div class="memolbl"><span>今日の日記</span><span class="en">today's note</span></div>
-      <textarea class="memo" id="memo" placeholder="今日のこと、気づいたこと、うれしかったこと、からだの変化…&#10;思うままに、自由に綴ってください。"></textarea>
+
+      <div class="field">
+        <div class="field__lbl"><span>今日、整えたこと</span><span class="en">self care</span></div>
+        <div class="pillars">
+          <button class="pillar" data-key="karada"><span class="ptxt"><b>體（からだ）</b><span>セルフ骨格・巡り・姿勢</span></span><span class="chk">✓</span></button>
+          <button class="pillar" data-key="kokoro"><span class="ptxt"><b>心（こころ）</b><span>マインドセット・感情のケア</span></span><span class="chk">✓</span></button>
+          <button class="pillar" data-key="mirai"><span class="ptxt"><b>未来（みらい）</b><span>女性性・なりたい自分</span></span><span class="chk">✓</span></button>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field__lbl"><span>今日の、できた</span><span class="en">wins</span></div>
+        <textarea class="area area--sm" id="wins" placeholder="できたこと・がんばったこと（小さなことも）"></textarea>
+      </div>
+
+      <div class="field">
+        <div class="field__lbl"><span>今日の、予定</span><span class="en">plan</span></div>
+        <textarea class="area area--sm" id="plan" placeholder="やること・約束ごと"></textarea>
+      </div>
+
+      <div class="field">
+        <div class="field__lbl"><span>からだ</span><span class="en">cycle</span></div>
+        <button class="toggle" id="period"><span class="dot"></span>生理の日</button>
+      </div>
+
+      <div class="field">
+        <div class="field__lbl"><span>今日の日記</span><span class="en">today's note</span></div>
+        <textarea class="area area--lg" id="diary" placeholder="今日のこと、気づき、心の動き、からだの変化…&#10;思うままに、自由に綴ってください。"></textarea>
+      </div>
+
       <div class="saved" id="saved">残しました</div>
     </section>
 
-    <!-- ===== バックアップ ===== -->
+    <!-- バランスホイール -->
+    <section class="card">
+      <div class="card__label">balance wheel</div>
+      <div class="card__ja">わたしの輪・8分野</div>
+      <div class="wheel-wrap">
+        <div class="wheel"><svg id="wheelSvg" viewBox="0 0 340 300" aria-label="バランスホイール"></svg></div>
+        <div class="wheel-items" id="wheelItems"></div>
+      </div>
+    </section>
+
+    <!-- want to -->
+    <section class="card">
+      <div class="card__label">want to</div>
+      <div class="card__ja">やりたいこと</div>
+      <textarea class="area area--sm" id="wants" placeholder="やりたいこと・欲しいもの・心が動くこと（遠慮なく）"></textarea>
+    </section>
+
+    <!-- お誕生日 -->
+    <section class="card">
+      <div class="card__label">birthday</div>
+      <div class="card__ja">お誕生日</div>
+      <div class="field">
+        <div class="field__lbl"><span>月日</span><span class="en">your day</span></div>
+        <input type="text" id="bday" inputmode="numeric" placeholder="例：0720"
+          style="width:130px;border:1px solid var(--line);background:var(--ivory);border-radius:12px;padding:9px 13px;font-family:inherit;color:var(--ink);font-size:16px;">
+      </div>
+      <p class="note" style="margin-top:8px;">登録すると、その日の朝メッセージが届きます🤍</p>
+    </section>
+
+    <!-- バックアップ -->
     <details class="backup card">
       <summary>data — バックアップ・引き継ぎ</summary>
       <div class="btns">
@@ -252,7 +296,7 @@
         <input type="file" id="importFile" accept="application/json" style="display:none">
       </div>
       <p class="note">
-        記録はこの端末（スマホ／PC）の中に、そっと保存されます。<br>
+        書いたものは、この端末（スマホ／PC）の中に、そっと保存されます。<br>
         機種変更の前や念のために「保存」でファイルに書き出し、<br>
         新しい端末では「戻す」で読み込めば引き継げます。
       </p>
@@ -262,184 +306,357 @@
 
 <script>
 /* =========================================================
-   Be Grace ── 歩み（セルフケアカレンダー）
-   ・記録はこの端末（localStorage）に保存＝サーバー不要・無料・壊れない
-   ・データ構造: records["YYYY-MM-DD"] = {karada,kokoro,mirai, memo}
+   Be Grace ── Diary（夢の実現ジャーナル・単独版）
+   記録はこの端末（localStorage）に保存＝サーバー不要・無料・壊れない
+   data = {
+     months: { "YYYY-MM": {letgo, space} },          // 今月のテーマ
+     wheel:  [ {name, score, goal, selfImage} *8 ],   // バランスホイール（変わっていく）
+     wants:  "",                                       // want to（やりたいこと）
+     records:{ "YYYY-MM-DD": {karada,kokoro,mirai, grat[3], wins, plan, period, diary} }
+   }
    ========================================================= */
 
-const STORE_KEY = "begrace_selfcare_v1";
+const STORE_KEY = "begrace_diary_v1";
 const PILLARS = ["karada","kokoro","mirai"];
 const WD = ["日","月","火","水","木","金","土"];
+const WHEEL_DEFAULT = ["誰かのために（社会貢献）","学び（知性）","つながり（人間関係）","楽しみ（趣味）",
+                       "仕事","豊かさ（ファイナンス）","美と健康","家族"];
 
+function newWheel(){ return WHEEL_DEFAULT.map(n=>({name:n, score:5, goal:"", selfImage:""})); }
+function freshDB(){ return { months:{}, wheel:newWheel(), wants:"", birthday:"", records:{} }; }
 function loadAll(){
-  try{ return JSON.parse(localStorage.getItem(STORE_KEY)) || {records:{}}; }
-  catch(e){ return {records:{}}; }
+  try{
+    const d = JSON.parse(localStorage.getItem(STORE_KEY));
+    if(!d) return freshDB();
+    if(!d.months) d.months = {};
+    if(!Array.isArray(d.wheel) || d.wheel.length!==8) d.wheel = newWheel();
+    d.wheel = d.wheel.map((w,i)=>({ name: w&&w.name!=null?w.name:WHEEL_DEFAULT[i],
+      score: w&&typeof w.score==="number"?w.score:5, goal:(w&&w.goal)||"", selfImage:(w&&w.selfImage)||"" }));
+    if(typeof d.wants!=="string") d.wants="";
+    if(typeof d.birthday!=="string") d.birthday="";
+    if(!d.records) d.records = {};
+    return d;
+  }catch(e){ return freshDB(); }
 }
-function saveAll(data){ localStorage.setItem(STORE_KEY, JSON.stringify(data)); }
+function saveAll(){ localStorage.setItem(STORE_KEY, JSON.stringify(DB)); }
 let DB = loadAll();
 
-function ymd(d){
-  const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,"0"), day=String(d.getDate()).padStart(2,"0");
-  return `${y}-${m}-${day}`;
-}
+function esc(s){ return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function escAttr(s){ return esc(s).replace(/"/g,"&quot;"); }
+function shortName(s){ return (s||"").split("（")[0].split("(")[0]; }
+
+function ymd(d){ const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,"0"), day=String(d.getDate()).padStart(2,"0"); return `${y}-${m}-${day}`; }
 function parseYmd(s){ const[y,m,d]=s.split("-").map(Number); return new Date(y,m-1,d); }
 const TODAY = new Date(); TODAY.setHours(0,0,0,0);
 const TODAY_S = ymd(TODAY);
 
-function isDone(rec){ return !!rec && PILLARS.some(k=>rec[k]); }
+function hasContent(rec){
+  if(!rec) return false;
+  if(PILLARS.some(k=>rec[k])) return true;
+  if(rec.grat && rec.grat.some(g=>g && g.trim())) return true;
+  if((rec.wins||"").trim() || (rec.diary||"").trim()) return true;
+  return false;
+}
 function isFull(rec){ return !!rec && PILLARS.every(k=>rec[k]); }
+function isEmpty(rec){
+  if(!rec) return true;
+  if(PILLARS.some(k=>rec[k])) return false;
+  if(rec.grat && rec.grat.some(g=>g && g.trim())) return false;
+  if((rec.wins||"").trim() || (rec.plan||"").trim() || (rec.diary||"").trim()) return false;
+  if(rec.period) return false;
+  return true;
+}
 
 let viewYear = TODAY.getFullYear();
 let viewMonth = TODAY.getMonth();
 let selected = TODAY_S;
 
+function rec(){
+  if(!DB.records[selected]) DB.records[selected] = { grat:["","",""] };
+  if(!DB.records[selected].grat) DB.records[selected].grat = ["","",""];
+  return DB.records[selected];
+}
+function commit(){ if(isEmpty(DB.records[selected])) delete DB.records[selected]; saveAll(); }
+
+/* ===== 今月のテーマ（月ごと） ===== */
+function monthKey(){ return `${viewYear}-${String(viewMonth+1).padStart(2,"0")}`; }
+function renderMonthly(){
+  document.getElementById("monthLabel").textContent = `${viewYear}年${viewMonth+1}月のテーマ`;
+  const m=DB.months[monthKey()]||{};
+  document.getElementById("mTheme").value=m.theme||"";
+  document.getElementById("mLetgo").value=m.letgo||"";
+  document.getElementById("mSpace").value=m.space||"";
+}
+function bindMonthArea(id, field){
+  const el=document.getElementById(id);
+  el.addEventListener("input", ()=>{
+    const k=monthKey(); if(!DB.months[k]) DB.months[k]={};
+    DB.months[k][field]=el.value;
+    if(!(DB.months[k].theme||"").trim() && !(DB.months[k].letgo||"").trim() && !(DB.months[k].space||"").trim()) delete DB.months[k];
+    saveAll();
+  });
+  el.addEventListener("blur", flashSaved);
+}
+bindMonthArea("mTheme","theme"); bindMonthArea("mLetgo","letgo"); bindMonthArea("mSpace","space");
+
+/* ===== カレンダー ===== */
 function renderCalendar(){
   document.getElementById("ym").textContent = `${viewYear}年${viewMonth+1}月`;
-  const grid = document.getElementById("grid");
-  grid.innerHTML = "";
-  const first = new Date(viewYear, viewMonth, 1);
-  const startWd = first.getDay();
+  renderMonthly();
+  const grid = document.getElementById("grid"); grid.innerHTML = "";
+  const startWd = new Date(viewYear, viewMonth, 1).getDay();
   const daysInMonth = new Date(viewYear, viewMonth+1, 0).getDate();
-
-  for(let i=0;i<startWd;i++){
-    const c=document.createElement("div"); c.className="cell empty"; grid.appendChild(c);
-  }
+  for(let i=0;i<startWd;i++){ const c=document.createElement("div"); c.className="cell empty"; grid.appendChild(c); }
   for(let day=1; day<=daysInMonth; day++){
     const d = new Date(viewYear, viewMonth, day);
-    const key = ymd(d);
-    const rec = DB.records[key];
-    const isFuture = d > TODAY;
-
-    const btn = document.createElement("button");
-    btn.className = "cell";
-    if(isFull(rec)) btn.classList.add("full");
-    else if(isDone(rec)) btn.classList.add("partial");
+    const key = ymd(d); const r = DB.records[key]; const isFuture = d > TODAY;
+    const btn = document.createElement("button"); btn.className = "cell";
+    if(isFull(r)) btn.classList.add("full"); else if(hasContent(r)) btn.classList.add("partial");
     if(key===TODAY_S) btn.classList.add("today");
     if(key===selected) btn.classList.add("selected");
     if(isFuture) btn.classList.add("future");
     btn.textContent = day;
-
-    if(!isFuture){
-      btn.addEventListener("click", ()=>{ selected=key; renderCalendar(); renderPanel(); });
-    }
+    if(r && r.period){ const i=document.createElement("i"); i.className="pdot"; btn.appendChild(i); }
+    btn.addEventListener("click", ()=>{ selected=key; renderCalendar(); renderPanel(); });
     grid.appendChild(btn);
   }
   updateStats();
 }
 
+/* ===== その日のページ ===== */
 function renderPanel(){
   const d = parseYmd(selected);
   document.getElementById("pdate").innerHTML =
-    `${d.getMonth()+1}月${d.getDate()}日（${WD[d.getDay()]}）` +
-    (selected===TODAY_S ? '<span class="tag">today</span>' : "");
-  const rec = DB.records[selected] || {};
-  document.querySelectorAll(".pillar").forEach(p=>{
-    p.classList.toggle("on", !!rec[p.dataset.key]);
-  });
-  document.getElementById("memo").value = rec.memo || "";
+    `${d.getMonth()+1}月${d.getDate()}日（${WD[d.getDay()]}）` + (selected===TODAY_S ? '<span class="tag">today</span>' : (parseYmd(selected) > TODAY ? '<span class="tag">予定</span>' : ""));
+  const r = DB.records[selected] || {};
+  document.querySelectorAll(".pillar").forEach(p=> p.classList.toggle("on", !!r[p.dataset.key]));
+  const g = r.grat || ["","",""];
+  document.querySelectorAll(".grat").forEach(el=> el.value = g[+el.dataset.i] || "");
+  document.getElementById("wins").value  = r.wins || "";
+  document.getElementById("plan").value  = r.plan || "";
+  document.getElementById("diary").value = r.diary || "";
+  document.getElementById("period").classList.toggle("on", !!r.period);
+  growAll();
 }
-
 document.querySelectorAll(".pillar").forEach(p=>{
-  p.addEventListener("click", ()=>{
-    const k = p.dataset.key;
-    const rec = DB.records[selected] || {};
-    rec[k] = !rec[k];
-    if(!PILLARS.some(x=>rec[x]) && !(rec.memo||"").trim()){ delete DB.records[selected]; }
-    else { DB.records[selected] = rec; }
-    saveAll(DB);
-    p.classList.toggle("on", !!rec[k]);
-    flashSaved();
-    renderCalendar();
-  });
+  p.addEventListener("click", ()=>{ const k=p.dataset.key; const r=rec(); r[k]=!r[k];
+    p.classList.toggle("on", !!r[k]); commit(); flashSaved(); renderCalendar(); });
 });
-
-const memoEl = document.getElementById("memo");
-memoEl.addEventListener("input", ()=>{
-  const rec = DB.records[selected] || {};
-  rec.memo = memoEl.value;
-  if(!PILLARS.some(x=>rec[x]) && !rec.memo.trim()){ delete DB.records[selected]; }
-  else { DB.records[selected] = rec; }
-  saveAll(DB);
+document.querySelectorAll(".grat").forEach(el=>{
+  el.addEventListener("input", ()=>{ const r=rec(); r.grat[+el.dataset.i]=el.value; commit(); });
+  el.addEventListener("blur", ()=>{ flashSaved(); renderCalendar(); });
 });
-memoEl.addEventListener("blur", flashSaved);
+function bindArea(id, field){
+  const el=document.getElementById(id);
+  el.addEventListener("input", ()=>{ const r=rec(); r[field]=el.value; commit(); });
+  el.addEventListener("blur", ()=>{ flashSaved(); renderCalendar(); });
+}
+bindArea("wins","wins"); bindArea("plan","plan"); bindArea("diary","diary");
+document.getElementById("period").addEventListener("click", ()=>{
+  const r=rec(); r.period=!r.period;
+  document.getElementById("period").classList.toggle("on", !!r.period);
+  commit(); flashSaved(); renderCalendar();
+});
 
 let savedTimer;
-function flashSaved(){
-  const s=document.getElementById("saved");
-  s.classList.add("show"); clearTimeout(savedTimer);
-  savedTimer=setTimeout(()=>s.classList.remove("show"),1200);
-}
+function flashSaved(){ const s=document.getElementById("saved"); s.classList.add("show"); clearTimeout(savedTimer); savedTimer=setTimeout(()=>s.classList.remove("show"),1200); }
 
+/* ===== 集計・励まし ===== */
 function updateStats(){
-  let streak=0;
-  let cur=new Date(TODAY);
-  if(!isDone(DB.records[ymd(cur)])) cur.setDate(cur.getDate()-1);
-  while(isDone(DB.records[ymd(cur)])){ streak++; cur.setDate(cur.getDate()-1); }
+  let streak=0, cur=new Date(TODAY);
+  if(!hasContent(DB.records[ymd(cur)])) cur.setDate(cur.getDate()-1);
+  while(hasContent(DB.records[ymd(cur)])){ streak++; cur.setDate(cur.getDate()-1); }
   document.getElementById("streak").textContent = streak;
-
-  let mDone=0;
-  const daysInMonth=new Date(viewYear,viewMonth+1,0).getDate();
-  for(let day=1;day<=daysInMonth;day++){
-    if(isDone(DB.records[ymd(new Date(viewYear,viewMonth,day))])) mDone++;
-  }
+  let mDone=0; const daysInMonth=new Date(viewYear,viewMonth+1,0).getDate();
+  for(let day=1;day<=daysInMonth;day++){ const dd=new Date(viewYear,viewMonth,day); if(dd<=TODAY && hasContent(DB.records[ymd(dd)])) mDone++; }
   let denom=daysInMonth;
   if(viewYear===TODAY.getFullYear() && viewMonth===TODAY.getMonth()) denom=TODAY.getDate();
   document.getElementById("monthDone").textContent=mDone;
   document.getElementById("monthTotal").textContent=denom;
-
-  let total=0;
-  for(const k in DB.records){ if(isDone(DB.records[k])) total++; }
+  let total=0; for(const k in DB.records){ if(hasContent(DB.records[k])) total++; }
   document.getElementById("totalDone").textContent=total;
 
-  renderCheer(streak,total);
+  const todayDone=hasContent(DB.records[TODAY_S]); let msg;
+  if(total===0){ msg="なりたい私へ、今日の一歩を残しましょう。"; }
+  else if(todayDone && streak>=30){ msg=`${streak}日連続。もう、なりたい私に還りはじめています。`; }
+  else if(todayDone && streak>=7){ msg=`${streak}日連続。積み重ねは、必ず未来になります。`; }
+  else if(todayDone){ msg="今日も綴れました。この一日が、夢に近づく一歩です。"; }
+  else if(streak>=1){ msg=`昨日まで${streak}日連続。今日のわたしも、残してあげましょう。`; }
+  else { msg="また今日から。書くたびに、なりたい私へ近づきます。"; }
+  const cheerEl=document.getElementById("cheer");
+  if(isBirthday()){ msg=BIRTHDAY_MSG; cheerEl.classList.add("bday"); } else { cheerEl.classList.remove("bday"); }
+  cheerEl.textContent=msg;
 }
 
-function renderCheer(streak,total){
-  const todayDone=isDone(DB.records[TODAY_S]);
-  let msg;
-  if(total===0){ msg="今日のわたしを、整えた印を残しましょう。"; }
-  else if(todayDone && streak>=30){ msg=`${streak}日連続。もう、続けられる人です。本来のあなたに還っています。`; }
-  else if(todayDone && streak>=7){ msg=`${streak}日連続。積み重ねは、必ず見た目に表れます。`; }
-  else if(todayDone){ msg="今日もできました。この小さな一歩が、未来をつくります。"; }
-  else if(streak>=1){ msg=`昨日まで${streak}日連続。今日も、自分を整えてあげましょう。`; }
-  else { msg="また今日から。整えれば、ちゃんと還れます。"; }
-  document.getElementById("cheer").textContent=msg;
+/* ===== 月移動 ===== */
+document.getElementById("prev").addEventListener("click", ()=>{ viewMonth--; if(viewMonth<0){viewMonth=11;viewYear--;} renderCalendar(); });
+document.getElementById("next").addEventListener("click", ()=>{ viewMonth++; if(viewMonth>11){viewMonth=0;viewYear++;} renderCalendar(); });
+
+/* ===== want to ===== */
+(function(){
+  const el=document.getElementById("wants"); el.value=DB.wants||"";
+  el.addEventListener("input", ()=>{ DB.wants=el.value; saveAll(); });
+  el.addEventListener("blur", flashSaved);
+})();
+
+/* ===== お誕生日 ===== */
+const BIRTHDAY_MSG=`お誕生日おめでとうございます！
+あなたが生まれてきてくれた、
+特別な一日。
+今日は、なりたい自分より、
+今のあなたを、
+まるごと愛してあげてね🤍`;
+function isBirthday(){
+  let b=(DB.birthday||"").trim(); if(!b) return false;
+  b=b.replace(/[０-９]/g, c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0)); // 全角数字→半角
+  const d=b.replace(/[^0-9]/g,""); // 数字だけ
+  let mo, da;
+  if(d.length===4){ mo=+d.slice(0,2); da=+d.slice(2); }      // 0720 → 7/20
+  else if(d.length===3){ mo=+d.slice(0,1); da=+d.slice(1); } // 旧データ 3/21(→321) 互換
+  else return false;
+  return mo===TODAY.getMonth()+1 && da===TODAY.getDate();
+}
+(function(){
+  const el=document.getElementById("bday"); el.value=DB.birthday||"";
+  el.addEventListener("input", ()=>{
+    let v=el.value.replace(/[０-９]/g, c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0)); // 全角→半角
+    v=v.replace(/[^0-9]/g,"").slice(0,4);          // 数字だけ・最大4桁
+    if(v.length>2) v=v.slice(0,2)+"/"+v.slice(2);  // 0720 → 07/20 に自動整形
+    el.value=v;
+    DB.birthday=v; saveAll(); updateStats();
+  });
+  el.addEventListener("blur", flashSaved);
+})();
+
+/* ===== バランスホイール ===== */
+const SVG="http://www.w3.org/2000/svg";
+const WC={cx:170, cy:150, R:106};
+function wpoint(i, r){ const a=(-90 + i*45) * Math.PI/180; return [WC.cx + r*Math.cos(a), WC.cy + r*Math.sin(a)]; }
+function buildWheel(){
+  const svg=document.getElementById("wheelSvg"); svg.innerHTML="";
+  [2,4,6,8,10].forEach(lv=>{
+    const r=lv/10*WC.R, pts=[];
+    for(let i=0;i<8;i++){ const[x,y]=wpoint(i,r); pts.push(`${x.toFixed(1)},${y.toFixed(1)}`); }
+    const poly=document.createElementNS(SVG,"polygon");
+    poly.setAttribute("points",pts.join(" ")); poly.setAttribute("fill","none");
+    poly.setAttribute("stroke","rgba(60,56,51,0.10)"); poly.setAttribute("stroke-width", lv===10?"1.2":"0.8");
+    svg.appendChild(poly);
+  });
+  for(let i=0;i<8;i++){
+    const[x,y]=wpoint(i,WC.R);
+    const ln=document.createElementNS(SVG,"line");
+    ln.setAttribute("x1",WC.cx); ln.setAttribute("y1",WC.cy); ln.setAttribute("x2",x); ln.setAttribute("y2",y);
+    ln.setAttribute("stroke","rgba(60,56,51,0.10)"); ln.setAttribute("stroke-width","0.8"); svg.appendChild(ln);
+    const[lx,ly]=wpoint(i,WC.R+16);
+    const c=Math.cos((-90+i*45)*Math.PI/180);
+    const tx=document.createElementNS(SVG,"text");
+    tx.setAttribute("x",lx); tx.setAttribute("y",ly+3);
+    tx.setAttribute("text-anchor", c>0.3?"start":(c<-0.3?"end":"middle"));
+    tx.setAttribute("font-size","9.5"); tx.setAttribute("fill","#8a7a80");
+    tx.setAttribute("font-family",'"Shippori Mincho",serif'); tx.setAttribute("class","wlabel"); tx.dataset.i=i;
+    tx.textContent = shortName(DB.wheel[i].name); svg.appendChild(tx);
+  }
+  const data=document.createElementNS(SVG,"polygon"); data.setAttribute("id","wheelData");
+  data.setAttribute("fill","rgba(187,154,147,0.30)"); data.setAttribute("stroke","var(--accent)");
+  data.setAttribute("stroke-width","1.6"); data.setAttribute("stroke-linejoin","round"); svg.appendChild(data);
+  for(let i=0;i<8;i++){ const dot=document.createElementNS(SVG,"circle"); dot.setAttribute("id","wdot"+i);
+    dot.setAttribute("r","2.6"); dot.setAttribute("fill","var(--accent-deep)"); svg.appendChild(dot); }
+  updateWheelShape();
+}
+function updateWheelShape(){
+  const pts=[];
+  for(let i=0;i<8;i++){
+    const r=DB.wheel[i].score/10*WC.R; const[x,y]=wpoint(i,r);
+    pts.push(`${x.toFixed(1)},${y.toFixed(1)}`);
+    const dot=document.getElementById("wdot"+i); if(dot){ dot.setAttribute("cx",x); dot.setAttribute("cy",y); }
+  }
+  document.getElementById("wheelData").setAttribute("points", pts.join(" "));
+}
+function buildWheelItems(){
+  let html="";
+  DB.wheel.forEach((w,i)=>{
+    html += `<details class="warea">
+      <summary>
+        <span class="wname" id="wn${i}">${esc(w.name)}</span>
+        <span class="wscore">満足度 <b id="ws${i}">${w.score}</b></span>
+      </summary>
+      <div class="wbody">
+        <div class="field">
+          <div class="field__lbl"><span>分野の名前</span></div>
+          <input class="line-input wnm" data-i="${i}" type="text" value="${escAttr(w.name)}">
+        </div>
+        <div class="field">
+          <div class="field__lbl"><span>満足度</span><span class="en">0–10</span></div>
+          <div class="wrow-score"><input type="range" class="wsc" data-i="${i}" min="0" max="10" step="1" value="${w.score}"><span class="val" id="wv${i}">${w.score}</span></div>
+        </div>
+        <div class="field">
+          <div class="field__lbl"><span>超ゴール</span><span class="en">super goal</span></div>
+          <textarea class="area area--sm wgoal" data-i="${i}" placeholder="この分野で、なりたい未来は？">${esc(w.goal)}</textarea>
+        </div>
+        <div class="field">
+          <div class="field__lbl"><span>セルフイメージ</span><span class="en">self image</span></div>
+          <textarea class="area area--sm wself" data-i="${i}" placeholder="その未来にいる、わたしは？（現在形で）">${esc(w.selfImage)}</textarea>
+        </div>
+      </div>
+    </details>`;
+  });
+  const box=document.getElementById("wheelItems"); box.innerHTML=html;
+
+  box.querySelectorAll(".wnm").forEach(el=>{
+    el.addEventListener("input", ()=>{ const i=+el.dataset.i; DB.wheel[i].name=el.value; saveAll();
+      document.getElementById("wn"+i).textContent=el.value;
+      const lbl=document.querySelector('.wlabel[data-i="'+i+'"]'); if(lbl) lbl.textContent=shortName(el.value); });
+    el.addEventListener("blur", flashSaved);
+  });
+  box.querySelectorAll(".wsc").forEach(el=>{
+    el.addEventListener("input", ()=>{ const i=+el.dataset.i; DB.wheel[i].score=+el.value; saveAll();
+      document.getElementById("wv"+i).textContent=el.value; document.getElementById("ws"+i).textContent=el.value; updateWheelShape(); });
+  });
+  box.querySelectorAll(".wgoal").forEach(el=>{
+    el.addEventListener("input", ()=>{ DB.wheel[+el.dataset.i].goal=el.value; saveAll(); });
+    el.addEventListener("blur", flashSaved);
+  });
+  box.querySelectorAll(".wself").forEach(el=>{
+    el.addEventListener("input", ()=>{ DB.wheel[+el.dataset.i].selfImage=el.value; saveAll(); });
+    el.addEventListener("blur", flashSaved);
+  });
 }
 
-document.getElementById("prev").addEventListener("click", ()=>{
-  viewMonth--; if(viewMonth<0){viewMonth=11;viewYear--;} renderCalendar();
-});
-document.getElementById("next").addEventListener("click", ()=>{
-  viewMonth++; if(viewMonth>11){viewMonth=0;viewYear++;} renderCalendar();
-});
-
+/* ===== バックアップ ===== */
 document.getElementById("export").addEventListener("click", ()=>{
   const blob=new Blob([JSON.stringify(DB,null,2)],{type:"application/json"});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement("a");
-  a.href=url; a.download=`begrace-ayumi-${TODAY_S}.json`;
+  const url=URL.createObjectURL(blob); const a=document.createElement("a");
+  a.href=url; a.download=`begrace-diary-${TODAY_S}.json`;
   document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
 });
 document.getElementById("importBtn").addEventListener("click", ()=>document.getElementById("importFile").click());
 document.getElementById("importFile").addEventListener("change", (e)=>{
-  const file=e.target.files[0]; if(!file) return;
-  const reader=new FileReader();
+  const file=e.target.files[0]; if(!file) return; const reader=new FileReader();
   reader.onload=()=>{
     try{
       const data=JSON.parse(reader.result);
-      if(!data.records) throw new Error("形式が違います");
+      if(!data.records && !data.wheel) throw new Error("形式が違います");
       if(confirm("バックアップを読み込みます。今の記録は上書きされます。よろしいですか？")){
-        DB=data; saveAll(DB); renderCalendar(); renderPanel();
-        alert("読み込みました");
+        localStorage.setItem(STORE_KEY, JSON.stringify(data)); DB=loadAll(); renderAll(); alert("読み込みました");
       }
     }catch(err){ alert("読み込めませんでした。正しいバックアップファイルか確認してください。"); }
   };
-  reader.readAsText(file);
-  e.target.value="";
+  reader.readAsText(file); e.target.value="";
 });
 
-renderCalendar();
-renderPanel();
+/* ===== 記入欄を、書いた分だけ自動で伸ばす（隠れないように） ===== */
+function growArea(t){ if(!t) return; t.style.height="auto"; t.style.height=t.scrollHeight+"px"; }
+function growAll(){ document.querySelectorAll("textarea.area").forEach(growArea); }
+document.addEventListener("input", (e)=>{ if(e.target && e.target.classList && e.target.classList.contains("area")) growArea(e.target); });
+
+/* ===== 起動 ===== */
+function renderAll(){
+  renderCalendar(); renderPanel();
+  document.getElementById("wants").value=DB.wants||"";
+  buildWheel(); buildWheelItems();
+  growAll();
+}
+renderAll();
 </script>
 </body>
 </html>
