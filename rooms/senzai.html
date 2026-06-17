@@ -116,7 +116,7 @@
   }
   .opt:hover { border-color: var(--accent); color: var(--accent-deep); transform: translateY(-2px); box-shadow: 0 12px 24px -10px var(--accent); }
   .quiz__opts.lock .opt:hover { border-color: var(--line); color: var(--ink); transform: none; box-shadow: 0 6px 18px -10px rgba(90,90,120,0.18); }
-  .opt.tapped { border-color: var(--accent); color: var(--accent-deep); transform: translateY(-2px); box-shadow: 0 12px 24px -10px var(--accent); }
+  .opt.tapped { border-color: var(--accent) !important; color: var(--accent-deep) !important; background: #fff !important; transform: translateY(-2px) !important; box-shadow: 0 12px 24px -10px var(--accent) !important; font-weight: 600 !important; }
   .opt, .btn, .med__btn { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
   @media (hover: none) {
     .opt:hover { border-color: var(--line); color: var(--ink); transform: none; box-shadow: 0 6px 18px -10px rgba(90,90,120,0.18); }
