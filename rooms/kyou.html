@@ -46,9 +46,9 @@
   --ivory: #ffffff;
   --ink: #4a3d42;
   --ink-soft: #7a6a70;
-  --gold: #c9a85f;
-  --gold-deep: #b88a32;
-  --gold-light: #f4e3b6;
+  --gold: #9b85c0;
+  --gold-deep: #7a64a0;
+  --gold-light: #e6ddf2;
   --rose: #e6a6b4;
   --rose-soft: #f6d2da;
   --rosegold: #e3b79e;
@@ -155,7 +155,7 @@ body::before {
     opacity 0.3s;
 }
 .btn--primary {
-  background: linear-gradient(135deg, #e6a6b4 0%, #e3b79e 52%, #c9a85f 100%);
+  background: linear-gradient(135deg, #b9a6dd 0%, #9b85c0 100%);
   color: #fffdf8;
   box-shadow: var(--shadow-btn), inset 0 1px 0 rgba(255, 255, 255, 0.38);
   text-shadow: 0 1px 1px rgba(120, 90, 40, 0.16);
@@ -453,16 +453,15 @@ body::before {
   transform: translateY(-1px);
 }
 .chip.is-on {
-  background: linear-gradient(135deg, #e3c477, var(--gold-deep));
-  color: #fffdf8;
-  border-color: transparent;
-  box-shadow:
-    0 10px 20px -6px rgba(168, 134, 63, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.32);
+  background: #fff;
+  color: var(--gold-deep);
+  border-color: var(--gold);
+  box-shadow: 0 6px 16px -8px rgba(123, 100, 160, 0.4);
+  font-weight: 600;
 }
 /* tone でほのかに色味を分ける */
 .chip[data-tone='shine'].is-on {
-  background: linear-gradient(135deg, #e3c477, #c9a85f);
+  background: #fff;
 }
 .chip.is-disabled {
   opacity: 0.4;
