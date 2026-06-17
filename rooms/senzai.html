@@ -116,6 +116,10 @@
   }
   .opt:hover { border-color: var(--accent); color: var(--accent-deep); transform: translateY(-2px); box-shadow: 0 12px 24px -10px var(--accent); }
   .quiz__opts.lock .opt:hover { border-color: var(--line); color: var(--ink); transform: none; box-shadow: 0 6px 18px -10px rgba(90,90,120,0.18); }
+  .opt, .btn, .med__btn { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+  @media (hover: none) {
+    .opt:hover { border-color: var(--line); color: var(--ink); transform: none; box-shadow: 0 6px 18px -10px rgba(90,90,120,0.18); }
+  }
   .quiz__nav { display: flex; justify-content: center; margin-top: 22px; }
 
   /* ===== 診断：結果 ===== */
@@ -434,9 +438,21 @@
     result: document.getElementById("viewResult"),
     med:    document.getElementById("viewMed")
   };
+  // ===== スマホの幽霊タップ対策（画面切替直後のクリックを飲み込む）=====
+  var _tapGuard = 0;
+  function armTapGuard() { _tapGuard = (window.performance ? performance.now() : +new Date()) + 600; }
+  document.addEventListener("click", function (e) {
+    var now = window.performance ? performance.now() : +new Date();
+    if (now < _tapGuard) { e.stopPropagation(); e.preventDefault(); }
+  }, true);
+  document.addEventListener("touchend", function () {
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  }, { passive: true });
+
   function show(name) {
     Object.keys(views).forEach(function (k) { views[k].classList.add("is-hidden"); });
     views[name].classList.remove("is-hidden");
+    armTapGuard();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -463,6 +479,7 @@
     });
     quizBack2.classList.toggle("is-hidden", step === 0);
     quizOpts.classList.add("lock");
+    armTapGuard();
   }
   document.addEventListener("mousemove", function () { quizOpts.classList.remove("lock"); }, true);
   function choose(type) {
