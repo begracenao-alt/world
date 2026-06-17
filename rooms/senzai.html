@@ -469,7 +469,7 @@
         if (answering) return;       // 二度押し・幽霊タップを無視
         answering = true;
         b.classList.add("tapped");   // 押したボタンにくっきり色をつける（ここ押した！）
-        setTimeout(function () { choose(opt[1]); }, 450);  // パッと見せて、サッと次へ
+        setTimeout(function () { choose(opt[1]); }, 300);  // 一瞬見せて、すぐ次へ
       });
       quizOpts.appendChild(b);
     });
