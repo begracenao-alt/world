@@ -17,8 +17,8 @@
     --gold: #3a96bf;
     --line: rgba(60, 56, 51, 0.10);
     --card: rgba(255, 255, 255, 0.6);
-    --accent: #c89381;       /* 巡り — 温いテラコッタ */
-    --accent-deep: #9c6a4f;
+    --accent: #5aa8ca;       /* 巡り — 温いテラコッタ */
+    --accent-deep: #3a8fb0;
     --accent-soft: rgba(192, 142, 114, 0.14);
     --shadow: 0 18px 50px -28px rgba(70, 60, 45, 0.45);
   }
@@ -78,7 +78,7 @@
     padding: 12px 20px; cursor: pointer; transition: all .3s;
   }
   .choice:hover { border-color: var(--accent); background: rgba(255,255,255,0.92); transform: translateY(-2px); }
-  .choice.is-on { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .choice.is-on { background: #fff; color: var(--accent-deep); border-color: var(--accent); box-shadow: 0 6px 16px -8px var(--accent); font-weight: 600; }
   #rhythmRow .choice:hover { border-color: #9fd0e0; color: #3a96bf; }
   #rhythmRow .choice.is-on { background: #fff; color: #3a96bf; border-color: #9fd0e0; box-shadow: 0 6px 16px rgba(58,150,191,0.16); font-weight: 600; }
 
