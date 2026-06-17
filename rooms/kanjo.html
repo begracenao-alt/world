@@ -423,6 +423,8 @@
     views.forEach(function (v) {
       document.getElementById("view" + v).classList.toggle("is-hidden", v.toLowerCase() !== name);
     });
+    // 戻ったとき、前に押した選択の色が残らないようにリセット
+    [].forEach.call(document.querySelectorAll(".choice.tapped"), function (c) { c.classList.remove("tapped"); });
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -430,12 +432,10 @@
   var chosenState = null;
   function renderChoices(boxId, list, onPick) {
     var box = document.getElementById(boxId); box.innerHTML = "";
-    var picking = false;
     list.forEach(function (item) {
       var b = document.createElement("button"); b.className = "choice"; b.textContent = item.label;
       b.addEventListener("click", function () {
-        if (picking) return;
-        picking = true;
+        if (box.querySelector(".tapped")) return;                  // 連打・二重選択を防ぐ（戻ればリセットされる）
         b.classList.add("tapped");                                  // 触れた色を見せる
         setTimeout(function () { onPick(item.k); }, 150);           // 0.15秒で進む（潜在意識と同じ）
       });
