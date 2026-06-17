@@ -101,7 +101,8 @@
     transition: all .3s;
   }
   .preset:hover { border-color: var(--accent); color: var(--ink); }
-  .preset.is-active { background: #fff; color: var(--accent-deep); border-color: var(--accent); box-shadow: 0 6px 16px -8px var(--accent); font-weight: 600; }
+  .preset.is-active, .preset:active { background: #fff !important; color: var(--accent-deep) !important; border-color: var(--accent) !important; box-shadow: 0 6px 16px -8px var(--accent) !important; font-weight: 600 !important; }
+  .preset { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 
   /* 操作ボタン */
   .controls { display: flex; justify-content: center; gap: 14px; margin-top: 22px; }
@@ -433,6 +434,9 @@
     stop(); remain = totalSec; segStart = remain;
     clearDoneCue(); timeState.textContent = ""; render();
   });
+  // iPhoneで「触れている間、色が出る(:active)」を効かせるためのおまじない
+  document.addEventListener("touchstart", function () {}, { passive: true });
+
   document.getElementById("presets").addEventListener("click", function (e) {
     var b = e.target.closest(".preset"); if (!b) return;
     [].forEach.call(this.children, function (c) { c.classList.remove("is-active"); });

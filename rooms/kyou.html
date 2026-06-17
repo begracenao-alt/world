@@ -452,13 +452,15 @@ body::before {
   border-color: var(--gold);
   transform: translateY(-1px);
 }
-.chip.is-on {
-  background: #fff;
-  color: var(--gold-deep);
-  border-color: var(--gold);
-  box-shadow: 0 6px 16px -8px rgba(179, 160, 219, 0.55);
-  font-weight: 600;
+.chip.is-on, .chip:active {
+  background: #fff !important;
+  color: var(--gold-deep) !important;
+  border-color: var(--gold) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 16px -8px rgba(179, 160, 219, 0.55) !important;
+  font-weight: 600 !important;
 }
+.chip { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 /* tone でほのかに色味を分ける */
 .chip[data-tone='shine'].is-on {
   background: #fff;
@@ -1015,6 +1017,8 @@ body::before {
       </section>
     </main>
     <script>
+// iPhoneで「触れている間、色が出る(:active)」を効かせるためのおまじない
+document.addEventListener("touchstart", function () {}, { passive: true });
 /* ============================================================
  *  Be Grace ─ リンク設定ファイル
  * ============================================================

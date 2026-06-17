@@ -107,6 +107,8 @@
     box-shadow: 0 6px 18px -10px rgba(90,90,120,0.18);
   }
   .choice:hover { border-color: var(--accent); color: var(--accent-deep); transform: translateY(-2px); box-shadow: 0 12px 24px -10px var(--accent); }
+  .choice:active, .choice.is-on { border-color: var(--accent) !important; color: var(--accent-deep) !important; background: #fff !important; transform: translateY(-2px) !important; box-shadow: 0 12px 24px -10px var(--accent) !important; font-weight: 600 !important; }
+  .choice { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
   .ask { text-align: center; font-size: clamp(18px, 4.8vw, 22px); font-weight: 500; letter-spacing: 0.06em; line-height: 1.7; }
   .ask__sub { text-align: center; font-size: 13px; color: var(--ink-faint); letter-spacing: 0.08em; margin-top: 10px; }
   .field { margin-top: 22px; text-align: center; }
@@ -590,6 +592,9 @@
     aishoResult.appendChild(note);
     aishoResult.scrollIntoView({ behavior: "smooth", block: "start" });
   });
+
+  // iPhoneで「触れている間、色が出る(:active)」を効かせるためのおまじない
+  document.addEventListener("touchstart", function () {}, { passive: true });
 
   // ===== 入口・遷移 =====
   document.getElementById("goCare").addEventListener("click", function () { show("state"); });
