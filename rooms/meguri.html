@@ -387,9 +387,15 @@
 
   // ===== テーマ一覧の描画・遷移 =====
   var box = document.getElementById("themeChoices");
+  var navigating = false;
   THEMES.forEach(function (t) {
     var b = document.createElement("button"); b.className = "choice"; b.textContent = t.label;
-    b.addEventListener("click", function () { renderTheme(t.k); show("theme"); });
+    b.addEventListener("click", function () {
+      if (navigating) return;
+      navigating = true;
+      b.classList.add("is-on");   // まず“ふんわり選ばれた”状態を見せる
+      setTimeout(function () { renderTheme(t.k); show("theme"); navigating = false; b.classList.remove("is-on"); }, 320);
+    });
     box.appendChild(b);
   });
   document.getElementById("themeExit").addEventListener("click", function () { show("index"); });

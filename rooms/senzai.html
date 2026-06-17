@@ -116,6 +116,7 @@
   }
   .opt:hover { border-color: var(--accent); color: var(--accent-deep); transform: translateY(-2px); box-shadow: 0 12px 24px -10px var(--accent); }
   .quiz__opts.lock .opt:hover { border-color: var(--line); color: var(--ink); transform: none; box-shadow: 0 6px 18px -10px rgba(90,90,120,0.18); }
+  .opt.is-on { border-color: var(--accent); color: var(--accent-deep); background: #fff; transform: translateY(-2px); box-shadow: 0 12px 24px -10px var(--accent); font-weight: 600; }
   .opt, .btn, .med__btn { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
   @media (hover: none) {
     .opt:hover { border-color: var(--line); color: var(--ink); transform: none; box-shadow: 0 6px 18px -10px rgba(90,90,120,0.18); }
@@ -459,6 +460,7 @@
   // ===== 診断ロジック =====
   var step = 0;
   var answers = [];
+  var answering = false;
   var quizQ = document.getElementById("quizQ");
   var quizOpts = document.getElementById("quizOpts");
   var quizProgress = document.getElementById("quizProgress");
@@ -467,6 +469,7 @@
 
   function renderQuestion() {
     var item = QUESTIONS[step];
+    answering = false;
     quizProgress.textContent = (step + 1) + " / " + QUESTIONS.length;
     quizBar.style.width = ((step) / QUESTIONS.length * 100) + "%";
     quizQ.textContent = item.q;
@@ -474,12 +477,16 @@
     item.o.forEach(function (opt) {
       var b = document.createElement("button");
       b.className = "opt"; b.textContent = opt[0];
-      b.addEventListener("click", function () { choose(opt[1]); });
+      b.addEventListener("click", function () {
+        if (answering) return;       // 二度押し・幽霊タップを無視
+        answering = true;
+        b.classList.add("is-on");    // まず“ふんわり選ばれた”状態を見せる
+        setTimeout(function () { choose(opt[1]); }, 480);  // ひと呼吸おいて次へ
+      });
       quizOpts.appendChild(b);
     });
     quizBack2.classList.toggle("is-hidden", step === 0);
     quizOpts.classList.add("lock");
-    armTapGuard();
   }
   document.addEventListener("mousemove", function () { quizOpts.classList.remove("lock"); }, true);
   function choose(type) {
