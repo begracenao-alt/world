@@ -82,6 +82,7 @@
   .choice.is-on { background: #fff; color: var(--accent-deep); border-color: var(--accent); box-shadow: 0 6px 16px -8px var(--accent); font-weight: 600; }
   #rhythmRow .choice:hover { border-color: #9fd0e0; color: #3a96bf; }
   #rhythmRow .choice.is-on { background: #fff; color: #3a96bf; border-color: #9fd0e0; box-shadow: 0 6px 16px rgba(58,150,191,0.16); font-weight: 600; }
+  .choice.tapped { background: #fff; color: var(--accent-deep); border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 0 0 2px var(--accent-soft), 0 14px 28px -10px var(--accent); font-weight: 600; }
   .choice, .btn { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
   @media (hover: none) {
     .choice:hover { border-color: var(--line); color: var(--ink); transform: none; box-shadow: 0 10px 24px -12px rgba(70,110,130,0.40), 0 2px 6px -2px rgba(70,110,130,0.12); }
@@ -293,23 +294,11 @@
     }
   };
 
-  // ===== スマホの幽霊タップ対策（画面切替直後のクリックを飲み込む）=====
-  var _tapGuard = 0;
-  function armTapGuard() { _tapGuard = (window.performance ? performance.now() : +new Date()) + 600; }
-  document.addEventListener("click", function (e) {
-    var now = window.performance ? performance.now() : +new Date();
-    if (now < _tapGuard) { e.stopPropagation(); e.preventDefault(); }
-  }, true);
-  document.addEventListener("touchend", function () {
-    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
-  }, { passive: true });
-
   // ===== 画面の切り替え =====
   function show(name) {
     if (name !== "index" && typeof stopBreath === "function") stopBreath();
     document.getElementById("viewIndex").classList.toggle("is-hidden", name !== "index");
     document.getElementById("viewTheme").classList.toggle("is-hidden", name !== "theme");
-    armTapGuard();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -393,8 +382,8 @@
     b.addEventListener("click", function () {
       if (navigating) return;
       navigating = true;
-      b.classList.add("is-on");   // まず“ふんわり選ばれた”状態を見せる
-      setTimeout(function () { renderTheme(t.k); show("theme"); navigating = false; b.classList.remove("is-on"); }, 320);
+      b.classList.add("tapped");   // 押したボタンにくっきり色をつける（ここ押した！）
+      setTimeout(function () { renderTheme(t.k); show("theme"); navigating = false; b.classList.remove("tapped"); }, 360);
     });
     box.appendChild(b);
   });
