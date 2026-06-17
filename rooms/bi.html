@@ -382,7 +382,7 @@
       if (navigating) return;
       navigating = true;
       b.classList.add("tapped");   // 押したボタンにくっきり色をつける（ここ押した！）
-      setTimeout(function () { renderTheme(t.k); show("theme"); navigating = false; b.classList.remove("tapped"); }, 360);
+      setTimeout(function () { renderTheme(t.k); show("theme"); navigating = false; b.classList.remove("tapped"); }, 150);
     });
     box.appendChild(b);
   });
