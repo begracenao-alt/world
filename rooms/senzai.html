@@ -116,7 +116,7 @@
   }
   .opt:hover { border-color: var(--accent); color: var(--accent-deep); transform: translateY(-2px); box-shadow: 0 12px 24px -10px var(--accent); }
   .quiz__opts.lock .opt:hover { border-color: var(--line); color: var(--ink); transform: none; box-shadow: 0 6px 18px -10px rgba(90,90,120,0.18); }
-  .opt.tapped { background: rgba(111,120,184,0.16); color: var(--accent-deep); border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 0 0 3px rgba(111,120,184,0.32), 0 14px 28px -10px var(--accent); font-weight: 600; }
+  .opt.tapped { border-color: var(--accent); color: var(--accent-deep); transform: translateY(-2px); box-shadow: 0 12px 24px -10px var(--accent); }
   .opt, .btn, .med__btn { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
   @media (hover: none) {
     .opt:hover { border-color: var(--line); color: var(--ink); transform: none; box-shadow: 0 6px 18px -10px rgba(90,90,120,0.18); }
@@ -469,7 +469,7 @@
         if (answering) return;       // 二度押し・幽霊タップを無視
         answering = true;
         b.classList.add("tapped");   // 押したボタンにくっきり色をつける（ここ押した！）
-        setTimeout(function () { choose(opt[1]); }, 500);  // しっかり見せてから次へ
+        setTimeout(function () { choose(opt[1]); }, 650);  // しっかり見せてから次へ
       });
       quizOpts.appendChild(b);
     });
