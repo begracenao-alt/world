@@ -1601,6 +1601,28 @@ function diagnose(selectedIds) {
       ? '今日から、はじまりました🤍'
       : 'これまで <strong>' + n + '日</strong>、積み重ねました🤍';
 
+    // タイプ別の回数から、棒グラフの行HTMLを作る（14日用・全部用で共通）
+    function statsRows(cnt) {
+      let topN = 0;
+      Object.keys(cnt).forEach((id) => { if (cnt[id] > topN) topN = cnt[id]; });
+      return Object.keys(cnt)
+        .sort(function (a, b) { return cnt[b] - cnt[a]; })
+        .map(function (id) {
+          const nm = (typeof TYPES !== 'undefined' && TYPES[id] && TYPES[id].name) || '';
+          if (!nm) return '';
+          const pct = topN ? Math.round((cnt[id] / topN) * 100) : 0;
+          return (
+            '<div class="type-stats__row">' +
+              '<div class="type-stats__head">' +
+                '<span class="type-stats__name">' + nm + '</span>' +
+                '<span class="type-stats__num">' + cnt[id] + '回</span>' +
+              '</div>' +
+              '<span class="type-stats__bar"><span class="type-stats__fill" style="width:' + pct + '%"></span></span>' +
+            '</div>'
+          );
+        }).join('');
+    }
+
     let trend = '';
     if (n % 14 === 0) {                    // 14日（2週間）ごとの節目だけ
       const round = n / 14;               // 何回目の14日か
@@ -1618,28 +1640,20 @@ function diagnose(selectedIds) {
       const tendency = topName
         ? 'いちばん多かったのは「<strong>' + topName + '</strong>」。<br>整えながら進む日 ' + suf + '日　／　進みやすい日 ' + bea + '日'
         : '';
-      const statsRows = Object.keys(cnt)
-        .sort(function (a, b) { return cnt[b] - cnt[a]; })
-        .map(function (id) {
-          const nm = (typeof TYPES !== 'undefined' && TYPES[id] && TYPES[id].name) || '';
-          if (!nm) return '';
-          const pct = Math.round((cnt[id] / topN) * 100);
-          return (
-            '<div class="type-stats__row">' +
-              '<div class="type-stats__head">' +
-                '<span class="type-stats__name">' + nm + '</span>' +
-                '<span class="type-stats__num">' + cnt[id] + '回</span>' +
-              '</div>' +
-              '<span class="type-stats__bar"><span class="type-stats__fill" style="width:' + pct + '%"></span></span>' +
-            '</div>'
-          );
-        }).join('');
-      const stats = statsRows ? '<div class="type-stats">' + statsRows + '</div>' : '';
+      const cycleStats = statsRows(cnt);
+
+      // これまで全部（全期間）の傾向
+      const allCnt = {};
+      days.forEach((d) => { const e = log[d]; allCnt[e.type] = (allCnt[e.type] || 0) + 1; });
+      const allStats = statsRows(allCnt);
+
       trend =
         '<p class="verdict" style="margin-top:26px">この14日間の傾向</p>' +
         '<p class="type-stats__round">' + round + '回目の節目🤍</p>' +
         (tendency ? '<p class="block-body">' + tendency + '</p>' : '') +
-        stats +
+        (cycleStats ? '<div class="type-stats">' + cycleStats + '</div>' : '') +
+        '<p class="verdict" style="margin-top:26px">これまで全部の傾向</p>' +
+        (allStats ? '<div class="type-stats">' + allStats + '</div>' : '') +
         '<p class="type-stats__note">くらべるものではなく、今のあなたを知るヒントに🤍</p>';
     }
 
