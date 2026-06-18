@@ -1486,21 +1486,8 @@ function diagnose(selectedIds) {
   };
 
   function getMode() {
-    // 通常は自分のURLの ?plan= を見る。固定ページに埋め込まれた場合は
-    // 親ページ（begracenao.com/shindan/?plan=14 等）の ?plan= を読む。
-    let search = location.search;
-    try {
-      if (window.parent && window.parent !== window && window.parent.location) {
-        search = window.parent.location.search || search;
-      }
-    } catch (e) {
-      /* 別ドメイン埋め込み時はアクセスできないので自分のを使う */
-    }
-    const p = new URLSearchParams(search).get('plan');
-    if (p === '30' || p === '14' || p === 'trial' || p === '14day') return 'trial30';
-    if (p === 'member' || p === 'unlimited') return 'member';
-    if (p === '1' || p === 'oneshot' || p === 'day') return 'oneshot';
-    return 'member'; // 既定は「ずっと使える（無期限・売り込みなし）」版
+    // 会員(HP)専用。常に無期限member固定。無料/30日とは完全に独立（混ざらない）。
+    return 'member';
   }
   const mode = getMode();
   const cfg = MODES[mode];
@@ -1534,15 +1521,15 @@ function diagnose(selectedIds) {
   }
   function logResult(type, mood) {
     try {
-      const log = JSON.parse(lsGet('bg_log') || '{}');
+      const log = JSON.parse(lsGet('bg_log_member') || '{}');
       log[todayStr()] = { type: type.id, mood: mood }; // 同じ日は上書き＝1日1件
-      lsSet('bg_log', JSON.stringify(log));
+      lsSet('bg_log_member', JSON.stringify(log));
     } catch (e) {}
   }
   // 「あなたの30日まとめ」を組み立てる（開始日以降の記録だけ集計）
   function buildSummaryHtml() {
     let log = {};
-    try { log = JSON.parse(lsGet('bg_log') || '{}'); } catch (e) {}
+    try { log = JSON.parse(lsGet('bg_log_member') || '{}'); } catch (e) {}
     let startStr = '';
     const startMs = Number(lsGet(lsKey('start')) || 0);
     if (startMs) {
@@ -1607,7 +1594,7 @@ function diagnose(selectedIds) {
   // くらべるものではなく、今の自分を知る“鏡”として。前の14日と今の14日で「変化」が見える。
   function buildJourneyHtml() {
     let log = {};
-    try { log = JSON.parse(lsGet('bg_log') || '{}'); } catch (e) {}
+    try { log = JSON.parse(lsGet('bg_log_member') || '{}'); } catch (e) {}
     const days = Object.keys(log).sort(); // 日付順
     const n = days.length;
     if (!n) return '';
