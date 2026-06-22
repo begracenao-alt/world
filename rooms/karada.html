@@ -444,7 +444,8 @@
       pauseMedia();
       timeState.textContent = "整いました🤍";
       showDoneCue();                             // 見てわかる合図（リングと文字）
-      setTimeout(function () { chime(); }, 500); // 少し間を置いて、チャイムをひびかせる
+      // メディアセッションが切り替わる時間を稼いでから、チャイムをひびかせる
+      setTimeout(function () { chime(); }, 900);
     }
   }
   function start() {
@@ -569,6 +570,23 @@
     }
     var aud = musicPlayer.querySelector("audio");
     if (aud) { try { aud.pause(); } catch (e) {} }
+    // 無音ループを再スタートしてメディアセッションをリフレッシュ
+    if (silentLoop) {
+      try {
+        silentLoop.pause();
+        silentLoop.currentTime = 0;
+        var p = silentLoop.play();
+        if (p && p.catch) p.catch(function () {});
+      } catch (e) {}
+    }
+    // AudioContextが眠っていたら起こす
+    try {
+      var ctx = audio();
+      if (ctx && ctx.state === "suspended") {
+        var rp = ctx.resume();
+        if (rp && rp.catch) rp.catch(function () {});
+      }
+    } catch (e) {}
     if (musicCard) musicCard.classList.add("is-muted");
   }
   function resumeMediaUI() {
