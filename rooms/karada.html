@@ -642,13 +642,15 @@
   var toneCard = document.getElementById("toneCard");
   var metroCard = document.getElementById("metroCard");
   function enterMusicMode() {
-    // 音楽中は 528Hz だけ お休み（同じヒーリング系の音が重なるので）。
-    // メトロノームは リズム取り用に 同時に使える。
+    // YouTube などの音楽中は、528Hz と メトロノーム を どちらも お休み（薄く）にする
+    if (typeof metroOn !== "undefined" && metroOn) metroStop();
     if (typeof toneOn !== "undefined" && toneOn) toneStop();
     toneCard.classList.add("is-muted");
+    if (metroCard) metroCard.classList.add("is-muted");
   }
   function exitMusicMode() {
     toneCard.classList.remove("is-muted");
+    if (metroCard) metroCard.classList.remove("is-muted");
   }
 
   function renderMusic(raw) {
