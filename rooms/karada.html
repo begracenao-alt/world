@@ -300,18 +300,32 @@
     <div class="foot"><div class="foot__title">Be Grace</div></div>
   </div>
 
+  <!-- iPhoneのサイレントスイッチを越えるための無音ループ（メディア扱いを固定） -->
+  <audio id="silentLoop" loop playsinline preload="auto" style="display:none">
+    <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAESsAAABAAgAZGF0YQAAAAA=" type="audio/wav">
+  </audio>
+
 <script>
 (function () {
   "use strict";
 
   // ===== 共通：音（Web Audio。ファイル不要・オフラインでも鳴る） =====
   var actx = null;
+  var silentLoop = document.getElementById("silentLoop");
+  var silentStarted = false;
+  // iPhoneのサイレントスイッチに負けないよう、最初のタップで無音ループを再生開始
+  function kickSilent() {
+    if (silentStarted || !silentLoop) return;
+    var p = silentLoop.play();
+    if (p && p.then) p.then(function () { silentStarted = true; }).catch(function () {});
+    else silentStarted = true;
+  }
   function audio() {
     if (!actx) {
       var AC = window.AudioContext || window.webkitAudioContext;
-      actx = new AC();
-      // 音が止められたら、戻ってきたときに鳴らし直せるよう復帰させる
-      actx.onstatechange = function () { if (actx.state === "suspended") actx.resume(); };
+      if (!AC) return null;
+      try { actx = new AC(); } catch (e) { return null; }
+      actx.onstatechange = function () { if (actx && actx.state === "suspended") actx.resume(); };
       document.addEventListener("visibilitychange", function () {
         if (!document.hidden && actx && actx.state === "suspended") actx.resume();
       });
@@ -319,8 +333,13 @@
         if (actx && actx.state === "suspended") actx.resume();
       }, { passive: true });
     }
-    if (actx.state === "suspended") actx.resume();
+    if (actx.state === "suspended") { try { actx.resume(); } catch (e) {} }
+    kickSilent();
     return actx;
+  }
+  // iPhoneに「このサイトのデータを長く保ってください」とお願い
+  if (navigator.storage && navigator.storage.persist) {
+    navigator.storage.persist().catch(function () {});
   }
   // やさしいベル（タイマー終了用）— ゆっくり立ち上がって、長くやわらかく消える
   function chime() {
@@ -605,12 +624,10 @@
   }
   toneBtn.addEventListener("click", function () { toneOn ? toneStop() : toneStart(); });
 
-  // ===== メトロノーム =====
+  // ===== メトロノーム（光と音を分ける：音が眠っても光は確実に出る） =====
   var bpm = 128;
   var metroOn = false;
-  var nextNote = 0;       // 次の拍の時刻(秒)
-  var beat = 0;
-  var sched = null;
+  var metroTimer = null;
   var bpmNum = document.getElementById("bpmNum");
   var metroBtn = document.getElementById("metroBtn");
   var metroDot = document.getElementById("metroDot");
@@ -619,28 +636,26 @@
     metroDot.classList.add("is-beat");
     setTimeout(function () { metroDot.classList.remove("is-beat"); }, 90);
   }
-  function scheduler() {
-    var ctx = audio();
-    while (nextNote < ctx.currentTime + 0.1) {
-      // すべて同じ音（均一）— アクセントなし
-      click(nextNote, false);
-      // 画面の光は、その拍の時刻に合わせて点ける
-      var delay = (nextNote - ctx.currentTime) * 1000;
-      setTimeout(flashDot, Math.max(0, delay));
-      nextNote += 60 / bpm;
-    }
+  function metroTick() {
+    if (!metroOn) return;
+    flashDot();
+    try {
+      var ctx = audio();
+      if (ctx && ctx.state === "running") click(ctx.currentTime + 0.001, false);
+    } catch (e) {}
+    metroTimer = setTimeout(metroTick, 60000 / bpm);
   }
   function metroStart() {
-    var ctx = audio();
-    metroOn = true; beat = 0;
-    nextNote = ctx.currentTime + 0.06;
+    if (metroOn) return;
+    metroOn = true;
+    try { audio(); } catch (e) {}
     metroBtn.textContent = "ストップ";
     metroBtn.classList.remove("btn--primary"); metroBtn.classList.add("btn--ghost");
-    sched = setInterval(scheduler, 25);
+    metroTick();
   }
   function metroStop() {
     metroOn = false;
-    if (sched) { clearInterval(sched); sched = null; }
+    if (metroTimer) { clearTimeout(metroTimer); metroTimer = null; }
     metroBtn.textContent = "スタート";
     metroBtn.classList.add("btn--primary"); metroBtn.classList.remove("btn--ghost");
   }
