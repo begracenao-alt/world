@@ -139,6 +139,11 @@
 
   .bpm__presets { display: flex; justify-content: center; gap: 10px; margin: 16px 0 6px; }
 
+  /* メトロノーム音量 */
+  .vol { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 14px 0 2px; }
+  .vol__label { font-size: 11px; letter-spacing: 0.22em; color: var(--ink-soft); }
+  .vol__slider { width: 200px; max-width: 60vw; accent-color: var(--accent); }
+
   /* 積み上げ記録 */
   .stats { display: flex; justify-content: center; gap: clamp(20px, 7vw, 40px); margin: 6px 0 2px; }
   .stat { text-align: center; }
@@ -280,6 +285,11 @@
         <button class="preset" data-bpm="140">140</button>
       </div>
 
+      <div class="vol">
+        <label class="vol__label" for="metroVol">音量</label>
+        <input type="range" id="metroVol" min="0" max="100" value="50" class="vol__slider" aria-label="メトロノームの音量">
+      </div>
+
       <div class="controls">
         <button class="btn btn--primary" id="metroBtn">スタート</button>
       </div>
@@ -397,6 +407,9 @@
     for (var i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
     return noiseBuf;
   }
+  // メトロノーム音量（0.0〜1.0）。スライダーで動かせる。
+  var metroVol = 0.5;
+  function metroPeak() { return 0.03 + metroVol * 0.45; }
   function click(time, accent) {
     var ctx = audio();
     // やさしい「ポッ」だけ — サイン波ひとつ、なめらかな出だしと短い余韻
@@ -404,7 +417,7 @@
     o.type = "sine";
     o.frequency.value = 1000;
     g.gain.setValueAtTime(0.0001, time);
-    g.gain.linearRampToValueAtTime(0.18, time + 0.006);
+    g.gain.linearRampToValueAtTime(metroPeak(), time + 0.006);
     g.gain.exponentialRampToValueAtTime(0.0001, time + 0.06);
     o.connect(g).connect(ctx.destination);
     o.start(time); o.stop(time + 0.07);
@@ -714,6 +727,22 @@
   });
   setBpm(128);
 
+  // メトロノーム音量スライダー（覚える）
+  var savedMetroVol = LS.getItem("bg_karada_metro_vol");
+  if (savedMetroVol != null) {
+    var sv = parseFloat(savedMetroVol);
+    if (!isNaN(sv)) metroVol = Math.min(1, Math.max(0, sv));
+  }
+  var metroVolEl = document.getElementById("metroVol");
+  if (metroVolEl) {
+    metroVolEl.value = String(Math.round(metroVol * 100));
+    metroVolEl.addEventListener("input", function () {
+      var v = parseInt(this.value, 10) / 100;
+      metroVol = Math.min(1, Math.max(0, v));
+      LS.setItem("bg_karada_metro_vol", String(metroVol));
+    });
+  }
+
   // ===== バックアップ =====
   function todayFile() {
     var d = new Date();
@@ -726,7 +755,8 @@
       today_date: LS.getItem("bg_karada_today_date") || "",
       today_sec: LS.getItem("bg_karada_today_sec") || "0",
       days: LS.getItem("bg_karada_days") || "[]",
-      music: LS.getItem("bg_karada_music") || ""
+      music: LS.getItem("bg_karada_music") || "",
+      metro_vol: LS.getItem("bg_karada_metro_vol") || "0.5"
     };
     var json = JSON.stringify(data, null, 2);
     var blob = new Blob([json], {type:"application/json"});
@@ -755,6 +785,14 @@
           if (data.today_sec != null) LS.setItem("bg_karada_today_sec", data.today_sec);
           if (data.days != null) LS.setItem("bg_karada_days", data.days);
           if (data.music != null) LS.setItem("bg_karada_music", data.music);
+          if (data.metro_vol != null) {
+            LS.setItem("bg_karada_metro_vol", data.metro_vol);
+            var mv = parseFloat(data.metro_vol);
+            if (!isNaN(mv)) {
+              metroVol = Math.min(1, Math.max(0, mv));
+              if (metroVolEl) metroVolEl.value = String(Math.round(metroVol * 100));
+            }
+          }
           totalSecRec = parseInt(LS.getItem("bg_karada_total") || "0", 10);
           try { daysArr = JSON.parse(LS.getItem("bg_karada_days") || "[]"); } catch (e) { daysArr = []; }
           todaySecRec = (LS.getItem("bg_karada_today_date") === todayStr())
