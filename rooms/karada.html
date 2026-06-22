@@ -385,24 +385,23 @@
                      (typeof metroOn !== "undefined" && metroOn);
     if (anyRunning) tryWakeLock();
   });
-  // クリスタルボウル風 — 純粋な単音、しゅーっと立ち上がって、長く透き通る余韻
+  // クリスタルボウル風 — 落ち着いた単音、しっとり長く透き通る
   function chime() {
     var ctx = audio(); if (!ctx) return;
     var t = ctx.currentTime;
-    var fundamental = 528;  // ソルフェジオ周波数（修復・愛・調和）
-    // 倍音は控えめに（クリスタルらしい透明感）
+    var fundamental = 432;  // 432Hz・自然との調和、落ち着きの周波数
+    // 高音のきらめきは出さず、基音と1オクターブ上だけで深く
     var partials = [
-      { ratio: 1.00, peak: 0.16, decay: 14.0 },   // 基音（いちばん長く透き通る）
-      { ratio: 2.00, peak: 0.045, decay: 9.0 },   // 1オクターブ上（控えめ）
-      { ratio: 3.00, peak: 0.012, decay: 5.0 }    // ほんのり上の倍音
+      { ratio: 1.00, peak: 0.16, decay: 18.0 },   // 基音（深く長く）
+      { ratio: 2.00, peak: 0.025, decay: 10.0 }   // 1オクターブ上（ごく控えめ）
     ];
     partials.forEach(function (p) {
       var o = ctx.createOscillator(), g = ctx.createGain();
       o.type = "sine";
       o.frequency.value = fundamental * p.ratio;
-      // クリスタルらしく、しゅーっと 立ち上がって、長く 透き通る
+      // 1.5秒かけてふわっと立ち上がり、長くゆっくり消える
       g.gain.setValueAtTime(0.0001, t);
-      g.gain.linearRampToValueAtTime(p.peak, t + 0.5);
+      g.gain.linearRampToValueAtTime(p.peak, t + 1.5);
       g.gain.exponentialRampToValueAtTime(0.0001, t + p.decay);
       o.connect(g).connect(ctx.destination);
       o.start(t); o.stop(t + p.decay + 0.1);
