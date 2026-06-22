@@ -382,32 +382,25 @@
                      (typeof metroOn !== "undefined" && metroOn);
     if (anyRunning) tryWakeLock();
   });
-  // シンギングボウル風のチャイム — 基音 + ゆれる倍音、長く響く
+  // お寺のおりん（鈴）— 澄んだ単音、整数倍の倍音、長くしっとり響く
   function chime() {
     var ctx = audio(); if (!ctx) return;
     var t = ctx.currentTime;
-    var fundamental = 396;  // 罪悪感を解放すると言われる落ち着いた周波数
-    // ratio: 基音からの倍率（整数倍からわずかにずらして、生のボウルらしい揺らぎ）
-    // peak: それぞれの音量、decay: 減衰時間（秒）
+    var fundamental = 528;  // 心地よい中域・ソルフェジオ周波数
+    // 整数倍の倍音（おりんらしい純粋な響き）
     var partials = [
-      { ratio: 1.00, peak: 0.12, decay: 7.0 },   // 基音
-      { ratio: 2.07, peak: 0.07, decay: 5.5 },   // 第2倍音（少しずらす）
-      { ratio: 3.21, peak: 0.04, decay: 4.0 },   // 第3倍音
-      { ratio: 4.43, peak: 0.02, decay: 2.8 }    // 上のきらめき
+      { ratio: 1.00, peak: 0.14, decay: 10.0 },  // 基音（いちばん長く響く）
+      { ratio: 2.00, peak: 0.06, decay: 7.5 },   // 1オクターブ上
+      { ratio: 3.00, peak: 0.03, decay: 5.0 },   // 5度上のさらに上
+      { ratio: 4.00, peak: 0.015, decay: 3.5 }   // 倍音のかすかな上
     ];
     partials.forEach(function (p) {
       var o = ctx.createOscillator(), g = ctx.createGain();
       o.type = "sine";
       o.frequency.value = fundamental * p.ratio;
-      // 揺らぎ（LFO）— ボウルが揺れる微かなビブラート
-      var lfo = ctx.createOscillator(), lfoGain = ctx.createGain();
-      lfo.frequency.value = 4.2 + Math.random() * 1.4;  // 4.2〜5.6Hz
-      lfoGain.gain.value = o.frequency.value * 0.003;   // 周波数の0.3%揺らぐ
-      lfo.connect(lfoGain).connect(o.frequency);
-      lfo.start(t); lfo.stop(t + p.decay + 0.1);
-      // ふわっと立ち上がり、長く減衰
+      // 速めに立ち上がって、ゆっくり長く消えていく
       g.gain.setValueAtTime(0.0001, t);
-      g.gain.linearRampToValueAtTime(p.peak, t + 0.08);
+      g.gain.linearRampToValueAtTime(p.peak, t + 0.02);
       g.gain.exponentialRampToValueAtTime(0.0001, t + p.decay);
       o.connect(g).connect(ctx.destination);
       o.start(t); o.stop(t + p.decay + 0.1);
