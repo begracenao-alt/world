@@ -262,7 +262,6 @@
     <section class="card" id="metroCard">
       <div class="card__label">Metronome</div>
       <div class="card__ja">リズムを刻む</div>
-      <div class="muted-note">♪ 音楽中はお休み</div>
 
       <div class="metro__dot-row"><div class="metro__dot" id="metroDot"></div></div>
 
@@ -462,9 +461,13 @@
     remain = Math.max(0, Math.round((endAt - Date.now()) / 1000));
     render();
     if (remain <= 0) {
-      stop(); chime();            // stop()の中で「やった分」を積み上げ
+      stop();                                    // やった分を積み上げ
+      // メトロノームと528Hzを先に止めて、静かな空間にチャイムを響かせる
+      if (typeof metroOn !== "undefined" && metroOn) metroStop();
+      if (typeof toneOn  !== "undefined" && toneOn)  toneStop();
       timeState.textContent = "整いました🤍";
-      showDoneCue();              // 音が鳴らなくても、見てわかる合図
+      showDoneCue();                             // 見てわかる合図（リングと文字）
+      setTimeout(function () { chime(); }, 350); // 少し間を置いて、チャイムをひびかせる
     }
   }
   function start() {
@@ -575,15 +578,13 @@
   var toneCard = document.getElementById("toneCard");
   var metroCard = document.getElementById("metroCard");
   function enterMusicMode() {
-    // 音楽中は、音を出す2つ（メトロノーム・528Hz）をお休みにする
-    if (typeof metroOn !== "undefined" && metroOn) metroStop();
+    // 音楽中は 528Hz だけ お休み（同じヒーリング系の音が重なるので）。
+    // メトロノームは リズム取り用に 同時に使える。
     if (typeof toneOn !== "undefined" && toneOn) toneStop();
     toneCard.classList.add("is-muted");
-    metroCard.classList.add("is-muted");
   }
   function exitMusicMode() {
     toneCard.classList.remove("is-muted");
-    metroCard.classList.remove("is-muted");
   }
 
   function renderMusic(raw) {
