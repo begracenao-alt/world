@@ -382,19 +382,35 @@
                      (typeof metroOn !== "undefined" && metroOn);
     if (anyRunning) tryWakeLock();
   });
-  // やさしいベル（タイマー終了用）— ゆっくり立ち上がって、長くやわらかく消える
+  // シンギングボウル風のチャイム — 基音 + ゆれる倍音、長く響く
   function chime() {
-    var ctx = audio(), t = ctx.currentTime;
-    // 528Hz とその5度上を、そっと重ねた穏やかな音
-    [528, 792].forEach(function (f, i) {
+    var ctx = audio(); if (!ctx) return;
+    var t = ctx.currentTime;
+    var fundamental = 396;  // 罪悪感を解放すると言われる落ち着いた周波数
+    // ratio: 基音からの倍率（整数倍からわずかにずらして、生のボウルらしい揺らぎ）
+    // peak: それぞれの音量、decay: 減衰時間（秒）
+    var partials = [
+      { ratio: 1.00, peak: 0.12, decay: 7.0 },   // 基音
+      { ratio: 2.07, peak: 0.07, decay: 5.5 },   // 第2倍音（少しずらす）
+      { ratio: 3.21, peak: 0.04, decay: 4.0 },   // 第3倍音
+      { ratio: 4.43, peak: 0.02, decay: 2.8 }    // 上のきらめき
+    ];
+    partials.forEach(function (p) {
       var o = ctx.createOscillator(), g = ctx.createGain();
-      o.type = "sine"; o.frequency.value = f;
-      var peak = i === 0 ? 0.11 : 0.05;
+      o.type = "sine";
+      o.frequency.value = fundamental * p.ratio;
+      // 揺らぎ（LFO）— ボウルが揺れる微かなビブラート
+      var lfo = ctx.createOscillator(), lfoGain = ctx.createGain();
+      lfo.frequency.value = 4.2 + Math.random() * 1.4;  // 4.2〜5.6Hz
+      lfoGain.gain.value = o.frequency.value * 0.003;   // 周波数の0.3%揺らぐ
+      lfo.connect(lfoGain).connect(o.frequency);
+      lfo.start(t); lfo.stop(t + p.decay + 0.1);
+      // ふわっと立ち上がり、長く減衰
       g.gain.setValueAtTime(0.0001, t);
-      g.gain.linearRampToValueAtTime(peak, t + 0.5);   // 0.5秒かけてふわっと（急に鳴らない）
-      g.gain.exponentialRampToValueAtTime(0.0001, t + 3.4); // ゆっくり消えていく
+      g.gain.linearRampToValueAtTime(p.peak, t + 0.08);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + p.decay);
       o.connect(g).connect(ctx.destination);
-      o.start(t); o.stop(t + 3.5);
+      o.start(t); o.stop(t + p.decay + 0.1);
     });
   }
   // メトロノームのクリック（木のカチッに近い自然な音）
