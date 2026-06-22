@@ -488,6 +488,19 @@
     </section>
   </main>
 
+  <!-- ===== すべての記録をまとめてバックアップ ===== -->
+  <section class="wrap" id="bgBackupSection" style="margin:30px auto 10px;max-width:620px;padding:0 22px;">
+    <div style="background:rgba(255,255,255,0.66);border:1px solid rgba(50,60,70,0.10);border-radius:8px;padding:24px 22px;box-shadow:0 20px 50px -30px rgba(60,90,110,0.32);text-align:center;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);">
+      <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;letter-spacing:0.28em;color:#3a96bf;text-transform:uppercase;">Backup</div>
+      <div style="font-size:13px;letter-spacing:0.3em;color:#a6a29b;margin:6px 0 14px;">すべての お部屋の 記録を おまもりに</div>
+      <p style="font-size:12px;color:#a6a29b;line-height:1.8;margin:0 0 16px;letter-spacing:0.04em;">7つの お部屋の 積み上げ・記録を、<br>1つの ファイルで 守ります。週に1回 押してくださいね🤍</p>
+      <div style="display:flex;justify-content:center;gap:12px;">
+        <button id="bgExportAll" style="font-family:'Shippori Mincho','Hiragino Mincho ProN',serif;font-size:14px;letter-spacing:0.16em;cursor:pointer;border-radius:999px;padding:12px 24px;background:#3a96bf;color:#fff;border:1px solid #3a96bf;">すべて 書き出す</button>
+        <button id="bgImportAll" style="font-family:'Shippori Mincho','Hiragino Mincho ProN',serif;font-size:14px;letter-spacing:0.16em;cursor:pointer;border-radius:999px;padding:12px 24px;background:transparent;color:#6c6a64;border:1px solid rgba(50,60,70,0.10);">ファイルから 戻す</button>
+      </div>
+    </div>
+  </section>
+
   <!-- ===== フッター ===== -->
   <footer class="foot">
     <div class="wrap">
@@ -497,5 +510,65 @@
   </footer>
 
 <div class="bg-copyright" style="text-align:center;font-size:11px;color:#9a9a9a;opacity:.85;padding:20px 12px 24px;line-height:1.7;font-family:-apple-system,sans-serif;">無断転載・複製・転用・転売を禁じます<br>© Be Grace</div>
+
+<script>
+(function () {
+  "use strict";
+  // iPhoneに「このサイトのデータを長く保ってください」とお願い
+  if (navigator.storage && navigator.storage.persist) {
+    navigator.storage.persist().catch(function () {});
+  }
+
+  function todayFile() {
+    var d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+  }
+  function exportAll() {
+    var bag = { app: "begrace-world", v: 1, exportedAt: todayFile(), items: {} };
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      if (k == null) continue;
+      // Be Grace 関連のキー（bg_*, begrace_*, beauty_*）と、その他もまるごと保存
+      bag.items[k] = localStorage.getItem(k);
+    }
+    var json = JSON.stringify(bag, null, 2);
+    var blob = new Blob([json], {type:"application/json"});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url; a.download = "begrace-all-backup-" + todayFile() + ".json";
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){URL.revokeObjectURL(url);}, 1500);
+    alert("すべての記録を 書き出しました🤍\nダウンロードの場所に ファイルが あります。\nクラウド（iCloud／Google ドライブ）や メールに 保管してくださいね。");
+  }
+  function importAll() {
+    var input = document.createElement("input");
+    input.type = "file"; input.accept = ".json,application/json";
+    input.onchange = function(e) {
+      var f = e.target.files && e.target.files[0]; if (!f) return;
+      var r = new FileReader();
+      r.onload = function() {
+        try {
+          var data = JSON.parse(r.result);
+          if (!data || data.app !== "begrace-world" || typeof data.items !== "object") {
+            alert("このファイルは Be Grace の すべて書き出し ファイルでは ないようです。");
+            return;
+          }
+          if (!confirm("いまの すべての記録は、ファイルの中身に 置きかえられます。\nよろしいですか？")) return;
+          Object.keys(data.items).forEach(function (k) {
+            try { localStorage.setItem(k, data.items[k]); } catch (e) {}
+          });
+          alert("すべての記録を もどしました🤍\n各お部屋で、確かめてくださいね。");
+        } catch (err) { alert("ファイルを ひらけませんでした。"); }
+      };
+      r.readAsText(f);
+    };
+    input.click();
+  }
+  var be = document.getElementById("bgExportAll");
+  var bi = document.getElementById("bgImportAll");
+  if (be) be.addEventListener("click", exportAll);
+  if (bi) bi.addEventListener("click", importAll);
+})();
+</script>
 </body>
 </html>
