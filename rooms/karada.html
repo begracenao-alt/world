@@ -436,12 +436,12 @@
     render();
     if (remain <= 0) {
       stop();                                    // やった分を積み上げ
-      // メトロノームと528Hzを先に止めて、静かな空間にチャイムを響かせる
-      if (typeof metroOn !== "undefined" && metroOn) metroStop();
+      // 528Hzを止めて、YouTubeなどの音楽も一時停止して、静かな空間にチャイムを響かせる
       if (typeof toneOn  !== "undefined" && toneOn)  toneStop();
+      pauseMedia();
       timeState.textContent = "整いました🤍";
       showDoneCue();                             // 見てわかる合図（リングと文字）
-      setTimeout(function () { chime(); }, 350); // 少し間を置いて、チャイムをひびかせる
+      setTimeout(function () { chime(); }, 500); // 少し間を置いて、チャイムをひびかせる
     }
   }
   function start() {
@@ -540,14 +540,30 @@
     var yt = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/|live\/))([\w-]{11})/);
     var list = url.match(/[?&]list=([\w-]+)/);
     if (yt || (list && /youtu\.?be/.test(url))) {
+      // enablejsapi=1 を付けると、タイマー終了時にこちらから一時停止できる
       var src;
-      if (yt && list) src = "https://www.youtube.com/embed/" + yt[1] + "?list=" + list[1];
-      else if (yt)    src = "https://www.youtube.com/embed/" + yt[1];
-      else            src = "https://www.youtube.com/embed/videoseries?list=" + list[1];
+      if (yt && list) src = "https://www.youtube.com/embed/" + yt[1] + "?list=" + list[1] + "&enablejsapi=1";
+      else if (yt)    src = "https://www.youtube.com/embed/" + yt[1] + "?enablejsapi=1";
+      else            src = "https://www.youtube.com/embed/videoseries?list=" + list[1] + "&enablejsapi=1";
       return { type: "yt", src: src };
     }
     if (/\.(mp3|m4a|ogg|wav|aac)(\?.*)?$/i.test(url)) return { type: "audio", src: url };
     return { type: "unknown", src: url };
+  }
+  // タイマー終了時に流れている音楽を一時停止（YouTube・Vimeo・mp3 すべて対応）
+  function pauseMedia() {
+    var iframe = musicPlayer.querySelector("iframe");
+    if (iframe) {
+      try {
+        if (/youtube\.com|youtu\.be/.test(iframe.src)) {
+          iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+        } else if (/vimeo\.com/.test(iframe.src)) {
+          iframe.contentWindow.postMessage('{"method":"pause"}', '*');
+        }
+      } catch (e) {}
+    }
+    var aud = musicPlayer.querySelector("audio");
+    if (aud) { try { aud.pause(); } catch (e) {} }
   }
   var toneCard = document.getElementById("toneCard");
   var metroCard = document.getElementById("metroCard");
