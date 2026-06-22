@@ -265,6 +265,38 @@
       <div id="musicPlayer"></div>
     </section>
 
+    <!-- ===== メトロノーム ===== -->
+    <section class="card" id="metroCard">
+      <div class="card__label">Metronome</div>
+      <div class="card__ja">リズムを刻む</div>
+
+      <div class="metro__dot-row"><div class="metro__dot" id="metroDot"></div></div>
+
+      <div class="bpm">
+        <div class="bpm__num" id="bpmNum">128</div>
+        <div class="bpm__unit">BPM</div>
+      </div>
+
+      <div class="bpm__adjust">
+        <button class="step" id="bpmDown" aria-label="テンポを下げる">−</button>
+        <button class="step" id="bpmUp" aria-label="テンポを上げる">＋</button>
+      </div>
+
+      <div class="bpm__presets" id="bpmPresets">
+        <button class="preset is-active" data-bpm="128">128</button>
+        <button class="preset" data-bpm="140">140</button>
+      </div>
+
+      <div class="vol">
+        <label class="vol__label" for="metroVol">音量</label>
+        <input type="range" id="metroVol" min="0" max="100" value="50" class="vol__slider" aria-label="メトロノームの音量">
+      </div>
+
+      <div class="controls">
+        <button class="btn btn--primary" id="metroBtn">スタート</button>
+      </div>
+    </section>
+
     <!-- ===== バックアップ ===== -->
     <section class="card">
       <div class="card__label">Backup</div>
@@ -385,6 +417,20 @@
     for (var i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
     return noiseBuf;
   }
+  // メトロノーム音量（0.0〜1.0）。スライダーで動かせる。
+  var metroVol = 0.5;
+  function metroPeak() { return 0.03 + metroVol * 0.45; }
+  function click(time, accent) {
+    var ctx = audio();
+    var o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = "sine";
+    o.frequency.value = 1000;
+    g.gain.setValueAtTime(0.0001, time);
+    g.gain.linearRampToValueAtTime(metroPeak(), time + 0.006);
+    g.gain.exponentialRampToValueAtTime(0.0001, time + 0.06);
+    o.connect(g).connect(ctx.destination);
+    o.start(time); o.stop(time + 0.07);
+  }
 
   // ===== タイマー =====
   var CIRC = 2 * Math.PI * 110;
@@ -439,7 +485,8 @@
     render();
     if (remain <= 0) {
       stop();                                    // やった分を積み上げ
-      // 528Hzを止めて、YouTubeなどの音楽も一時停止して、静かな空間にチャイムを響かせる
+      // メトロノームと528Hzを止めて、YouTubeなどの音楽も一時停止して、静かな空間にチャイムを響かせる
+      if (typeof metroOn !== "undefined" && metroOn) metroStop();
       if (typeof toneOn  !== "undefined" && toneOn)  toneStop();
       pauseMedia();
       timeState.textContent = "整いました🤍";
@@ -677,6 +724,75 @@
     releaseWakeLockIfIdle();
   }
   toneBtn.addEventListener("click", function () { toneOn ? toneStop() : toneStart(); });
+
+  // ===== メトロノーム（光と音を分ける：音が眠っても光は確実に出る） =====
+  var bpm = 128;
+  var metroOn = false;
+  var metroTimer = null;
+  var bpmNum = document.getElementById("bpmNum");
+  var metroBtn = document.getElementById("metroBtn");
+  var metroDot = document.getElementById("metroDot");
+
+  function flashDot() {
+    metroDot.classList.add("is-beat");
+    setTimeout(function () { metroDot.classList.remove("is-beat"); }, 90);
+  }
+  function metroTick() {
+    if (!metroOn) return;
+    flashDot();
+    try {
+      var ctx = audio();
+      if (ctx && ctx.state === "running") click(ctx.currentTime + 0.001, false);
+    } catch (e) {}
+    metroTimer = setTimeout(metroTick, 60000 / bpm);
+  }
+  function metroStart() {
+    if (metroOn) return;
+    metroOn = true;
+    try { audio(); } catch (e) {}
+    metroBtn.textContent = "ストップ";
+    metroBtn.classList.remove("btn--primary"); metroBtn.classList.add("btn--ghost");
+    metroTick();
+    tryWakeLock();
+  }
+  function metroStop() {
+    metroOn = false;
+    if (metroTimer) { clearTimeout(metroTimer); metroTimer = null; }
+    metroBtn.textContent = "スタート";
+    metroBtn.classList.add("btn--primary"); metroBtn.classList.remove("btn--ghost");
+    releaseWakeLockIfIdle();
+  }
+  function setBpm(v) {
+    bpm = Math.min(208, Math.max(40, v));
+    bpmNum.textContent = bpm;
+    [].forEach.call(document.querySelectorAll("#bpmPresets .preset"), function (c) {
+      c.classList.toggle("is-active", parseInt(c.dataset.bpm, 10) === bpm);
+    });
+  }
+  metroBtn.addEventListener("click", function () { metroOn ? metroStop() : metroStart(); });
+  document.getElementById("bpmUp").addEventListener("click", function () { setBpm(bpm + 1); });
+  document.getElementById("bpmDown").addEventListener("click", function () { setBpm(bpm - 1); });
+  document.getElementById("bpmPresets").addEventListener("click", function (e) {
+    var b = e.target.closest(".preset"); if (!b) return;
+    setBpm(parseInt(b.dataset.bpm, 10));
+  });
+  setBpm(128);
+
+  // メトロノーム音量スライダー（覚える）
+  var savedMetroVol = LS.getItem("bg_karada_metro_vol");
+  if (savedMetroVol != null) {
+    var sv = parseFloat(savedMetroVol);
+    if (!isNaN(sv)) metroVol = Math.min(1, Math.max(0, sv));
+  }
+  var metroVolEl = document.getElementById("metroVol");
+  if (metroVolEl) {
+    metroVolEl.value = String(Math.round(metroVol * 100));
+    metroVolEl.addEventListener("input", function () {
+      var v = parseInt(this.value, 10) / 100;
+      metroVol = Math.min(1, Math.max(0, v));
+      LS.setItem("bg_karada_metro_vol", String(metroVol));
+    });
+  }
 
   // ===== バックアップ =====
   function todayFile() {
