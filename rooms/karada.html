@@ -341,6 +341,38 @@
   if (navigator.storage && navigator.storage.persist) {
     navigator.storage.persist().catch(function () {});
   }
+
+  // ===== 自動ロックを止める（Wake Lock）=====
+  // 何かが動いている間だけ、画面を起こしておく
+  var wakeLock = null;
+  function tryWakeLock() {
+    if (!("wakeLock" in navigator) || wakeLock) return;
+    try {
+      navigator.wakeLock.request("screen").then(function (lock) {
+        wakeLock = lock;
+        wakeLock.addEventListener("release", function () { wakeLock = null; });
+      }).catch(function () {});
+    } catch (e) {}
+  }
+  function releaseWakeLockIfIdle() {
+    if (!wakeLock) return;
+    // タイマー走行中・528Hz・メトロノームのどれも動いていなければ解放
+    var anyRunning = (typeof running !== "undefined" && running) ||
+                     (typeof toneOn  !== "undefined" && toneOn) ||
+                     (typeof metroOn !== "undefined" && metroOn);
+    if (!anyRunning) {
+      try { wakeLock.release(); } catch (e) {}
+      wakeLock = null;
+    }
+  }
+  // 画面が戻ってきたとき、何か動いていれば取り直す
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) return;
+    var anyRunning = (typeof running !== "undefined" && running) ||
+                     (typeof toneOn  !== "undefined" && toneOn) ||
+                     (typeof metroOn !== "undefined" && metroOn);
+    if (anyRunning) tryWakeLock();
+  });
   // やさしいベル（タイマー終了用）— ゆっくり立ち上がって、長くやわらかく消える
   function chime() {
     var ctx = audio(), t = ctx.currentTime;
@@ -445,6 +477,7 @@
     startBtn.textContent = "一時停止";
     timeState.textContent = "運動中";
     tick = setInterval(update, 250);
+    tryWakeLock();
   }
   function stop() {
     if (running) {                // 動いていた分だけ積み上げる
@@ -455,6 +488,7 @@
     running = false;
     if (tick) { clearInterval(tick); tick = null; }
     startBtn.textContent = "スタート";
+    releaseWakeLockIfIdle();
   }
   startBtn.addEventListener("click", function () {
     if (running) { stop(); timeState.textContent = "一時停止中"; }
@@ -608,6 +642,7 @@
     toneBtn.textContent = "ストップ";
     toneBtn.classList.remove("btn--primary"); toneBtn.classList.add("btn--ghost");
     toneDot.classList.add("is-on");
+    tryWakeLock();
   }
   function toneStop() {
     var ctx = audio();
@@ -621,6 +656,7 @@
     toneBtn.textContent = "スタート";
     toneBtn.classList.add("btn--primary"); toneBtn.classList.remove("btn--ghost");
     toneDot.classList.remove("is-on");
+    releaseWakeLockIfIdle();
   }
   toneBtn.addEventListener("click", function () { toneOn ? toneStop() : toneStart(); });
 
@@ -652,12 +688,14 @@
     metroBtn.textContent = "ストップ";
     metroBtn.classList.remove("btn--primary"); metroBtn.classList.add("btn--ghost");
     metroTick();
+    tryWakeLock();
   }
   function metroStop() {
     metroOn = false;
     if (metroTimer) { clearTimeout(metroTimer); metroTimer = null; }
     metroBtn.textContent = "スタート";
     metroBtn.classList.add("btn--primary"); metroBtn.classList.remove("btn--ghost");
+    releaseWakeLockIfIdle();
   }
   function setBpm(v) {
     bpm = Math.min(208, Math.max(40, v));
