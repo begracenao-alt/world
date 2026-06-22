@@ -171,7 +171,9 @@
   .card.is-muted .bpm,
   .card.is-muted .bpm__adjust,
   .card.is-muted .bpm__presets,
-  .card.is-muted .controls { opacity: 0.35; pointer-events: none; filter: grayscale(0.3); transition: opacity .4s; }
+  .card.is-muted .controls,
+  .card.is-muted .music-input,
+  .card.is-muted #musicPlayer { opacity: 0.35; pointer-events: none; filter: grayscale(0.3); transition: opacity .4s; }
 
   .foot { text-align: center; padding: 30px 0 56px; }
   .foot__title { font-family: "Cormorant Garamond", serif; font-weight: 300; font-size: 20px; letter-spacing: 0.3em; color: var(--ink-soft); }
@@ -250,7 +252,7 @@
     </section>
 
     <!-- ===== 音楽（各自のリンク） ===== -->
-    <section class="card">
+    <section class="card" id="musicCard">
       <div class="card__label">Music</div>
       <div class="card__ja">好きな音楽を流す（各自）</div>
 
@@ -401,6 +403,7 @@
     timeNum.classList.remove("is-done");
     timerCard.classList.remove("is-done");
     ringBar.classList.remove("is-done");
+    if (typeof resumeMediaUI === "function") resumeMediaUI();
   }
   function showDoneCue() {
     timeState.classList.add("is-done");
@@ -550,7 +553,9 @@
     if (/\.(mp3|m4a|ogg|wav|aac)(\?.*)?$/i.test(url)) return { type: "audio", src: url };
     return { type: "unknown", src: url };
   }
+  var musicCard = document.getElementById("musicCard");
   // タイマー終了時に流れている音楽を一時停止（YouTube・Vimeo・mp3 すべて対応）
+  // 528Hzと同じく、Music カードも薄く（is-muted）して「お休み中」の見た目に
   function pauseMedia() {
     var iframe = musicPlayer.querySelector("iframe");
     if (iframe) {
@@ -564,6 +569,10 @@
     }
     var aud = musicPlayer.querySelector("audio");
     if (aud) { try { aud.pause(); } catch (e) {} }
+    if (musicCard) musicCard.classList.add("is-muted");
+  }
+  function resumeMediaUI() {
+    if (musicCard) musicCard.classList.remove("is-muted");
   }
   var toneCard = document.getElementById("toneCard");
   var metroCard = document.getElementById("metroCard");
