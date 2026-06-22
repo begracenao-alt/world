@@ -286,6 +286,17 @@
       </div>
     </section>
 
+    <!-- ===== バックアップ ===== -->
+    <section class="card">
+      <div class="card__label">Backup</div>
+      <div class="card__ja">記録を おまもりにする</div>
+      <p class="hint" style="margin:0 0 16px">記録は、この端末の中だけにあります。<br>ときどき書き出して、おまもりにしましょう🤍</p>
+      <div class="controls">
+        <button class="btn btn--ghost" id="bkExport">書き出す</button>
+        <button class="btn btn--ghost" id="bkImport">戻す</button>
+      </div>
+    </section>
+
     <div class="foot"><div class="foot__title">Be Grace</div></div>
   </div>
 
@@ -648,6 +659,64 @@
     setBpm(parseInt(b.dataset.bpm, 10));
   });
   setBpm(128);
+
+  // ===== バックアップ =====
+  function todayFile() {
+    var d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+  }
+  function exportBackup() {
+    var data = {
+      app: "karada", v: 1, exportedAt: todayFile(),
+      total: LS.getItem("bg_karada_total") || "0",
+      today_date: LS.getItem("bg_karada_today_date") || "",
+      today_sec: LS.getItem("bg_karada_today_sec") || "0",
+      days: LS.getItem("bg_karada_days") || "[]",
+      music: LS.getItem("bg_karada_music") || ""
+    };
+    var json = JSON.stringify(data, null, 2);
+    var blob = new Blob([json], {type:"application/json"});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url; a.download = "karada-backup-" + todayFile() + ".json";
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){URL.revokeObjectURL(url);}, 1500);
+    alert("書き出しました🤍\nダウンロードの場所に、ファイルが入っています。\nクラウドやメールに送って、保管してくださいね。");
+  }
+  function importBackup() {
+    var input = document.createElement("input");
+    input.type = "file"; input.accept = ".json,application/json";
+    input.onchange = function(e) {
+      var f = e.target.files && e.target.files[0]; if (!f) return;
+      var r = new FileReader();
+      r.onload = function() {
+        try {
+          var data = JSON.parse(r.result);
+          if (!data || data.app !== "karada") {
+            alert("このファイルは 體のおへやの バックアップではないようです。"); return;
+          }
+          if (!confirm("いまの記録は、ファイルの中身に 置きかえられます。\nよろしいですか？")) return;
+          if (data.total != null) LS.setItem("bg_karada_total", data.total);
+          if (data.today_date != null) LS.setItem("bg_karada_today_date", data.today_date);
+          if (data.today_sec != null) LS.setItem("bg_karada_today_sec", data.today_sec);
+          if (data.days != null) LS.setItem("bg_karada_days", data.days);
+          if (data.music != null) LS.setItem("bg_karada_music", data.music);
+          totalSecRec = parseInt(LS.getItem("bg_karada_total") || "0", 10);
+          try { daysArr = JSON.parse(LS.getItem("bg_karada_days") || "[]"); } catch (e) { daysArr = []; }
+          todaySecRec = (LS.getItem("bg_karada_today_date") === todayStr())
+            ? parseInt(LS.getItem("bg_karada_today_sec") || "0", 10) : 0;
+          renderRecord();
+          var m = LS.getItem("bg_karada_music");
+          if (m) { musicInput.value = m; renderMusic(m); } else { musicInput.value = ""; musicPlayer.innerHTML = ""; }
+          alert("記録を もどしました🤍");
+        } catch (err) { alert("ファイルを ひらけませんでした。"); }
+      };
+      r.readAsText(f);
+    };
+    input.click();
+  }
+  document.getElementById("bkExport").addEventListener("click", exportBackup);
+  document.getElementById("bkImport").addEventListener("click", importBackup);
 })();
 </script>
 </body>
