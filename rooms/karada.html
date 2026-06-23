@@ -556,9 +556,8 @@
     if (m < 1) return "0分";
     if (m < 60) return m + "分";
     var h = Math.floor(m / 60), mm = m % 60;
-    if (h < 24) return h + "時間" + (mm ? mm + "分" : "");
-    var d = Math.floor(h / 24), hh = h % 24;
-    return d + "日" + (hh ? hh + "時間" : "");
+    if (h < 100) return h + "時間" + (mm ? mm + "分" : "");
+    return h + "時間";  // 100時間以上は時間だけ表示（「日数」と紛れないように）
   }
   var totalSecRec = parseInt(LS.getItem("bg_karada_total") || "0", 10);
   var daysArr = [];
