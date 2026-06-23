@@ -385,29 +385,30 @@
                      (typeof metroOn !== "undefined" && metroOn);
     if (anyRunning) tryWakeLock();
   });
-  // クリスタルボウル風 — 透き通る倍音、ガラスのように長く響く
+  // クリスタルボウル3つの重ね合わせ — 432/528/639Hz が少しずつずれて響く
   function chime() {
     var ctx = audio(); if (!ctx) return;
     var t = ctx.currentTime;
-    var fundamental = 432;  // 432Hz・自然との調和
-    // 基音 + 倍音を重ねて、ガラスのような透き通る響きに
-    var partials = [
-      { ratio: 1.00, peak: 0.15, decay: 20.0 },   // 基音（いちばん長く）
-      { ratio: 2.00, peak: 0.06, decay: 14.0 },   // 1オクターブ上
-      { ratio: 3.00, peak: 0.028, decay: 9.0 },   // 完全5度上のオクターブ上
-      { ratio: 4.00, peak: 0.013, decay: 6.0 },   // 2オクターブ上（きらめき）
-      { ratio: 5.00, peak: 0.006, decay: 4.0 }    // ほのかな高音（透明感）
-    ];
-    partials.forEach(function (p) {
-      var o = ctx.createOscillator(), g = ctx.createGain();
-      o.type = "sine";
-      o.frequency.value = fundamental * p.ratio;
-      // ふわっと立ち上がり、長くゆっくり消える
-      g.gain.setValueAtTime(0.0001, t);
-      g.gain.linearRampToValueAtTime(p.peak, t + 1.2);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + p.decay);
-      o.connect(g).connect(ctx.destination);
-      o.start(t); o.stop(t + p.decay + 0.1);
+    // 3つのソルフェジオ周波数（自然調和・愛・人間関係）
+    var bowls = [432, 528, 639];
+    bowls.forEach(function (fund, idx) {
+      // 各ボウルに基音 + 倍音
+      var partials = [
+        { ratio: 1.00, peak: 0.085, decay: 20.0 - idx * 1.5 },  // 基音
+        { ratio: 2.00, peak: 0.030, decay: 12.0 },              // 1オクターブ上
+        { ratio: 3.00, peak: 0.010, decay: 7.0 }                // ほのかな高音
+      ];
+      partials.forEach(function (p) {
+        var o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = "sine";
+        o.frequency.value = fund * p.ratio;
+        // ボウルごとに少しずらして立ち上がる（重なって響く）
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.linearRampToValueAtTime(p.peak, t + 1.0 + idx * 0.4);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + p.decay);
+        o.connect(g).connect(ctx.destination);
+        o.start(t); o.stop(t + p.decay + 0.1);
+      });
     });
   }
   // メトロノームのクリック（木のカチッに近い自然な音）
