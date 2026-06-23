@@ -385,30 +385,23 @@
                      (typeof metroOn !== "undefined" && metroOn);
     if (anyRunning) tryWakeLock();
   });
-  // クリスタルボウル — 1つの大きなガラスのハーモニー（432Hz 基音 + 自然な倍音群）
+  // クリスタルボウル — 澄んだ単音、開放感のある長い余韻、眠りに誘うシンプルな響き
   function chime() {
     var ctx = audio(); if (!ctx) return;
     var t = ctx.currentTime;
     var fundamental = 432;  // 432Hz（自然との調和）
-    // 和音的に重なる倍音群（完全5度・オクターブなど ハモる比率）
+    // 基音 ＋ ごく控えめなオクターブ倍音だけで 純粋・澄んだ響きに
     var partials = [
-      { ratio: 1.00, peak: 0.11, decay: 22.0 },  // 基音（最も長く深く）
-      { ratio: 1.50, peak: 0.060, decay: 17.0 }, // 完全5度上（648Hz）
-      { ratio: 2.00, peak: 0.045, decay: 15.0 }, // オクターブ上（864Hz）
-      { ratio: 2.50, peak: 0.025, decay: 11.0 }, // 長3度＋オクターブ（1080Hz）
-      { ratio: 3.00, peak: 0.020, decay: 10.0 }, // 完全5度＋オクターブ
-      { ratio: 4.00, peak: 0.012, decay: 7.0 },  // 2オクターブ上
-      { ratio: 5.00, peak: 0.006, decay: 5.0 }   // ほのかな高音（透明感）
+      { ratio: 1.00, peak: 0.13, decay: 25.0 },   // 基音（深く・長く）
+      { ratio: 2.00, peak: 0.022, decay: 16.0 }   // 1オクターブ上（ほんの少しの透明感）
     ];
-    partials.forEach(function (p, i) {
+    partials.forEach(function (p) {
       var o = ctx.createOscillator(), g = ctx.createGain();
       o.type = "sine";
       o.frequency.value = fundamental * p.ratio;
-      // 全部 同時に ゆっくり 立ち上がる（一体感のある響き）
-      // 高い倍音だけ ほんの少し 遅らせて 自然な揺らぎを作る
-      var attack = 2.0 + i * 0.15;
+      // 2.5秒かけて ふわっと ゆっくり 立ち上がり、 長く 開放的に 消えていく
       g.gain.setValueAtTime(0.0001, t);
-      g.gain.linearRampToValueAtTime(p.peak, t + attack);
+      g.gain.linearRampToValueAtTime(p.peak, t + 2.5);
       g.gain.exponentialRampToValueAtTime(0.0001, t + p.decay);
       o.connect(g).connect(ctx.destination);
       o.start(t); o.stop(t + p.decay + 0.1);
