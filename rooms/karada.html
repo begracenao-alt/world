@@ -130,6 +130,19 @@
   .metro__dot.is-on { background: var(--accent); box-shadow: 0 0 18px var(--accent); animation: breathe 3.6s ease-in-out infinite; }
   @keyframes breathe { 0%,100% { transform: scale(1); opacity: .85; } 50% { transform: scale(1.35); opacity: 1; } }
 
+  /* ===== 暗い運動モード（画面を真っ黒にして熱を減らす） ===== */
+  .dark-toggle { position: fixed; right: 16px; bottom: 16px; z-index: 50;
+    display: inline-flex; align-items: center; gap: 7px;
+    background: rgba(32,42,50,.82); color: #fff; border: none; border-radius: 999px;
+    padding: 11px 17px; font-size: 13px; font-family: inherit; cursor: pointer;
+    box-shadow: 0 8px 22px -8px rgba(0,0,0,.45); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+  .dark-toggle:active { transform: translateY(1px); }
+  .darkmode { position: fixed; inset: 0; z-index: 9999; background: #000;
+    display: none; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; }
+  .darkmode.is-on { display: flex; }
+  .darkmode .dm-time { font-family: "Cormorant Garamond", serif; font-weight: 300; font-size: 46px; letter-spacing: .04em; color: #444c52; }
+  .darkmode .dm-hint { margin-top: 24px; font-size: 12px; letter-spacing: .2em; color: #2c3236; }
+
   .bpm { text-align: center; }
   .bpm__num { font-family: "Cormorant Garamond", serif; font-weight: 300; font-size: 56px; line-height: 1; color: var(--ink); }
   .bpm__unit { font-size: 12px; letter-spacing: 0.3em; color: var(--ink-faint); margin-top: 2px; }
@@ -316,6 +329,13 @@
     <div class="foot"><div class="foot__title">Be Grace</div></div>
   </div>
 
+  <!-- 暗い運動モード：ボタンと、真っ黒オーバーレイ -->
+  <button class="dark-toggle" id="darkToggle" type="button">🌙 画面を暗くする</button>
+  <div class="darkmode" id="darkMode">
+    <div class="dm-time" id="dmTime"></div>
+    <div class="dm-hint">タップで戻る</div>
+  </div>
+
   <!-- iPhoneのサイレントスイッチを越えるための無音ループ（メディア扱いを固定） -->
   <audio id="silentLoop" loop playsinline preload="auto" style="display:none">
     <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAESsAAABAAgAZGF0YQAAAAA=" type="audio/wav">
@@ -479,6 +499,7 @@
     timeNum.textContent = fmt(remain);
     var ratio = totalSec === 0 ? 0 : remain / totalSec;
     ringBar.style.strokeDashoffset = CIRC * (1 - ratio);
+    if (typeof dmTimeEl !== "undefined" && dmTimeEl) dmTimeEl.textContent = running ? fmt(remain) : "";
   }
   function setTotal(min) {
     stop();                       // 走っていれば、やった分を先に記録
@@ -494,6 +515,7 @@
       if (typeof metroOn !== "undefined" && metroOn) metroStop();
       if (typeof toneOn  !== "undefined" && toneOn)  toneStop();
       pauseMedia();
+      if (typeof exitDark === "function") exitDark();   // 暗いモードを解除して、完了を見せる
       timeState.textContent = "整いました🤍";
       showDoneCue();                             // 見てわかる合図（リングと文字）
       // メディアセッションが切り替わる時間を稼いでから、チャイムをひびかせる
@@ -801,6 +823,21 @@
       LS.setItem("bg_karada_metro_vol", String(metroVol));
     });
   }
+
+  // ===== 暗い運動モード（画面を真っ黒にして熱を減らす・音はそのまま続く） =====
+  var darkEl = document.getElementById("darkMode");
+  var dmTimeEl = document.getElementById("dmTime");
+  var darkToggle = document.getElementById("darkToggle");
+  function enterDark() {
+    if (!darkEl) return;
+    if (dmTimeEl) dmTimeEl.textContent = (typeof running !== "undefined" && running) ? fmt(remain) : "";
+    darkEl.classList.add("is-on");
+  }
+  function exitDark() {
+    if (darkEl) darkEl.classList.remove("is-on");
+  }
+  if (darkToggle) darkToggle.addEventListener("click", enterDark);
+  if (darkEl) darkEl.addEventListener("click", exitDark);
 
   // ===== バックアップ =====
   function todayFile() {
